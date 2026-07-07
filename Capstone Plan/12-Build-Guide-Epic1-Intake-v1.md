@@ -1,0 +1,574 @@
+# Build Guide — Epic 1: Intelligent Intake & Profile Contextualisation
+
+*Companion to the kanban board (cards 1.1–1.4) and `11-4-Week-Action-Plan-v1.md`. Written for someone who has never built a Python app before. Follow the sections in order — each card builds on the one before it.*
+
+Every code block in this guide is complete and runnable — you can copy it exactly. Where a value depends on your real dataset (which you don't have loaded yet), the guide tells you exactly how to find the real value instead of guessing.
+
+---
+
+## 0. One-Time Project Setup
+
+Do this once, before starting Card 1.1. Everything after this section assumes it's done.
+
+### 0.1 Install Python
+
+1. Open **Terminal** (press `Cmd + Space`, type "Terminal", hit Enter).
+2. Check if Python is already installed: type `python3 --version` and press Enter.
+   - If you see something like `Python 3.11.x` or higher, you're set — skip to 0.2.
+   - If you see an error or a version below 3.10, install Python from [python.org/downloads](https://www.python.org/downloads/) (download the macOS installer, run it, click through the defaults).
+
+### 0.2 Create the project folder
+
+In Terminal, run these commands one at a time (press Enter after each):
+
+```bash
+mkdir -p ~/atsa-project/app/data
+mkdir -p ~/atsa-project/app/logic
+mkdir -p ~/atsa-project/app/analytics
+mkdir -p ~/atsa-project/scripts
+cd ~/atsa-project
+```
+
+**What just happened:** `mkdir -p` creates a folder (and any parent folders it needs). `cd` moves your Terminal "into" that folder — every command you type from now on happens inside `~/atsa-project` unless you say otherwise. You now have this structure:
+
+```
+atsa-project/
+├── app/
+│   ├── intake.py         ← Card 1.1
+│   ├── validators.py     ← Card 1.3
+│   ├── pipeline.py       ← Card 1.4
+│   ├── dashboard.py      ← Card 3.1 (later)
+│   ├── export.py         ← Card 3.2 (later)
+│   ├── survey_modal.py   ← Card 3.4 (later)
+│   ├── data/
+│   │   └── options.py    ← Card 1.2
+│   ├── logic/            ← Epic 2 files go here (later)
+│   └── analytics/
+│       └── tracker.py    ← Card 3.3 (later)
+└── scripts/               ← Epic 2 one-off scripts go here (later)
+```
+
+You don't need to create the empty `.py` files yet — each card below tells you exactly when to create its file.
+
+### 0.3 Create and activate a virtual environment
+
+A **virtual environment** is an isolated box that holds only the packages this project needs, so they don't clash with anything else on your computer.
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+**What just happened:** the first line creates the box (a folder called `venv`). The second line "steps into" it. You'll know it worked because your Terminal prompt now starts with `(venv)`. **You must run `source venv/bin/activate` every time you open a new Terminal window to work on this project** — it doesn't stay on permanently.
+
+### 0.4 Install the packages the whole project needs
+
+With `(venv)` showing in your prompt, run:
+
+```bash
+pip install streamlit pandas chromadb openai python-dotenv
+```
+
+This installs:
+- **streamlit** — turns a Python script into a web app (used in Epic 1 and 3).
+- **pandas** — reads and manipulates the CSV of AI deployment cases (Epic 2).
+- **chromadb** — the local vector database used for retrieval (Epic 2).
+- **openai** — calls the LLM for the summary text (Epic 2, Card 2.6).
+- **python-dotenv** — safely loads secret API keys from a file instead of hardcoding them.
+
+This will take a minute or two. If you see a wall of text ending in something like `Successfully installed ...`, it worked.
+
+### 0.5 Freeze your dependencies
+
+```bash
+pip freeze > requirements.txt
+```
+
+This writes every installed package + version into `requirements.txt`, so anyone (including future-you) can recreate the exact same setup with `pip install -r requirements.txt`.
+
+### 0.6 Get an API key and store it safely
+
+Card 2.6 needs to call an LLM (e.g. OpenAI's API). To get a key:
+
+1. Go to [platform.openai.com/api-keys](https://platform.openai.com/api-keys), sign up/log in, click "Create new secret key", copy it. (You'll need billing set up on the account — a few dollars covers the whole project.)
+2. Back in Terminal, create a secrets file:
+
+```bash
+touch .env
+echo "OPENAI_API_KEY=paste-your-key-here" >> .env
+echo ".env" >> .gitignore
+echo "venv/" >> .gitignore
+```
+
+**Never paste your API key directly into a `.py` file or share it in chat/screenshots.** The `.gitignore` lines mean that if you ever push this project to GitHub, the key and the virtual-environment folder won't be uploaded.
+
+### 0.7 Sanity-check Streamlit works
+
+Create a throwaway test file:
+
+```bash
+echo 'import streamlit as st
+st.title("Hello, ATSA!")' > test_app.py
+streamlit run test_app.py
+```
+
+Your browser should open automatically to `http://localhost:8501` showing "Hello, ATSA!" in large text. If it does, Streamlit works — close the browser tab, go back to Terminal, press `Ctrl + C` to stop the app, and delete the test file: `rm test_app.py`.
+
+**You're now ready for Card 1.1.**
+
+---
+
+## Card 1.1 — Render input controls & dark-mode CSS grid
+
+**File:** `app/intake.py` · **Depends on:** nothing · **Effort:** ~0.5 day
+
+### Goal in plain language
+Build the page the user sees first: a dark-themed form with 5 boxes to fill in (their AI workflow, industry, company size, privacy needs, and budget). At this stage we're only building the *look* — the dropdown lists will be wired up properly in Card 1.2, and the "what happens when you click Submit" logic comes in Cards 1.3–1.4. For now, every field can use placeholder options.
+
+### Concepts you need first
+- **Streamlit** turns a plain Python script into a web page. Every time you call a Streamlit function like `st.text_input(...)`, it draws a widget on the page.
+- **Widgets** are the interactive boxes: text boxes, dropdowns, number inputs, buttons.
+- Streamlit re-runs your *entire script from top to bottom* every time the user interacts with something. This feels strange at first but is the core mental model — don't fight it.
+
+### Step-by-step
+
+**1. Create the file.**
+
+```bash
+touch app/intake.py
+```
+
+**2. Open it in any text editor** (VS Code is free and beginner-friendly: [code.visualstudio.com](https://code.visualstudio.com)). If you have VS Code installed, you can open the whole project folder with:
+
+```bash
+code ~/atsa-project
+```
+
+**3. Paste this starter code into `app/intake.py`:**
+
+```python
+import streamlit as st
+
+# --- Page setup: must be the first Streamlit command in the script ---
+st.set_page_config(
+    page_title="ATSA — AI Stack Architect",
+    page_icon="🧭",
+    layout="centered",
+)
+
+# --- Dark, "neo-industrial" styling ---
+# st.markdown with unsafe_allow_html=True lets us inject raw CSS.
+DARK_CSS = """
+<style>
+    .stApp {
+        background-color: #0f1115;
+        color: #e8e9ec;
+    }
+    h1, h2, h3 {
+        font-family: 'Courier New', monospace;
+        letter-spacing: 0.02em;
+    }
+    .stButton>button {
+        background-color: #3b82f6;
+        color: white;
+        border-radius: 6px;
+        border: none;
+        padding: 0.5em 1.5em;
+    }
+    div[data-baseweb="select"] > div {
+        background-color: #1b1e26;
+        border-color: #2b2f3a;
+    }
+</style>
+"""
+st.markdown(DARK_CSS, unsafe_allow_html=True)
+
+st.title("🧭 AI Stack Architect")
+st.caption("Five constraints in. A data-backed blueprint out.")
+
+# --- The 5-field form ---
+# Placeholder options for now — Card 1.2 replaces the hardcoded lists below
+# with real ones derived from the case dataset.
+with st.form("intake_form"):
+    workflow = st.selectbox(
+        "Target AI Workflow",
+        ["Customer Service", "Content Generation", "Coding Assistant",
+         "Data Analysis", "CX & Personalization"],  # placeholder — Card 1.2
+    )
+    industry = st.selectbox(
+        "Industry",
+        ["Technology", "Healthcare", "Retail", "Finance", "Any industry"],  # placeholder
+    )
+    org_size = st.selectbox(
+        "Organisation Size",
+        ["Solo / Pre-seed (1–4)", "Startup (5–20)", "SMB (21–200)",
+         "Mid-Market (201–1000)", "Enterprise (1000+)"],
+    )
+    privacy = st.radio(
+        "Data-Privacy Posture",
+        ["Standard", "Regulated"],
+        horizontal=True,
+        help="Regulated = you handle data subject to HIPAA/GDPR/financial "
+             "regulation and need governable, self-hostable tools.",
+    )
+    budget = st.number_input(
+        "Monthly Budget (€)",
+        min_value=0, step=50, value=800,
+    )
+
+    submitted = st.form_submit_button("Generate my blueprint")
+
+if submitted:
+    # Card 1.3 will replace this with real validation.
+    # Card 1.4 will replace this with a real pipeline call.
+    st.write("Form submitted — validation and pipeline wiring come next.")
+    st.json({
+        "workflow": workflow,
+        "industry": industry,
+        "org_size": org_size,
+        "privacy": privacy,
+        "budget": budget,
+    })
+```
+
+**4. Run it:**
+
+```bash
+streamlit run app/intake.py
+```
+
+### How to verify this card is done
+- The browser opens with a dark page titled "🧭 AI Stack Architect".
+- All 5 fields render without errors and without text being cut off.
+- Clicking "Generate my blueprint" shows the JSON of what you typed/selected.
+- Resize your browser window narrower (or open dev tools and simulate a phone width, ~375px) — the form should still be fully readable with no horizontal scrollbar. If something overflows, add `layout="centered"` (already set above) and avoid putting widgets side-by-side in columns for this MVP.
+
+### Common pitfalls
+- **"set_page_config must be called first"** error → make sure `st.set_page_config(...)` is the very first Streamlit call in the file, before even the CSS.
+- Nothing happens when you save the file → Streamlit doesn't auto-reload by default in older versions; click the "Rerun" button that appears top-right, or press `R`.
+- Page looks unstyled → check you didn't accidentally delete `unsafe_allow_html=True`.
+
+---
+
+## Card 1.2 — Map Org Size / Industry to dropdown options
+
+**File:** `app/data/options.py` · **Depends on:** 1.1 · **Effort:** ~0.5 day
+
+### Goal in plain language
+Card 1.1 used hardcoded, made-up dropdown lists. This card replaces the guesswork with (a) a small fixed taxonomy for Organisation Size — which doesn't exist in the case dataset at all, so we're defining our own sensible bands — and (b) real Industry / Workflow lists **pulled from your actual dataset**, not invented.
+
+### Why Organisation Size is hand-built, not derived
+The 3,023-case dataset has no organisation-size column to join against (verified in the Handbook, §2). So Org Size is *our own* taxonomy, used only to help contextualise the user's situation for the LLM summary later — not to filter the case data.
+
+### Step-by-step
+
+**1. Create the file:**
+
+```bash
+touch app/data/options.py
+```
+
+**2. Add the fixed Org Size taxonomy** — paste this into `app/data/options.py`:
+
+```python
+"""
+Static and derived dropdown option lists for the intake form.
+Org sizes are our own taxonomy (no such field exists in the case dataset).
+Industries / workflows are derived from the real dataset once you have it —
+see the instructions below Step 3.
+"""
+
+ORG_SIZES = {
+    "solo": "Solo / Pre-seed (1–4 people)",
+    "startup": "Startup (5–20 people)",
+    "smb": "Small–Medium Business (21–200 people)",
+    "mid": "Mid-Market (201–1,000 people)",
+    "ent": "Enterprise (1,000+ people)",
+}
+
+PRIVACY_POSTURES = {
+    "standard": "Standard",
+    "regulated": "Regulated (HIPAA / GDPR / financial data)",
+}
+```
+
+**3. Find your dataset's real Industry and Workflow values.**
+
+You won't have the normalised case data until Card 2.1 is done — that's fine, this is a common real-world ordering problem (UI work often starts before the data pipeline is finished). Do this in two stages:
+
+**Stage A — right now, unblock yourself with a short placeholder list** so Card 1.1's dropdown isn't showing made-up categories forever. Add this below the code from Step 2:
+
+```python
+# Placeholder until Card 2.1's normalised CSV exists (Stage B below).
+INDUSTRIES_PLACEHOLDER = [
+    "Any industry", "Technology", "Healthcare", "Retail", "Finance",
+    "Education", "Manufacturing", "Hospitality & Travel", "Government",
+]
+WORKFLOWS_PLACEHOLDER = [
+    "Customer Service", "Content Generation", "Coding Assistant",
+    "Data Analysis", "CX & Personalization", "Agent Assist",
+]
+```
+
+**Stage B — once you have the real CSV (after Card 2.1), replace the placeholders** by actually reading the data instead of guessing. Run this **one-off** snippet in Terminal (adjust the column names — see the note below):
+
+```bash
+python3 -c "
+import pandas as pd
+df = pd.read_csv('data/ai_use_cases.csv')  # adjust path to your real file
+print('Columns:', list(df.columns))
+print()
+print('Unique industries:', sorted(df['Industry'].dropna().unique()))
+"
+```
+
+> **Important — column names will not match exactly.** Every CSV export has slightly different header names (e.g. `Industry` vs `industry` vs `Industry Sector`). The `print('Columns: ...')` line above shows you the real headers in your file. **Always run that line first** and adjust every `df['ColumnName']` reference in this guide to match what you actually see printed.
+
+Copy the printed list of industries into `options.py`, replacing `INDUSTRIES_PLACEHOLDER`:
+
+```python
+INDUSTRIES = ["Any industry", "Technology", "Healthcare", ...]  # paste your real, printed list here
+```
+
+**4. Wire the new options into Card 1.1.** Open `app/intake.py` and change the import at the top plus the two `selectbox` calls:
+
+```python
+from app.data.options import ORG_SIZES, PRIVACY_POSTURES, INDUSTRIES_PLACEHOLDER, WORKFLOWS_PLACEHOLDER
+```
+
+```python
+workflow = st.selectbox("Target AI Workflow", WORKFLOWS_PLACEHOLDER)
+industry = st.selectbox("Industry", INDUSTRIES_PLACEHOLDER)
+org_size_key = st.selectbox(
+    "Organisation Size",
+    options=list(ORG_SIZES.keys()),
+    format_func=lambda k: ORG_SIZES[k],   # shows the friendly label, stores the short key
+)
+privacy_key = st.radio(
+    "Data-Privacy Posture",
+    options=list(PRIVACY_POSTURES.keys()),
+    format_func=lambda k: PRIVACY_POSTURES[k],
+    horizontal=True,
+)
+```
+
+`format_func` is a Streamlit feature that lets the dropdown *display* a friendly label ("Enterprise (1,000+ people)") while your code *receives* the short internal key (`"ent"`) — which is what the rest of the pipeline should work with.
+
+### How to verify this card is done
+- Running `streamlit run app/intake.py` shows the same form, but the dropdown values now come from `options.py`, not hardcoded inline lists.
+- Selecting "Enterprise (1,000+ people)" and submitting shows `org_size_key` as `"ent"` in the debug JSON, not the long label.
+- (After Stage B) `INDUSTRIES` in the dropdown matches the real unique values from your CSV — no invented categories.
+
+### Common pitfalls
+- `ModuleNotFoundError: No module named 'app'` → run Streamlit from the project root (`~/atsa-project`), not from inside `app/`. Also create an empty `app/__init__.py` and `app/data/__init__.py` file so Python treats these as importable packages: `touch app/__init__.py app/data/__init__.py`.
+- Column name mismatch (`KeyError: 'Industry'`) → you skipped the "print columns first" step. Go back and print `df.columns`.
+
+---
+
+## Card 1.3 — Frontend validation
+
+**File:** `app/validators.py` · **Depends on:** 1.2 · **Effort:** ~0.5 day
+
+### Goal in plain language
+Before we hand the form's data to the backend, catch obvious problems: did the user leave a field on some meaningless default, or type a budget that isn't a real number? A clear inline message beats a confusing crash three steps later.
+
+### Step-by-step
+
+**1. Create the file:**
+
+```bash
+touch app/validators.py
+```
+
+**2. Write a single, pure function that takes the form's values and returns a pass/fail result.** "Pure" means: given the same inputs, it always returns the same output, and it doesn't print anything or touch the screen itself — that's the caller's job. This makes it easy to test on its own, separate from Streamlit.
+
+```python
+"""
+Validation rules for the 5-field intake form.
+Returns (is_valid: bool, error_message: str) — error_message is "" when valid.
+"""
+
+def validate_intake(workflow: str, industry: str, org_size_key: str,
+                     privacy_key: str, budget) -> tuple[bool, str]:
+    if not workflow or not workflow.strip():
+        return False, "Please select a target AI workflow."
+
+    if not industry or not industry.strip():
+        return False, "Please select an industry."
+
+    if not org_size_key:
+        return False, "Please select your organisation size."
+
+    if privacy_key not in ("standard", "regulated"):
+        return False, "Please choose a data-privacy posture."
+
+    # Budget must be a real, non-negative number.
+    try:
+        budget_value = float(budget)
+    except (TypeError, ValueError):
+        return False, "Monthly budget must be a number."
+
+    if budget_value <= 0:
+        return False, "Monthly budget must be greater than zero."
+
+    return True, ""
+```
+
+**3. Wire it into `app/intake.py`.** Add the import at the top:
+
+```python
+from app.validators import validate_intake
+```
+
+Replace the `if submitted:` block at the bottom of `intake.py` with:
+
+```python
+if submitted:
+    is_valid, error_message = validate_intake(
+        workflow, industry, org_size_key, privacy_key, budget
+    )
+    if not is_valid:
+        st.error(error_message)
+    else:
+        st.success("Looks good — ready for the pipeline (Card 1.4).")
+        st.json({
+            "workflow": workflow, "industry": industry,
+            "org_size": org_size_key, "privacy": privacy_key,
+            "budget": budget,
+        })
+```
+
+### How to test this without even opening the browser
+This is a good moment to learn a habit that pays off for the rest of the project: **test a function directly in Terminal before trusting it inside the app.**
+
+```bash
+python3 -c "
+from app.validators import validate_intake
+print(validate_intake('Customer Service', 'Technology', 'startup', 'standard', 800))   # expect (True, '')
+print(validate_intake('', 'Technology', 'startup', 'standard', 800))                    # expect (False, '...workflow')
+print(validate_intake('Customer Service', 'Technology', 'startup', 'standard', 'abc'))  # expect (False, '...number')
+print(validate_intake('Customer Service', 'Technology', 'startup', 'standard', -5))      # expect (False, '...greater than zero')
+"
+```
+
+If all four lines print what the comment says, the card is done — before you even touch the UI.
+
+### Common pitfalls
+- Streamlit's `number_input` already restricts input to numbers in most cases, so the "not a number" test matters more if you ever swap that widget for a plain text box — keep the check anyway; defensive code doesn't hurt.
+- Don't validate inside the Streamlit widgets themselves (e.g., don't try to disable the submit button) — for the MVP, validate *after* submit and show `st.error`. Simpler, and it's what the task card specifies ("halted with a clear inline message").
+
+---
+
+## Card 1.4 — Direct pipeline call (in-process, no webhook)
+
+**File:** `app/pipeline.py` · **Depends on:** 1.3 · **Effort:** ~0.5 day
+
+### Goal in plain language
+Once the form is valid, something needs to actually do the work: normalise the request, search the case library, filter, cost it out, and summarise it. In a more complex system that "something" might be a separate service you call over the network (a **webhook**) — but here, everything runs in the same Python process, so it's just a normal function call. This card creates that function as a placeholder that Epic 2's real logic will slot into later, and adds a loading spinner so the user knows something is happening.
+
+### Concepts you need first
+- A **webhook** is when your app sends a request over the network (like calling a website) to a separate service and waits for a reply. It adds failure points: network timeouts, authentication, serialization bugs.
+- An **in-process function call** is just calling a Python function that lives in the same program. No network involved — if it fails, you get a normal Python error you can debug directly, not a mysterious timeout.
+
+### Step-by-step
+
+**1. Create the file:**
+
+```bash
+touch app/pipeline.py
+```
+
+**2. Write a placeholder pipeline function.** This is intentionally a stub — Cards 2.1–2.6 will fill in the real steps one at a time. Building the "shape" of the function now means each Epic 2 card only has to fill in one section later, instead of you writing one giant function all at once.
+
+```python
+"""
+The single entry point that turns validated form inputs into a blueprint.
+Each numbered step below is a placeholder — Epic 2 cards replace them in order:
+  Step 1 (normalise/retrieve) <- Cards 2.1, 2.2
+  Step 2 (privacy filter)     <- Card 2.5
+  Step 3 (cost)               <- Cards 2.3, 2.4
+  Step 4 (LLM summary)        <- Card 2.6
+"""
+import time
+
+
+def run_pipeline(inputs: dict) -> dict:
+    """
+    inputs: {"workflow": str, "industry": str, "org_size": str,
+             "privacy": str, "budget": float}
+    returns: a dict the dashboard (Card 3.1) can render directly.
+    """
+    # --- Step 1: retrieve comparable cases (placeholder) ---
+    # Real version (Card 2.2) will query the Chroma vector store here.
+    matched_cases = []
+
+    # --- Step 2: privacy filter (placeholder) ---
+    # Real version (Card 2.5) removes ungovernable tools when inputs["privacy"] == "regulated".
+    filtered_cases = matched_cases
+
+    # --- Step 3: cost forecast (placeholder) ---
+    # Real version (Cards 2.3-2.4) looks up the pricing table and computes an estimate.
+    cost_forecast = {"primary_api_monthly": None, "assistant_monthly": None}
+
+    # --- Step 4: LLM summary (placeholder) ---
+    # Real version (Card 2.6) calls the model with a few-shot prompt.
+    summary_text = (
+        "This is a placeholder blueprint. Once Epic 2 is wired up, this will "
+        "be a real, evidence-backed recommendation."
+    )
+
+    time.sleep(1)  # simulates work so the loading spinner (Step 3 below) is visible
+
+    return {
+        "recommended_stack": [],       # Card 3.1 renders this as Block A
+        "cost_forecast": cost_forecast,  # Card 3.1 renders this as Block B
+        "matched_cases": filtered_cases,  # Card 3.1 renders this as Block C
+        "summary_text": summary_text,
+    }
+```
+
+**3. Wire it into `app/intake.py`** with a loading state. Add the import:
+
+```python
+from app.pipeline import run_pipeline
+```
+
+Update the `else` branch (the valid-form case) from Card 1.3:
+
+```python
+    else:
+        with st.spinner("Building your blueprint..."):
+            result = run_pipeline({
+                "workflow": workflow, "industry": industry,
+                "org_size": org_size_key, "privacy": privacy_key,
+                "budget": budget,
+            })
+        st.success("Blueprint ready — see below.")
+        st.json(result)  # Card 3.1 will replace this raw JSON dump with the real 3-block layout
+```
+
+### How to verify this card is done
+- Submitting a valid form shows a brief "Building your blueprint..." spinner (thanks to `time.sleep(1)` — remove that line once Epic 2's real steps are slow enough on their own) followed by the placeholder JSON result.
+- `run_pipeline` is a plain function you can call from a Python shell with no Streamlit running at all — this proves there's no hidden network dependency:
+
+```bash
+python3 -c "
+from app.pipeline import run_pipeline
+print(run_pipeline({'workflow':'Customer Service','industry':'Technology','org_size':'startup','privacy':'standard','budget':800}))
+"
+```
+
+### Common pitfalls
+- Don't reach for `requests`, webhooks, or any HTTP call here — if you find yourself wanting to `import requests` in this file, stop; that's exactly the risk this card exists to remove.
+- Keep `run_pipeline`'s input/output shape (the dict keys above) stable — Epic 2 and Epic 3 cards both depend on it staying consistent.
+
+---
+
+## Epic 1 — Done Checklist
+- [ ] `streamlit run app/intake.py` renders a dark 5-field form with no errors.
+- [ ] Dropdown options come from `app/data/options.py`, not hardcoded inline lists.
+- [ ] Submitting an incomplete/invalid form shows a clear inline error and does not proceed.
+- [ ] Submitting a valid form shows a loading spinner, then a result — with no network calls involved.
+- [ ] All four card files exist: `app/intake.py`, `app/data/options.py`, `app/validators.py`, `app/pipeline.py`.
+
+Move on to `13-Build-Guide-Epic2-Retrieval-v1.md` next — it fills in the real logic behind `run_pipeline`.
