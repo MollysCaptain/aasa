@@ -10,7 +10,7 @@
 ## NEXT (Month 2): Trust, Freshness & Developer Utility
 - **Dynamic Pricing Sync:** move from the hardcoded table to scheduled pricing checks against vendor pages (not real-time scraping — vendor pricing pages change infrequently enough that a periodic sync is sufficient and lower-risk).
 - **Plain-Language Financial Export:** a downloadable one-page cost summary a non-technical founder can share with their board.
-- **Mainstream Validation Overlay:** population-level Stack Overflow survey benchmarks as supporting context (e.g. "X% of similarly-sized companies report using Y") — explicitly labelled as population-level, not case-specific, since the case library has no org-size join key.
+- **Mainstream Validation Overlay:** population-level Stack Overflow survey benchmarks as supporting context (e.g. "X% of similarly-sized companies report using Y") — explicitly labelled as population-level, not case-specific, since the case library has no org-size join key. The concrete asset for this already exists: the colleague's `stackpunk`/`Gabi` branch built `data/technology_landscape.csv` (2,017 rows, top-5 tools per Industry x OrgSize group from the real 2025 Stack Overflow Developer Survey, via `scripts/extract_tech_landscape.py`) — confirmed in `19-Gabi-Branch-Integration-Analysis-v1.md` as a Month 2 item, not MVP scope. Whoever picks this up will still need to build a mapping layer between the survey's own Industry/OrgSize categories and this app's taxonomy before joining it to case-library output.
 - **One-Click Code Boilerplate:** generates starter config for the recommended stack.
 
 ## FUTURE (Month 3+): System Autonomy & Ecosystem Expansion

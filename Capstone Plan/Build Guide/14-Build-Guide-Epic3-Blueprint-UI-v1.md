@@ -101,7 +101,7 @@ def _render_case_references_block(matched_cases: list):
         return
 
     for case in matched_cases[:4]:  # show up to 4, per the prototype's own convention
-        org = case.get("org", "Unknown organisation")
+        org = case.get("organization", "Unknown organisation")
         title = case.get("title", "")
         industry = case.get("industry", "")
         url = case.get("source_url", "")
@@ -112,12 +112,14 @@ def _render_case_references_block(matched_cases: list):
                 st.markdown(f"[Source]({url})")
 ```
 
-**3. Wire it into `app/intake.py`.** Replace the temporary `st.json(result)` line from Card 1.4 with:
+**3. Wire it into `app/intake.py`.** Replace the temporary `st.json(st.session_state.result)` line from Card 1.4 (in the `if "result" in st.session_state:` block, **not** inside `if submitted:` — see Card 1.4's session-state note if that distinction is unfamiliar) with:
 
 ```python
 from app.dashboard import render_blueprint
 ...
-        render_blueprint(result)
+if "result" in st.session_state:
+    st.success("Blueprint ready — see below.")
+    render_blueprint(st.session_state.result)
 ```
 
 **4. Run it and test at mobile width.** With `streamlit run app/intake.py` running, open your browser's developer tools (`Cmd+Option+I` on Mac in Chrome), toggle device toolbar, and pick a ~375px-wide phone preset. Check nothing overflows horizontally.
@@ -129,7 +131,7 @@ from app.dashboard import render_blueprint
 - The layout holds up at 375px width with no horizontal scrollbar.
 
 ### Common pitfalls
-- If `matched_cases` dictionaries don't actually contain `org`/`title`/`source_url` keys yet (Card 2.2's Chroma metadata may only include `canonical_tools`/`industry`/`source_url` as built in Epic 2's guide), go back to `app/pipeline.py`'s Step 1 and make sure you're also pulling `org`, `title`, and `source_url` out of the Chroma metadata into each case dict — add whichever fields Card 3.1 needs to the `metadatas` list back in `scripts/embed_cases.py`, then re-run that script.
+- `matched_cases` dicts should already contain `organization`/`title`/`industry`/`source_url`/`case_id`/`canonical_tools` out of the box — Card 2.2's chunk metadata (adopted from the colleague's `chunk_use_cases.py`, see `13-Build-Guide-Epic2-Retrieval-v1.md`) carries all of these per chunk, and the pipeline-wiring step copies them straight into each case dict. If a key is missing, check `app/pipeline.py`'s Step 1 first (it should read `meta["organization"]`, `meta["title"]`, etc. from the Chroma query results) before assuming Card 2.2 needs changes.
 
 ---
 
@@ -177,7 +179,7 @@ def blueprint_to_text(result: dict) -> str:
 
     lines.append("REAL CASE REFERENCES:")
     for case in result["matched_cases"][:4]:
-        org = case.get("org", "Unknown organisation")
+        org = case.get("organization", "Unknown organisation")
         url = case.get("source_url", "")
         lines.append(f"  - {org} ({url})")
     lines.append("")
@@ -265,11 +267,16 @@ if "form_start_time" not in st.session_state:
 
 (add `import time` at the top of `intake.py` if it's not already there.)
 
-Inside the `if submitted:` / valid-form branch, right after the pipeline call succeeds:
+Inside the `if submitted:` / valid-form branch, right after `run_pipeline` returns (and before or after storing `st.session_state.result = result` — order doesn't matter here, just do it in that branch, not in the separate rendering block):
 
 ```python
 elapsed_seconds = time.time() - st.session_state.form_start_time
 log_event("results_shown", elapsed_seconds=round(elapsed_seconds, 1))
+
+# Card 2.6's generate_summary (via run_pipeline) now returns timing/token data
+# alongside the summary text — log it here so you have real latency/throughput
+# numbers, not just "it felt slow," if performance ever comes up during testing.
+log_event("llm_summary_generated", **result["llm_metrics"])
 ```
 
 And log the export click inside `render_blueprint` — but since that click happens via the copy icon (which Streamlit doesn't give you a callback for), log the export *section being shown* instead as a reasonable proxy, or add an explicit "I copied this" button if you want a true click event:
@@ -280,8 +287,11 @@ if st.button("✅ I've copied my blueprint"):
     st.success("Noted — thanks!")
 ```
 
+Because this button now lives inside the `if "result" in st.session_state:` block (Card 1.4's session-state fix) rather than inside the transient `if submitted:` check, clicking it reruns the script, `log_event` fires once, and the blueprint stays exactly where it was — it no longer vanishes on click.
+
 ### How to verify this card is done
-- After a few form submissions, `data/telemetry.log` contains one JSON line per event, each with a timestamp.
+- After a few form submissions, `data/telemetry.log` contains one JSON line per event, each with a timestamp, including an `llm_summary_generated` line with `duration_seconds` and token counts.
+- Clicking "I've copied my blueprint" logs the event *and* the blueprint stays on screen — if it disappears, double check `render_blueprint` is being called from the `if "result" in st.session_state:` block, not from inside `if submitted:`.
 - You can compute a rough "form completion velocity" by reading the log:
 
 ```bash
@@ -296,6 +306,19 @@ print(f'{len(shows)} completed sessions')
 if shows:
     avg = sum(e['elapsed_seconds'] for e in shows) / len(shows)
     print(f'Average time to results: {avg:.1f}s')
+"
+```
+
+- And the LLM-specific latency, separate from total time-to-results (useful if the app ever feels slow and you need to know whether the bottleneck is retrieval or the LLM call):
+
+```bash
+python3 -c "
+import json
+durations = [json.loads(line)['duration_seconds'] for line in open('data/telemetry.log')
+             if json.loads(line)['event'] == 'llm_summary_generated']
+if durations:
+    print(f'LLM call: avg {sum(durations)/len(durations):.2f}s over {len(durations)} calls '
+          f'(min {min(durations):.2f}s, max {max(durations):.2f}s)')
 "
 ```
 
@@ -351,13 +374,15 @@ def render_trust_survey():
         st.success("Thanks — this helps us validate the project.")
 ```
 
-**3. Wire it into `app/intake.py`**, right after `render_blueprint(result)`:
+**3. Wire it into `app/intake.py`**, right after `render_blueprint(...)` — inside the same `if "result" in st.session_state:` block from Card 1.4/3.1, **not** inside `if submitted:`, for the same reason the export button lives there:
 
 ```python
 from app.survey_modal import render_trust_survey
 ...
-        render_blueprint(result)
-        render_trust_survey()
+if "result" in st.session_state:
+    st.success("Blueprint ready — see below.")
+    render_blueprint(st.session_state.result)
+    render_trust_survey()
 ```
 
 ### How to verify this card is done
@@ -383,13 +408,16 @@ if scores:
 "
 ```
 
+This median is a fine quick check while you're still testing. For the final write-up (Card P.14 in `17-Build-Guide-Package-Pitch-Week4-v1.md`), treat this number as one stage of a small funnel (viewed → exported → survey "would use this") rather than in isolation, and report the "% said yes" figures with an honest small-sample framing (a credible interval, not a bare percentage) — see that card for the full methodology and why it matters at n=5-8.
+
 ---
 
 ## Epic 3 — Done Checklist
 - [ ] The 3-block layout renders real data from the full pipeline, with evidence bars and clickable source links.
 - [ ] A copy-able plain-text export of the full blueprint is visible below the blocks.
-- [ ] Every form-start and results-shown event is appended to `data/telemetry.log` with a timestamp.
+- [ ] Every form-start, results-shown, and llm_summary_generated event is appended to `data/telemetry.log` with a timestamp.
 - [ ] The trust survey appears after every blueprint and logs `trust_score` + `net_value`.
-- [ ] You can compute average time-to-results and median trust score directly from the log file, with no external analytics tool.
+- [ ] You can compute average time-to-results, average LLM latency, and median trust score directly from the log file, with no external analytics tool.
+- [ ] Clicking the export button or submitting the trust survey does **not** make the blueprint disappear (session-state fix from Card 1.4/3.1).
 
 **At this point, all 14 build cards are complete and wired together end-to-end** — form → validated inputs → retrieval → privacy filter → ranking → cost → LLM summary → 3-block display → export → telemetry → trust survey. This is the point in the 4-week action plan where Week 3's "wire full pipeline; polish 3-block output; telemetry" milestone is done, and you're ready for real user testing.

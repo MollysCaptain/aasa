@@ -143,8 +143,8 @@ const CARDS = [
   { id:"1.4", epic:1, title:"Direct pipeline call (in-process, no webhook)", file:"app/pipeline.py", effort:"0.5d", depends:"1.3", prio:"must", owner:"B", week:2, day:9, col:"todo" },
 
   // Epic 2 — Retrieval & Costing Engine
-  { id:"2.1", epic:2, title:"Load & normalise 3,023-row CSV via alias map", file:"scripts/normalise_cases.py", effort:"1.0d", depends:"None", prio:"must", owner:"A", week:1, day:6, col:"todo" },
-  { id:"2.2", epic:2, title:"Embed normalised cases into Chroma vector store", file:"scripts/embed_cases.py", effort:"1.0d", depends:"2.1", prio:"must", owner:"A", week:2, day:8, col:"todo" },
+  { id:"2.1", epic:2, title:"Validate + normalise domains, then build tool-alias map", file:"validate_use_cases.py, normalize_domains.py (Gabi branch, done) + scripts/normalise_cases.py (alias map, still to build)", effort:"1.0d", depends:"None", prio:"must", owner:"A", week:1, day:6, col:"inprogress" },
+  { id:"2.2", epic:2, title:"Chunk cases (3/case) & embed into Chroma vector store", file:"chunk_use_cases.py (Gabi branch, chunks generated) + scripts/embed_cases.py (Chroma ingestion, still to run)", effort:"1.0d", depends:"2.1", prio:"must", owner:"A", week:2, day:8, col:"inprogress" },
   { id:"2.3", epic:2, title:"Hardcode 24-tool pricing table", file:"app/logic/pricing.py", effort:"0.5d", depends:"None", prio:"should", owner:"A", week:1, day:5, col:"todo" },
   { id:"2.4", epic:2, title:"Token/seat-aware cost computation", file:"app/logic/cost.py", effort:"0.5d", depends:"2.3", prio:"should", owner:"A", week:2, day:12, col:"todo" },
   { id:"2.5", epic:2, title:"Deterministic privacy filter", file:"app/logic/filter.py", effort:"1.0d", depends:"2.2", prio:"must", owner:"A", week:2, day:10, col:"todo" },
@@ -183,6 +183,7 @@ const CARDS = [
   { id:"B.1", epic:0, title:"Plain-language cost export (1-pager for boards)", file:"—", effort:"1d", depends:"3.2", prio:"could", owner:"B", week:0, day:0, col:"icebox" },
   { id:"B.2", epic:0, title:"One-click code boilerplate generator", file:"—", effort:"2d", depends:"3.1", prio:"could", owner:"A", week:0, day:0, col:"icebox" },
   { id:"B.3", epic:0, title:"Live / continuous pricing scraping", file:"—", effort:"4d+", depends:"2.3", prio:"wont", owner:"A", week:0, day:0, col:"icebox" },
+  { id:"B.4", epic:0, title:"Mainstream Validation Overlay (SO survey benchmarks)", file:"data/technology_landscape.csv (Gabi branch, ready to reuse)", effort:"2d", depends:"3.1", prio:"could", owner:"A", week:0, day:0, col:"icebox" },
 ];
 
 const STORAGE_KEY = "atsa-kanban-state-v2";
