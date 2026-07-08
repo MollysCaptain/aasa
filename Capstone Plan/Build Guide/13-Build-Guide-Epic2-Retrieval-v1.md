@@ -2,21 +2,15 @@
 
 *Companion to the kanban board (cards 2.1–2.6). Assumes you've completed `12-Build-Guide-Epic1-Intake-v1.md`'s one-time setup (Section 0) — same virtual environment, same `~/atsa-project` folder. This is the most important epic: it's the "real differentiator" of the whole project (Handbook §2).*
 
-**Before you start:** you need the actual case dataset — the 3,023-row CSV of real AI deployments. If you don't have it yet, get it now (per the Handbook, the source is the `ai-use-cases-library` dataset) and save it at `data/ai_use_cases.csv` inside `~/atsa-project`. Every code snippet below that reads this file assumes that path — adjust it if yours differs.
+**Before you start:** you need the actual case dataset — the 3,023-row CSV of real AI deployments. Save it at `data/use-cases.csv` inside `~/atsa-project` (per the Handbook, the source is the `ai-use-cases-library` dataset).
 
-**The single most important habit in this whole epic:** before writing any code that references a column by name, run this and read the actual output:
+**Column names are now real, not placeholders.** An earlier version of this guide had you print your CSV's columns and guess, because neither of us had the actual file yet. Your colleague's `stackpunk` repo (Gabi branch) has since verified the real schema against the actual data — `data/stackpunk-schema.md` there is now the authoritative reference, and every column name below matches it exactly:
 
-```bash
-python3 -c "
-import pandas as pd
-df = pd.read_csv('data/ai_use_cases.csv')
-print('Rows:', len(df))
-print('Columns:', list(df.columns))
-print(df.head(3).to_string())
-"
-```
+`CaseID, Organization, Use Case Title, Description, Org Industry, Use Case Industry, Subindustry Tags, Use Case Domain, Tools/Technologies, Outcomes & Benefits, Source URL, Source`
 
-Every `df['ColumnName']` in this guide is a **placeholder name** based on the Handbook's description of the dataset (Tool/Technology, Description, Outcomes, Industry, Source URL). Your real file's headers may be spelled differently — replace every column reference below with what you actually see printed.
+Two things worth knowing about the data itself: `Tools/Technologies` is **semicolon-delimited** (`"OpenAI's Whisper API ; GPT-4 ; GPT-4 Vision"`), not comma-delimited as the dataset's own upstream doc implies — though as you'll see in Card 2.1, the alias-matching approach here doesn't actually need to split on the delimiter, so this is good background, not a blocker. `Outcomes & Benefits` is bullet-pointed prose (`•`-prefixed lines), not a short tag list — matters for Card 2.2's chunk text.
+
+If you ever pull a fresh copy of the dataset and something looks different, re-verify with `print(pd.read_csv('data/use-cases.csv').columns)` rather than assuming this guide is still accurate — but as of this integration, it is.
 
 ---
 
@@ -34,6 +28,30 @@ The dataset has one row per real-world AI deployment, and a column naming which 
 
 ### Step-by-step
 
+**0. Adopt two data-quality scripts from your colleague's `stackpunk` branch first.** Before touching tool names at all, get the data into a known-good, domain-normalised state — this isn't rebuilding something you already have, it's two genuinely separate, already-solved problems (CaseID/schema validity, and functional-domain normalisation) that would otherwise silently corrupt the alias-map work below if left unfixed.
+
+Copy these two files (and the mapping table they depend on) from the `stackpunk` repo's `Gabi` branch into your project — no need to rewrite them, they're already built and verified against the real 3,023-row dataset:
+
+```bash
+# adjust the source path to wherever you have the stackpunk repo cloned locally
+cp /path/to/stackpunk/data/domain_mapping.json data/domain_mapping.json
+cp /path/to/stackpunk/scripts/validate_use_cases.py scripts/validate_use_cases.py
+cp /path/to/stackpunk/scripts/normalize_domains.py scripts/normalize_domains.py
+```
+
+Run them, in this order, before the alias map:
+
+```bash
+python3 scripts/validate_use_cases.py data/use-cases.csv
+python3 scripts/normalize_domains.py
+```
+
+**What each one buys you:**
+- `validate_use_cases.py` is a **gate**, not a nice-to-have — it hard-fails (exit code 1) on a malformed or duplicated `CaseID`, since the whole point of a CaseID is a permanent, unique, traceable identity; a broken one should stop the pipeline, not quietly produce bad rankings three steps later. It also warns (doesn't fail) if any `Use Case Domain` value has no entry in `domain_mapping.json` yet.
+- `normalize_domains.py` adds a **`Use Case Domain (Canonical)`** column to `data/use-cases.csv` in place — mapping the 59 raw domain strings found in the wild onto the 18 canonical domains the dataset's taxonomy actually defines. Card 1.2 (`12-Build-Guide-Epic1-Intake-v1.md`) uses this column directly for the Workflow dropdown — no placeholder guessing needed.
+
+If either script reports a problem, fix the data before continuing — everything below assumes `data/use-cases.csv` has already passed both checks.
+
 **1. Create the file:**
 
 ```bash
@@ -41,20 +59,22 @@ touch scripts/normalise_cases.py
 touch scripts/__init__.py
 ```
 
-**2. Build a starter alias map.** This is deliberately a *starting point*, not a finished list — real-world tool-name normalisation is iterative. Paste this into `scripts/normalise_cases.py`:
+**2. Build a starter alias map.** This is deliberately a *starting point*, not a finished list — real-world tool-name normalisation is iterative, and it's the one piece of this pipeline your colleague's branch hasn't built yet (their `PLANNING.md` explicitly defers the tool/pricing side of things) — this is where your work adds distinct value. Paste this into `scripts/normalise_cases.py`:
 
 ```python
 """
 Card 2.1 — Normalise raw tool-name strings into ~24 canonical tool ids.
+Run AFTER scripts/validate_use_cases.py and scripts/normalize_domains.py (Step 0)
+so this adds canonical_tools on top of an already-validated, domain-normalised file.
 
 Run directly:  python3 scripts/normalise_cases.py
-Produces:      data/normalised_cases.csv
+Produces:      data/use-cases.csv, with a new canonical_tools column added in place
                data/unmatched_tools.log   (for weekly review — see Step 5)
 """
 import pandas as pd
 
-RAW_CSV_PATH = "data/ai_use_cases.csv"
-OUTPUT_CSV_PATH = "data/normalised_cases.csv"
+CSV_PATH = "data/use-cases.csv"  # read AND write — adds a column in place, matching
+                                  # the convention Step 0's scripts already use
 UNMATCHED_LOG_PATH = "data/unmatched_tools.log"
 
 # canonical_id -> list of lowercase substrings that should map to it.
@@ -112,10 +132,14 @@ def normalise_tool_string(raw_value) -> list[str]:
 
 
 def main():
-    df = pd.read_csv(RAW_CSV_PATH)
+    df = pd.read_csv(CSV_PATH)
 
-    # --- ADJUST THIS LINE to your dataset's real column name (see the print-columns step above) ---
-    TOOL_COLUMN = "Tool/Technology"
+    # Real column name, verified against the actual data (see the top of this
+    # guide): "Tools/Technologies", semicolon-delimited. normalise_tool_string
+    # does substring matching over the WHOLE cell, not a per-item split — so a
+    # multi-tool cell like "OpenAI's Whisper API ; GPT-4 ; GPT-4 Vision" still
+    # matches every phrase it contains without needing to split on ";" first.
+    TOOL_COLUMN = "Tools/Technologies"
 
     df["canonical_tools"] = df[TOOL_COLUMN].apply(normalise_tool_string)
 
@@ -130,8 +154,9 @@ def main():
         f.write("\n".join(unmatched_raw_strings))
     print(f"{len(unmatched_raw_strings)} unmatched raw strings logged to {UNMATCHED_LOG_PATH}")
 
-    df.to_csv(OUTPUT_CSV_PATH, index=False)
-    print(f"Saved normalised data to {OUTPUT_CSV_PATH}")
+    df.to_csv(CSV_PATH, index=False)  # adds canonical_tools in place, alongside
+                                        # Step 0's Use Case Domain (Canonical) column
+    print(f"Saved canonical_tools column to {CSV_PATH}")
 
 
 if __name__ == "__main__":
@@ -154,9 +179,10 @@ Coverage: 74.3% of 3023 rows resolved to >=1 canonical tool.
 **5. Improve the alias map using the unmatched log.** Open `data/unmatched_tools.log` — it's a plain list of every raw string that matched nothing. Skim it, spot patterns (e.g. you might see "Copilot Studio", "M365 Copilot for Sales" — both should map to `ms-copilot`), and add those phrases to `ALIAS_MAP`. Re-run the script. Repeat until coverage is **≥ 90%** — this back-and-forth *is* the actual work of this card; don't expect to nail it on the first pass.
 
 ### How to verify this card is done
-- `data/normalised_cases.csv` exists and has a `canonical_tools` column.
-- Terminal output shows coverage ≥ 90%.
+- `data/use-cases.csv` now has two extra columns added in place: `Use Case Domain (Canonical)` (from Step 0's `normalize_domains.py`) and `canonical_tools` (from this card's alias map). The original columns are untouched — nothing here forks a new file.
+- Terminal output shows coverage ≥ 90% for `canonical_tools`.
 - `data/unmatched_tools.log` exists and is reasonably short (the remaining unmatched strings are genuinely junk, not real tools you missed).
+- `python3 scripts/validate_use_cases.py` (Step 0) exits with code 0 — if it doesn't, fix the data before trusting anything downstream.
 
 ### Common pitfalls
 - **Order-of-checking bug:** if `"gemini"` is checked before `"gemini for workspace"`, every Workspace mention gets miscategorised as plain Gemini. Keep specific phrases earlier in the dictionary, as shown above.
@@ -164,19 +190,119 @@ Coverage: 74.3% of 3023 rows resolved to >=1 canonical tool.
 
 ---
 
-## Card 2.2 — Embed normalised cases into Chroma
+## Card 2.2 — Chunk cases and embed them into Chroma
 
-**File:** `scripts/embed_cases.py` · **Depends on:** 2.1 · **Effort:** ~1.0 day
+**Files:** `scripts/chunk_use_cases.py`, `scripts/embed_cases.py` · **Depends on:** 2.1 · **Effort:** ~1.0 day
+
+*Adopted from the colleague's `stackpunk`/`Gabi` branch (`scripts/chunk_use_cases.py`, and the `PLANNING.md`-documented ChromaDB + HuggingFace decision), with one modification: chunk metadata now uses the `canonical_tools` column from Card 2.1 instead of re-splitting the raw `Tools/Technologies` string, and carries `source_url` so Card 3.1's dashboard can link back to the source case. See `19-Gabi-Branch-Integration-Analysis-v1.md` for the full reasoning.*
 
 ### Goal in plain language
-We want to be able to ask "which real deployments are most similar to what this user described?" and get back sensible matches — not just exact keyword hits. That's what a **vector database** does: it converts each case's text into a list of numbers (an "embedding") that captures its meaning, then finds the cases whose numbers are closest to the numbers for your search query.
+We want to be able to ask "which real deployments are most similar to what this user described?" and get back sensible matches — not just exact keyword hits. That's a two-step job. First, **chunking**: break each case into a few focused pieces of text, because "how did they build it?" and "what were the results?" are different questions that match better against different text than one big blob per case. Second, **embedding**: convert each chunk's text into a list of numbers (an "embedding") that captures its meaning, and store those in a **vector database** that can quickly find the chunks whose numbers are closest to a search query's numbers.
 
 ### Concepts you need first
+- A **chunk** is one retrievable piece of text. This card uses **3 chunks per case** — Implementation (what they built), Outcome (what happened), Domain (industry/function) — instead of 1, so different question types (how vs. what-happened vs. who-else) each have a chunk written to match them well.
 - An **embedding** is a list of numbers (a vector) that represents the meaning of a piece of text. Similar meanings → similar numbers.
 - **Chroma** is a database built specifically to store embeddings and quickly find the closest ones to a new query.
-- We'll use Chroma's **built-in default embedding model**, which runs locally on your machine (no API key or cost needed for this step) — we save our OpenAI API budget for Card 2.6's summary-writing step.
+- We're using a **local HuggingFace sentence-transformers model** (`all-MiniLM-L6-v2`) to generate embeddings — no API key or cost, and it keeps the whole knowledge-base layer local. We save the OpenAI API budget for Card 2.6's summary-writing step. Naming the model explicitly (rather than relying on Chroma's implicit default, which happens to be the same model) means this is a provable shared decision with the colleague's branch, not a coincidence.
 
-### Step-by-step
+### Step 1 — Generate the chunks
+
+**1. Copy the colleague's chunking script as a starting point:**
+
+```bash
+cp "/Users/ashleyc/STACKSTONE/stackpunk/scripts/chunk_use_cases.py" scripts/chunk_use_cases.py
+```
+
+**2. Edit it — two changes from the original:**
+- Use the already-computed `canonical_tools` column (Card 2.1's alias map output) for chunk metadata, instead of re-splitting the raw `Tools/Technologies` string a second time.
+- Add `source_url` to every chunk's metadata (the original branch script doesn't include it, but Card 3.1's dashboard needs it to link back to the source case).
+
+The edited script should look like this:
+
+```python
+"""
+Card 2.2, Step 1 — Generate metadata-enriched chunks from the case CSV.
+
+Adopted from the colleague's scripts/chunk_use_cases.py (stackpunk/Gabi branch),
+modified to use the canonical_tools column (Card 2.1's alias map) instead of
+re-splitting the raw Tools/Technologies string, and to carry source_url in
+every chunk's metadata (needed by Card 3.1's dashboard).
+
+Run directly:  python3 scripts/chunk_use_cases.py
+Produces:      data/use_cases_chunks.jsonl (3 chunks per case)
+"""
+import ast
+import json
+import pandas as pd
+
+CSV_PATH = "data/use-cases.csv"
+CHUNKS_PATH = "data/use_cases_chunks.jsonl"
+
+
+def chunk_use_cases(input_path: str = CSV_PATH, output_path: str = CHUNKS_PATH):
+    df = pd.read_csv(input_path)
+
+    # canonical_tools was saved as a Python list, but CSV round-trips it as a
+    # string like "['openai-api', 'chatgpt']" — literal_eval turns it back into
+    # a real list. Requires Card 2.1 (Step 0 + the alias map) to have already run.
+    df["canonical_tools"] = df["canonical_tools"].apply(ast.literal_eval)
+
+    chunks = []
+    for _, row in df.iterrows():
+        domain = (
+            row["Use Case Domain (Canonical)"]
+            if pd.notna(row.get("Use Case Domain (Canonical)"))
+            else row["Use Case Domain"]
+        )
+        base_meta = {
+            "case_id": row["CaseID"],
+            "organization": row["Organization"],
+            "title": row["Use Case Title"],
+            "industry": row["Use Case Industry"],
+            "domain": domain,
+            "tools": row["canonical_tools"],
+            "source_url": row["Source URL"],
+        }
+
+        # Chunk 1 — Implementation: what they built.
+        chunks.append({
+            "text": f"{row['Use Case Title']}. {row['Description']}",
+            "metadata": {**base_meta, "chunk_type": "implementation"},
+        })
+
+        # Chunk 2 — Outcome: what happened (the bullet-point prose field).
+        chunks.append({
+            "text": f"Outcomes at {row['Organization']}: {row['Outcomes & Benefits']}",
+            "metadata": {**base_meta, "chunk_type": "outcome"},
+        })
+
+        # Chunk 3 — Domain: industry/function framing, for "who else is like me" queries.
+        chunks.append({
+            "text": f"{row['Organization']} operates in {row['Org Industry']}, "
+                    f"applying AI to {domain} ({row['Use Case Industry']}).",
+            "metadata": {**base_meta, "chunk_type": "domain"},
+        })
+
+    with open(output_path, "w") as f:
+        for chunk in chunks:
+            f.write(json.dumps(chunk) + "\n")
+
+    print(f"Wrote {len(chunks)} chunks ({len(df)} cases x 3) to {output_path}")
+
+
+if __name__ == "__main__":
+    chunk_use_cases()
+```
+
+**3. Run it:**
+
+```bash
+python3 scripts/chunk_use_cases.py
+```
+
+You should see `Wrote 9069 chunks (3023 cases x 3) to data/use_cases_chunks.jsonl`.
+
+### Step 2 — Embed the chunks into Chroma
 
 **1. Create the file:**
 
@@ -188,66 +314,69 @@ touch scripts/embed_cases.py
 
 ```python
 """
-Card 2.2 — Embed normalised case text into a local, persistent Chroma vector store.
+Card 2.2, Step 2 — Embed the metadata-enriched chunks into a local, persistent
+Chroma vector store, using an explicitly-named local HuggingFace embedding model
+(same model Chroma would use by default — named here so it's a provable, not
+coincidental, match with the colleague's branch decision in PLANNING.md).
 
 Run directly:  python3 scripts/embed_cases.py
+Reads:         data/use_cases_chunks.jsonl (from Step 1)
 Produces:      a ./chroma_store/ folder on disk (the vector database files)
 """
-import ast
-import pandas as pd
+import json
 import chromadb
+from chromadb.utils import embedding_functions
 
-NORMALISED_CSV_PATH = "data/normalised_cases.csv"
+CHUNKS_PATH = "data/use_cases_chunks.jsonl"
 CHROMA_PATH = "./chroma_store"
 COLLECTION_NAME = "atsa_cases"
 
+embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name="all-MiniLM-L6-v2"
+)
 
-def build_document_text(row) -> str:
-    """
-    One chunk per case (no complex splitting needed — cases are already short).
-    Combine the fields that matter for semantic search into one string.
-    ADJUST the column names below to match your real dataset.
-    """
-    title_or_org = str(row.get("Organisation", "") or row.get("Title", ""))
-    description = str(row.get("Description", ""))
-    outcomes = str(row.get("Outcomes", ""))
-    return f"{title_or_org}. {description} Outcomes: {outcomes}"
+
+def load_chunks(path: str):
+    with open(path) as f:
+        return [json.loads(line) for line in f]
 
 
 def main():
-    df = pd.read_csv(NORMALISED_CSV_PATH)
-
-    # canonical_tools was saved as a Python list, but CSV round-trips it as a string
-    # like "['openai-api', 'chatgpt']" — ast.literal_eval turns it back into a real list.
-    df["canonical_tools"] = df["canonical_tools"].apply(ast.literal_eval)
+    chunks = load_chunks(CHUNKS_PATH)
 
     client = chromadb.PersistentClient(path=CHROMA_PATH)
     # get_or_create_collection: safe to re-run this script without erroring on a duplicate.
-    collection = client.get_or_create_collection(COLLECTION_NAME)
+    # embedding_function must be passed consistently every time this collection is opened.
+    collection = client.get_or_create_collection(COLLECTION_NAME, embedding_function=embedding_fn)
 
     documents, metadatas, ids = [], [], []
-    for i, row in df.iterrows():
-        documents.append(build_document_text(row))
+    for i, chunk in enumerate(chunks):
+        documents.append(chunk["text"])
+        meta = chunk["metadata"]
         metadatas.append({
-            "canonical_tools": ",".join(row["canonical_tools"]),  # Chroma metadata must be simple types
-            "industry": str(row.get("Industry", "")),
-            "source_url": str(row.get("Source URL", "")),
+            "case_id": str(meta["case_id"]),
+            "organization": str(meta["organization"]),
+            "title": str(meta["title"]),
+            "industry": str(meta["industry"]),
+            "domain": str(meta["domain"]),
+            "canonical_tools": ",".join(meta["tools"]),  # Chroma metadata must be simple types
+            "source_url": str(meta["source_url"]),
+            "chunk_type": meta["chunk_type"],
         })
-        ids.append(f"case-{i}")
+        ids.append(f"chunk-{i}")
 
-    # Chroma embeds `documents` automatically using its default local model.
     # add() will error on duplicate ids if you re-run — for a clean re-run, delete
     # the ./chroma_store folder first, or switch to collection.upsert(...) instead.
     collection.add(documents=documents, metadatas=metadatas, ids=ids)
 
-    print(f"Embedded {collection.count()} cases into Chroma at {CHROMA_PATH}")
+    print(f"Embedded {collection.count()} chunks into Chroma at {CHROMA_PATH}")
 
     # --- Sanity-check retrieval quality with a test query ---
     test_query = "customer service chatbot for an e-commerce company"
-    results = collection.query(query_texts=[test_query], n_results=3)
-    print(f"\nTop 3 matches for: '{test_query}'")
+    results = collection.query(query_texts=[test_query], n_results=5)
+    print(f"\nTop 5 matches for: '{test_query}'")
     for doc, meta in zip(results["documents"][0], results["metadatas"][0]):
-        print(f"- [{meta['industry']}] tools={meta['canonical_tools']} :: {doc[:120]}...")
+        print(f"- [{meta['chunk_type']}][{meta['industry']}] tools={meta['canonical_tools']} :: {doc[:120]}...")
 
 
 if __name__ == "__main__":
@@ -260,17 +389,67 @@ if __name__ == "__main__":
 python3 scripts/embed_cases.py
 ```
 
-The first run will download a small local embedding model (a few hundred MB) — this only happens once.
+The first run will download the `all-MiniLM-L6-v2` model (a few hundred MB) — this only happens once.
 
 ### How to verify this card is done
-- Terminal prints `Embedded 3023 cases into Chroma...` (or however many rows you have).
-- The "Top 3 matches" printout for the test query is *plausibly relevant* — e.g. querying about "customer service chatbot" returns cases actually about customer service, not random unrelated ones. If the results look random, see the pitfalls below.
+- `data/use_cases_chunks.jsonl` exists with **9,069 lines** (3,023 cases x 3 chunk types) — not 3,023. If you see 3,023, Step 1 didn't run, or you're looking at the wrong file.
+- Terminal prints `Embedded 9069 chunks into Chroma...`.
+- The "Top 5 matches" printout for the test query is *plausibly relevant* — e.g. querying about "customer service chatbot" returns chunks actually about customer service, not random unrelated ones. Expect to sometimes see 2-3 chunks from the *same* `case_id` (different `chunk_type`s) in one result set — that's normal here, and is exactly why Card 2.5 de-duplicates by `case_id` before ranking.
 - A `chroma_store/` folder now exists in your project.
 
 ### Common pitfalls
-- **Re-running the script fails with a "duplicate ID" error.** This is expected — `add()` refuses to insert an id that already exists. Either delete `chroma_store/` before re-running during development (`rm -rf chroma_store`), or switch `collection.add(...)` to `collection.upsert(...)` once you're past initial testing.
-- **Retrieval looks irrelevant.** Check `build_document_text` is actually pulling real description/outcome text, not empty strings — print a couple of `documents[:2]` before calling `collection.add` to eyeball them.
-- **`ast.literal_eval` throws an error.** This means `canonical_tools` wasn't saved as a proper Python-list-looking string in Card 2.1's CSV — open `normalised_cases.csv` in a text editor and check what that column actually looks like.
+- **Re-running `embed_cases.py` fails with a "duplicate ID" error.** This is expected — `add()` refuses to insert an id that already exists. Either delete `chroma_store/` before re-running during development (`rm -rf chroma_store`), or switch `collection.add(...)` to `collection.upsert(...)` once you're past initial testing.
+- **Chunk count is 3,023 instead of 9,069.** Step 1 (`chunk_use_cases.py`) didn't run, or ran against an older `use-cases.csv`. Re-run Step 1 first, then Step 2.
+- **`ast.literal_eval` throws an error in Step 1.** This means `canonical_tools` wasn't saved as a proper Python-list-looking string in Card 2.1's CSV — open `data/use-cases.csv` in a text editor and check what that column actually looks like. Card 2.1 must run before this card.
+- **Retrieval looks irrelevant.** Print a couple of `documents[:2]` before calling `collection.add` in Step 2 to eyeball the actual chunk text being embedded.
+- **Opening the collection later without passing `embedding_function=embedding_fn`** will silently fall back to Chroma's default — usually the same model, but don't rely on that; always pass it explicitly, in every script that opens `COLLECTION_NAME`.
+
+### Optional: visually sanity-check the embedding space
+
+The "Top 3 matches" printout tells you retrieval works for *one* query. A quick visual check can tell you something the printout can't: whether cases naturally cluster by industry/domain in the embedding space, or whether everything is jumbled together (a sign the embeddings aren't capturing meaningful differences). This step is optional, dev-time-only QA — it doesn't ship in the app.
+
+**Concept:** embeddings typically have hundreds of dimensions — far too many to look at directly. **PCA (Principal Component Analysis)** finds the 2 directions that capture the most variation in the data and projects everything onto just those 2, so you can plot it as an ordinary scatter chart. You lose information in the compression, but clusters that are obviously separate in 2D are a good sign; a formless blob is worth investigating before trusting retrieval quality.
+
+```bash
+pip install scikit-learn matplotlib
+```
+
+```python
+"""
+Optional dev-time QA — not part of the shipped app.
+Run after scripts/embed_cases.py has populated ./chroma_store.
+"""
+import chromadb
+import matplotlib.pyplot as plt
+from chromadb.utils import embedding_functions
+from sklearn.decomposition import PCA
+
+embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
+client = chromadb.PersistentClient(path="./chroma_store")
+collection = client.get_collection("atsa_cases", embedding_function=embedding_fn)
+
+# Pull back the stored embeddings + metadata (Chroma keeps both).
+data = collection.get(include=["embeddings", "metadatas"], limit=500)  # sample 500 for a fast, readable plot
+embeddings = data["embeddings"]
+industries = [m["industry"] for m in data["metadatas"]]  # now one of 3 chunk_types per case — fine for a rough visual check
+
+coords_2d = PCA(n_components=2).fit_transform(embeddings)
+
+# Color by industry so real clusters (if any) become visible.
+unique_industries = sorted(set(industries))
+color_map = {industry: i for i, industry in enumerate(unique_industries)}
+colors = [color_map[industry] for industry in industries]
+
+plt.figure(figsize=(10, 7))
+scatter = plt.scatter(coords_2d[:, 0], coords_2d[:, 1], c=colors, cmap="tab20", alpha=0.6, s=15)
+plt.title("Case embeddings, projected to 2D (colored by industry)")
+plt.xlabel("PC1")
+plt.ylabel("PC2")
+plt.savefig("data/embedding_qa_plot.png", dpi=150)
+print("Saved data/embedding_qa_plot.png — open it and look for industry clusters.")
+```
+
+**What to look for:** you don't need clean, textbook-perfect clusters — real text embeddings are messy — but you should see *some* visible grouping by color, not a uniformly-mixed cloud. If it looks completely random, double-check `build_document_text` is actually including meaningful, differentiated text per case before troubleshooting further.
 
 ---
 
@@ -466,7 +645,7 @@ import json; print(json.dumps(result, indent=2))
 **File:** `app/logic/filter.py` · **Depends on:** 2.2 · **Effort:** ~1.0 day
 
 ### Goal in plain language
-If the user says their data is "Regulated" (subject to HIPAA/GDPR/financial rules), some consumer-facing AI tools should never be recommended — regardless of how often they show up in the matched cases. This filter runs as **plain deterministic Python code, before the LLM ever sees anything.** The LLM never decides what's compliant; your code does. After filtering, we also rank the remaining tools by how often they appear across the matched cases — that ranking is what becomes "Block A: Recommended AI stack".
+If the user says their data is "Regulated" (subject to HIPAA/GDPR/financial rules), some consumer-facing AI tools should never be recommended — regardless of how often they show up in the matched cases. This filter runs as **plain deterministic Python code, before the LLM ever sees anything.** The LLM never decides what's compliant; your code does. After filtering, we also rank the remaining tools by how often they appear across the matched cases — that ranking is what becomes "Block A: Recommended AI stack". By the time cases reach this function they've already been de-duplicated to one entry per `case_id` in the pipeline-wiring step below, so this ranking counts distinct real deployments, not chunks.
 
 ### Step-by-step
 
@@ -565,6 +744,8 @@ The LLM's *only* job is to turn already-decided facts (the ranked tools, the cos
 ### Concepts you need first
 - **Prose-only output** means the model writes sentences describing what's already been decided — it does not output the tool list or the price itself as if it chose them.
 - **Few-shot** = showing the model finished examples before asking it to do a new one, as opposed to "zero-shot" (just asking cold).
+- **Temperature** controls randomness: `0` means "always pick the most likely next word" (fully deterministic, same input → same output every time); higher values add randomness for creative variety. Since this step's whole job is faithfully phrasing facts that are already decided — not being creative — `temperature=0` is the right setting, not just "low."
+- **An eval set** is a small, fixed list of representative test inputs you re-run every time you change a prompt, so you can compare "did this change make things better or worse?" on the same cases instead of eyeballing whatever you happen to type that day.
 
 ### Step-by-step
 
@@ -583,6 +764,7 @@ The LLM never selects tools or invents prices — those are computed in
 Cards 2.4/2.5 and simply handed to it as already-decided facts.
 """
 import os
+import time
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -619,7 +801,13 @@ compliance requirements with each vendor directly."""
 
 
 def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: list,
-                      privacy_key: str) -> str:
+                      privacy_key: str) -> dict:
+    """
+    Returns a dict, not a bare string — {"text": ..., "duration_seconds": ...,
+    "prompt_tokens": ..., "completion_tokens": ..., "tokens_per_second": ...}.
+    The extra fields feed Card 3.3's telemetry log once it exists; until then,
+    just use result["text"] wherever you need the summary itself.
+    """
     user_content = (
         f"Ranked tools: {ranked_tools}\n"
         f"Cost forecast: {cost_forecast}\n"
@@ -627,6 +815,7 @@ def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: lis
         f"Privacy posture: {privacy_key}"
     )
 
+    start_time = time.perf_counter()
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -635,9 +824,22 @@ def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: lis
             {"role": "assistant", "content": FEW_SHOT_EXAMPLE_ASSISTANT},
             {"role": "user", "content": user_content},
         ],
-        temperature=0.3,  # low temperature: we want consistent, not creative, output
+        temperature=0,  # fully deterministic: this step phrases facts, it doesn't create
     )
-    return response.choices[0].message.content
+    duration_seconds = round(time.perf_counter() - start_time, 2)
+
+    usage = response.usage  # token counts the API reports back on every response
+    tokens_per_second = (
+        round(usage.completion_tokens / duration_seconds, 1) if duration_seconds > 0 else None
+    )
+
+    return {
+        "text": response.choices[0].message.content,
+        "duration_seconds": duration_seconds,
+        "prompt_tokens": usage.prompt_tokens,
+        "completion_tokens": usage.completion_tokens,
+        "tokens_per_second": tokens_per_second,
+    }
 
 
 def validate_summary_tool_mentions(summary_text: str, allowed_tool_labels: list[str]) -> bool:
@@ -651,29 +853,65 @@ def validate_summary_tool_mentions(summary_text: str, allowed_tool_labels: list[
     return True  # extend this if you observe real drift during testing (see below)
 ```
 
-**3. Test it for real, and check for drift across multiple runs** (the task's own pass/fail criteria: "Output matches the fixed 3-block template without drift across 10 test runs"):
+**3. Build a small eval set and test against it systematically.** The task's pass/fail criteria is "no drift across 10 test runs" — rather than eyeballing 10 identical calls, build a handful of genuinely *different* inputs that stress different paths (a token-only case, a seat-only case, a regulated case, an empty-result case), and re-run the same eval set every time you tweak the prompt. This turns "did my prompt edit help or hurt?" into something you can actually compare, instead of a vague impression.
 
-```bash
-python3 -c "
+```python
+"""
+Prompt eval set — re-run this every time you change SYSTEM_PROMPT or the
+few-shot example, not just once. Save as scripts/eval_prompt.py.
+"""
 from app.logic.prompt import generate_summary
-for i in range(10):
-    text = generate_summary(
-        ranked_tools=['openai-api', 'chatgpt'],
-        cost_forecast={'primary_api': {'monthly_eur': 150.0}, 'assistant': {'monthly_eur': 480.0}},
-        matched_cases=[{'canonical_tools': ['openai-api']}, {'canonical_tools': ['chatgpt']}],
-        privacy_key='standard',
+
+EVAL_CASES = [
+    {
+        "name": "token + seat, standard",
+        "ranked_tools": ["openai-api", "chatgpt"],
+        "cost_forecast": {"primary_api": {"monthly_eur": 150.0}, "assistant": {"monthly_eur": 480.0}},
+        "matched_cases": [{"canonical_tools": ["openai-api"]}, {"canonical_tools": ["chatgpt"]}],
+        "privacy_key": "standard",
+    },
+    {
+        "name": "seat only, regulated",
+        "ranked_tools": ["ms-copilot", "azure-openai"],
+        "cost_forecast": {"primary_api": {"monthly_eur": 187.5}, "assistant": {"monthly_eur": 900.0}},
+        "matched_cases": [{"canonical_tools": ["azure-openai"]}, {"canonical_tools": ["ms-copilot"]}],
+        "privacy_key": "regulated",
+    },
+    {
+        "name": "free/OSS tools only — no cost figures at all",
+        "ranked_tools": ["langchain", "chroma"],
+        "cost_forecast": {"primary_api": None, "assistant": None},
+        "matched_cases": [{"canonical_tools": ["langchain"]}],
+        "privacy_key": "standard",
+    },
+    {
+        "name": "empty result — nothing cleared the filter",
+        "ranked_tools": [],
+        "cost_forecast": {"primary_api": None, "assistant": None},
+        "matched_cases": [],
+        "privacy_key": "regulated",
+    },
+]
+
+for case in EVAL_CASES:
+    result = generate_summary(
+        ranked_tools=case["ranked_tools"], cost_forecast=case["cost_forecast"],
+        matched_cases=case["matched_cases"], privacy_key=case["privacy_key"],
     )
-    print(f'--- Run {i+1} ---')
-    print(text)
+    print(f"--- {case['name']} ({result['duration_seconds']}s, "
+          f"{result['completion_tokens']} completion tokens) ---")
+    print(result["text"])
     print()
-"
 ```
 
-Read all 10 outputs. Check: does every single one stick to plain prose (no bullet points sneaking in), mention only `openai-api`/`chatgpt` (never an invented third tool), and never state a price other than €150 or €480?
+Run it (`python3 scripts/eval_prompt.py`) and read every output, checking: plain prose only (no bullet points), only the tools actually in `ranked_tools` are mentioned, only the prices actually in `cost_forecast` are stated, and — importantly — the two edge cases (free-tools-only, empty-result) produce sensible sentences rather than crashing or inventing numbers to fill the gap. If something drifts, tighten `SYSTEM_PROMPT`, then **re-run the whole eval set again** (not just the one case that failed) to make sure the fix didn't break a case that was previously fine — that regression check is the actual point of having a fixed eval set instead of ad hoc testing.
+
+**Debugging tip:** if an output looks wrong and you can't tell why, print `user_content` (the actual rendered prompt text) right before the API call. Seeing exactly what the model received is usually faster than guessing.
 
 ### How to verify this card is done
-- All 10 test runs above produce prose-only summaries, with no invented tools or prices.
-- If you spot drift (e.g. the model starts adding a bulleted list on some runs), tighten the `SYSTEM_PROMPT` wording and re-run — this is expected, iterative prompt engineering, not a sign something is broken.
+- All 4+ eval-set cases above produce prose-only summaries, with no invented tools or prices, including the two edge cases.
+- `temperature=0` is set explicitly (not left at a default or a "low but nonzero" value) — check this is a step that phrases facts, not one that needs creative variety.
+- If you spot drift, tighten `SYSTEM_PROMPT` and re-run the *entire* eval set, not just the failing case.
 - `OPENAI_API_KEY` is read from `.env`, never hardcoded in `prompt.py`.
 
 ---
@@ -684,22 +922,48 @@ Once all six cards above are done, go back to `app/pipeline.py` (Card 1.4) and r
 
 ```python
 import chromadb
+from chromadb.utils import embedding_functions
 from app.logic.filter import apply_privacy_filter, rank_tools_by_frequency
 from app.logic.cost import estimate_cost
 from app.logic.prompt import generate_summary
 
+# Must match the embedding function named in Card 2.2 Step 2's embed_cases.py —
+# Chroma needs the same embedding function every time this collection is opened.
+_embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name="all-MiniLM-L6-v2"
+)
 _chroma_client = chromadb.PersistentClient(path="./chroma_store")
-_collection = _chroma_client.get_collection("atsa_cases")
+_collection = _chroma_client.get_collection("atsa_cases", embedding_function=_embedding_fn)
 
 
 def run_pipeline(inputs: dict) -> dict:
-    # Step 1: retrieve
+    # Step 1: retrieve.
+    # Card 2.2 stores 3 chunks per case (implementation/outcome/domain), so a
+    # single case can legitimately fill several of the top results. Ask for
+    # more results than we need (15, not 5) so that after de-duplicating down
+    # to unique cases below, we still have a healthy number of distinct cases
+    # to rank tools and pull "social proof" references from.
     query_text = f"{inputs['workflow']} in the {inputs['industry']} industry"
-    results = _collection.query(query_texts=[query_text], n_results=10)
-    matched_cases = [
-        {"canonical_tools": meta["canonical_tools"].split(",") if meta["canonical_tools"] else []}
-        for meta in results["metadatas"][0]
-    ]
+    results = _collection.query(query_texts=[query_text], n_results=15)
+
+    # De-duplicate by case_id: keep only the first (best-ranked) chunk per
+    # case, so one case can't count as 2-3 pieces of evidence in the ranking
+    # below just because it happened to produce multiple matching chunks.
+    seen_case_ids = set()
+    matched_cases = []
+    for meta in results["metadatas"][0]:
+        case_id = meta["case_id"]
+        if case_id in seen_case_ids:
+            continue
+        seen_case_ids.add(case_id)
+        matched_cases.append({
+            "case_id": case_id,
+            "organization": meta["organization"],
+            "title": meta["title"],
+            "industry": meta["industry"],
+            "source_url": meta["source_url"],
+            "canonical_tools": meta["canonical_tools"].split(",") if meta["canonical_tools"] else [],
+        })
 
     # Step 2: privacy filter + rank
     filtered_cases = apply_privacy_filter(matched_cases, inputs["privacy"])
@@ -709,13 +973,20 @@ def run_pipeline(inputs: dict) -> dict:
     cost_forecast = estimate_cost(ranked_tools, inputs["org_size"])
 
     # Step 4: summary
-    summary_text = generate_summary(ranked_tools, cost_forecast, filtered_cases, inputs["privacy"])
+    summary = generate_summary(ranked_tools, cost_forecast, filtered_cases, inputs["privacy"])
 
     return {
         "recommended_stack": ranked_tools,
         "cost_forecast": cost_forecast,
         "matched_cases": filtered_cases,
-        "summary_text": summary_text,
+        "summary_text": summary["text"],
+        # Card 3.3 logs this to telemetry once tracker.py exists — see that card.
+        "llm_metrics": {
+            "duration_seconds": summary["duration_seconds"],
+            "prompt_tokens": summary["prompt_tokens"],
+            "completion_tokens": summary["completion_tokens"],
+            "tokens_per_second": summary["tokens_per_second"],
+        },
     }
 ```
 
@@ -731,12 +1002,13 @@ print(json.dumps(result, indent=2))
 ```
 
 ## Epic 2 — Done Checklist
-- [ ] `data/normalised_cases.csv` exists, coverage ≥ 90%.
-- [ ] `chroma_store/` exists and returns plausible results for a test query.
+- [ ] `data/use-cases.csv` has `Use Case Domain (Canonical)` and `canonical_tools` columns added in place, coverage ≥ 90%; `validate_use_cases.py` exits 0.
+- [ ] `data/use_cases_chunks.jsonl` exists with 9,069 lines (3,023 cases x 3 chunk types).
+- [ ] `chroma_store/` exists and returns plausible results for a test query, using the explicitly-named `all-MiniLM-L6-v2` embedding function.
 - [ ] Every canonical tool id has a pricing entry.
 - [ ] `estimate_cost` returns separate primary-API and assistant figures, never a sum of everything.
 - [ ] `apply_privacy_filter` demonstrably removes consumer tools under "regulated" on 2–3 hand-checked scenarios.
-- [ ] `generate_summary` stays prose-only and tool/price-accurate across 10 test runs.
-- [ ] `run_pipeline` now returns real data end-to-end, not placeholders.
+- [ ] `generate_summary` stays prose-only and tool/price-accurate across the eval set (including edge cases), and returns a dict with timing/token fields, not a bare string.
+- [ ] `run_pipeline` de-duplicates retrieval results by `case_id` before ranking, and now returns real data end-to-end, not placeholders, including an `llm_metrics` key.
 
 Move on to `14-Build-Guide-Epic3-Blueprint-UI-v1.md` next.

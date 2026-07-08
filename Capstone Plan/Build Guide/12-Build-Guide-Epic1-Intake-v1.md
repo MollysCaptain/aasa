@@ -292,53 +292,42 @@ PRIVACY_POSTURES = {
 }
 ```
 
-**3. Find your dataset's real Industry and Workflow values.**
+**3. Derive your dataset's real Industry and Workflow values.**
 
-You won't have the normalised case data until Card 2.1 is done — that's fine, this is a common real-world ordering problem (UI work often starts before the data pipeline is finished). Do this in two stages:
+This used to require a placeholder-list stopgap because the real column names and a clean categorisation weren't available yet. They are now: the colleague's branch (`stackpunk`/`Gabi`) already normalised the domain data for real — see `19-Gabi-Branch-Integration-Analysis-v1.md` for the full story. Concretely, that means running **Card 2.1's Step 0** first (`scripts/validate_use_cases.py` then `scripts/normalize_domains.py` against `data/use-cases.csv`) — see `13-Build-Guide-Epic2-Retrieval-v1.md` — which adds a `Use Case Domain (Canonical)` column (18 clean values, no near-duplicate spellings) to sit alongside the existing `Use Case Industry` column. There's no need to hand-invent a dropdown list or wait on a placeholder: once Step 0 has run, both dropdowns can be derived directly from the real data, no guessing involved.
 
-**Stage A — right now, unblock yourself with a short placeholder list** so Card 1.1's dropdown isn't showing made-up categories forever. Add this below the code from Step 2:
-
-```python
-# Placeholder until Card 2.1's normalised CSV exists (Stage B below).
-INDUSTRIES_PLACEHOLDER = [
-    "Any industry", "Technology", "Healthcare", "Retail", "Finance",
-    "Education", "Manufacturing", "Hospitality & Travel", "Government",
-]
-WORKFLOWS_PLACEHOLDER = [
-    "Customer Service", "Content Generation", "Coding Assistant",
-    "Data Analysis", "CX & Personalization", "Agent Assist",
-]
-```
-
-**Stage B — once you have the real CSV (after Card 2.1), replace the placeholders** by actually reading the data instead of guessing. Run this **one-off** snippet in Terminal (adjust the column names — see the note below):
+Run this **one-off** snippet in Terminal to pull the real lists:
 
 ```bash
 python3 -c "
 import pandas as pd
-df = pd.read_csv('data/ai_use_cases.csv')  # adjust path to your real file
-print('Columns:', list(df.columns))
+df = pd.read_csv('data/use-cases.csv')
+print('Industries:', sorted(df['Use Case Industry'].dropna().unique()))
 print()
-print('Unique industries:', sorted(df['Industry'].dropna().unique()))
+print('Workflows (canonical domains):', sorted(df['Use Case Domain (Canonical)'].dropna().unique()))
 "
 ```
 
-> **Important — column names will not match exactly.** Every CSV export has slightly different header names (e.g. `Industry` vs `industry` vs `Industry Sector`). The `print('Columns: ...')` line above shows you the real headers in your file. **Always run that line first** and adjust every `df['ColumnName']` reference in this guide to match what you actually see printed.
-
-Copy the printed list of industries into `options.py`, replacing `INDUSTRIES_PLACEHOLDER`:
+Paste the two printed lists into `options.py`, replacing the old placeholder block from Step 2:
 
 ```python
-INDUSTRIES = ["Any industry", "Technology", "Healthcare", ...]  # paste your real, printed list here
+# Derived from the real dataset — see Card 2.1 Step 0 (13-Build-Guide-Epic2-Retrieval-v1.md).
+# Re-run the snippet above and update these two lists if the underlying data ever changes.
+INDUSTRIES = ["Any industry"] + ["Technology", "Healthcare", ...]        # paste your real, printed list here
+WORKFLOWS = ["Any workflow"] + ["Customer Service", "Content Generation", ...]  # paste the 18 canonical domains here
 ```
+
+("Any industry" / "Any workflow" are added by hand as an explicit "no preference" option — they won't appear in the printed list since they're not real data values.)
 
 **4. Wire the new options into Card 1.1.** Open `app/intake.py` and change the import at the top plus the two `selectbox` calls:
 
 ```python
-from app.data.options import ORG_SIZES, PRIVACY_POSTURES, INDUSTRIES_PLACEHOLDER, WORKFLOWS_PLACEHOLDER
+from app.data.options import ORG_SIZES, PRIVACY_POSTURES, INDUSTRIES, WORKFLOWS
 ```
 
 ```python
-workflow = st.selectbox("Target AI Workflow", WORKFLOWS_PLACEHOLDER)
-industry = st.selectbox("Industry", INDUSTRIES_PLACEHOLDER)
+workflow = st.selectbox("Target AI Workflow", WORKFLOWS)
+industry = st.selectbox("Industry", INDUSTRIES)
 org_size_key = st.selectbox(
     "Organisation Size",
     options=list(ORG_SIZES.keys()),
@@ -357,11 +346,12 @@ privacy_key = st.radio(
 ### How to verify this card is done
 - Running `streamlit run app/intake.py` shows the same form, but the dropdown values now come from `options.py`, not hardcoded inline lists.
 - Selecting "Enterprise (1,000+ people)" and submitting shows `org_size_key` as `"ent"` in the debug JSON, not the long label.
-- (After Stage B) `INDUSTRIES` in the dropdown matches the real unique values from your CSV — no invented categories.
+- `INDUSTRIES` and `WORKFLOWS` match the real unique values from `data/use-cases.csv` after Card 2.1 Step 0 has run — no invented categories, and `WORKFLOWS` has exactly 18 real values (+ "Any workflow").
 
 ### Common pitfalls
 - `ModuleNotFoundError: No module named 'app'` → run Streamlit from the project root (`~/atsa-project`), not from inside `app/`. Also create an empty `app/__init__.py` and `app/data/__init__.py` file so Python treats these as importable packages: `touch app/__init__.py app/data/__init__.py`.
-- Column name mismatch (`KeyError: 'Industry'`) → you skipped the "print columns first" step. Go back and print `df.columns`.
+- `KeyError: 'Use Case Domain (Canonical)'` → Card 2.1 Step 0 hasn't been run yet against `data/use-cases.csv`. Run `validate_use_cases.py` then `normalize_domains.py` first (see `13-Build-Guide-Epic2-Retrieval-v1.md`).
+- If you genuinely need to unblock the Card 1.1 UI *before* Card 2.1 Step 0 is done, it's fine to temporarily hardcode a short list in Step 3 and swap in the real `INDUSTRIES`/`WORKFLOWS` once Step 0 has run — just don't ship the hardcoded version.
 
 ---
 
@@ -543,12 +533,24 @@ Update the `else` branch (the valid-form case) from Card 1.3:
                 "org_size": org_size_key, "privacy": privacy_key,
                 "budget": budget,
             })
-        st.success("Blueprint ready — see below.")
-        st.json(result)  # Card 3.1 will replace this raw JSON dump with the real 3-block layout
+        st.session_state.result = result  # persist across reruns — see note below
 ```
+
+Then, **outside and below** the `if submitted:` block entirely (not nested inside it), add:
+
+```python
+# Renders on every rerun as long as a result exists — not gated on `submitted`.
+# See "Why not render inside if submitted:" below for why this matters.
+if "result" in st.session_state:
+    st.success("Blueprint ready — see below.")
+    st.json(st.session_state.result)  # Card 3.1 will replace this raw JSON dump with the real 3-block layout
+```
+
+> **Why not just render inside `if submitted:`?** Streamlit reruns your *entire script* on every single interaction — not just on form submit. Once Epic 3 adds buttons *inside* the results view (the clipboard-export button in Card 3.2, the trust-survey submit button in Card 3.4), clicking either of those triggers a rerun too. On that rerun, `submitted` goes back to `False` (it's only `True` on the run immediately after the form's own submit button was clicked) — so if the blueprint only renders inside `if submitted:`, the *entire blueprint disappears* the instant someone clicks export or answers the survey. Storing the result in `st.session_state` and rendering from there, in a separate check that doesn't depend on `submitted`, means the blueprint stays on screen no matter what else gets clicked inside it. This is the same `st.session_state` pattern used for `st.session_state.tasks` in a typical Streamlit task-board example — state that needs to survive a rerun always goes in `st.session_state`, never in a plain local variable.
 
 ### How to verify this card is done
 - Submitting a valid form shows a brief "Building your blueprint..." spinner (thanks to `time.sleep(1)` — remove that line once Epic 2's real steps are slow enough on their own) followed by the placeholder JSON result.
+- **Add a temporary throwaway button** below the JSON (e.g. `st.button("test rerun")`) and click it. The JSON result should **stay visible** — if it disappears, the result got rendered inside `if submitted:` instead of the separate `if "result" in st.session_state:` check. Delete the throwaway button once this passes.
 - `run_pipeline` is a plain function you can call from a Python shell with no Streamlit running at all — this proves there's no hidden network dependency:
 
 ```bash
@@ -569,6 +571,7 @@ print(run_pipeline({'workflow':'Customer Service','industry':'Technology','org_s
 - [ ] Dropdown options come from `app/data/options.py`, not hardcoded inline lists.
 - [ ] Submitting an incomplete/invalid form shows a clear inline error and does not proceed.
 - [ ] Submitting a valid form shows a loading spinner, then a result — with no network calls involved.
+- [ ] The result is stored in `st.session_state` and rendered outside `if submitted:` — clicking any other button on the page doesn't make it disappear.
 - [ ] All four card files exist: `app/intake.py`, `app/data/options.py`, `app/validators.py`, `app/pipeline.py`.
 
 Move on to `13-Build-Guide-Epic2-Retrieval-v1.md` next — it fills in the real logic behind `run_pipeline`.

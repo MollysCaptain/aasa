@@ -9,12 +9,17 @@
 **Depends on:** Card P.11 · **Owner:** Person A · **Day:** 22 (Week 4)
 
 ### Goal in plain language
-Pull every number that actually matters out of `data/telemetry.log` and your survey responses into one clean, small report — this becomes both your "did the hypothesis hold up" evidence and the raw material for the pitch deck's results slide.
+Pull every number that actually matters out of `data/telemetry.log` and your survey responses into one clean, small report — this becomes both your "did the hypothesis hold up" evidence and the raw material for the pitch deck's results slide. At n=5-8, *how* you report these numbers matters as much as the numbers themselves — this card reports them as a funnel with honest small-sample framing, not as a set of independent percentages that imply more precision than 5-8 people can actually support.
+
+### Concepts you need first
+- **A funnel** reports a sequence of stages (viewed → exported → "would use this") instead of one aggregate number. It shows *where* trust breaks down, not just whether it does — someone who viewed the stack but never exported it tells you something different than someone who exported it but said "no" on the survey.
+- **A credible interval** communicates uncertainty around a percentage. "% said yes" implies false precision at n=5-8 (one person flipping their answer swings it by ~15 percentage points); a credible interval like "60-90% likely, based on 6/8 responses" is the honest version of the same finding.
 
 ### Step-by-step
 
-1. **Re-use the snippets already written in the Epic 3 guide** (`14-Build-Guide-Epic3-Blueprint-UI-v1.md`) for trust-score median and average time-to-results — run them now against your real Week-3 testing data, not test data.
-2. **Compute the two additional metrics** the Handbook's metric table calls for:
+1. **Re-use the snippets already written in the Epic 3 guide** (`14-Build-Guide-Epic3-Blueprint-UI-v1.md`) for trust-score median, average time-to-results, and average LLM latency — run them now against your real Week-3 testing data, not test data.
+
+2. **Compute the funnel** — three stages already logged as separate telemetry events, read together instead of independently:
 
 ```bash
 python3 -c "
@@ -24,19 +29,65 @@ from collections import Counter
 events = [json.loads(line) for line in open('data/telemetry.log')]
 counts = Counter(e['event'] for e in events)
 
-results_shown = counts.get('results_shown', 0)
-export_clicked = counts.get('export_clicked', 0)
-export_rate = 100 * export_clicked / results_shown if results_shown else 0
-print(f'Blueprint export rate: {export_rate:.0f}% ({export_clicked}/{results_shown})')
-
+viewed = counts.get('results_shown', 0)
+exported = counts.get('export_clicked', 0)
 surveys = [e for e in events if e['event'] == 'survey_submitted']
-yes_count = sum(1 for e in surveys if e.get('net_value') == 'Yes')
-net_value_rate = 100 * yes_count / len(surveys) if surveys else 0
-print(f'Net value (\"saved research time\"): {net_value_rate:.0f}% yes ({yes_count}/{len(surveys)})')
+would_use = sum(1 for e in surveys if e.get('net_value') == 'Yes')
+
+print(f'Funnel: {viewed} viewed a blueprint -> {exported} exported it '
+      f'({100*exported/viewed:.0f}% of viewers) -> {would_use} said they\'d use it '
+      f'({100*would_use/len(surveys):.0f}% of survey respondents)' if viewed and surveys else 'Not enough sessions yet.')
 "
 ```
 
-3. **Compute the compliance-rule pass rate** — this one isn't from telemetry, it's from re-running your Card 2.5 privacy filter against every "regulated" test profile you used across Cards P.9–P.11, and checking none of them let a consumer-only tool through:
+3. **Add a credible interval around the "would use this" percentage**, instead of reporting it as a bare number. With a small sample, a **Beta-posterior credible interval** (starting from an uninformative prior, Beta(1,1)) is the standard, honest way to express "here's the plausible range, given how little data we have":
+
+```bash
+pip install scipy
+```
+
+```python
+"""
+Card P.14 — Beta-posterior credible interval for a small-sample yes/no rate.
+Run after real testing: python3 scripts/credible_interval.py
+"""
+from scipy import stats
+
+def credible_interval(successes: int, total: int, credibility: float = 0.90):
+    """
+    Beta(1,1) is a uniform, uninformative prior — we're not assuming anything
+    about the true rate before seeing data. Posterior after observing the
+    data is Beta(1 + successes, 1 + failures); its interval is the honest
+    range for the true rate, appropriately wide at small n.
+    """
+    failures = total - successes
+    lower = stats.beta.ppf((1 - credibility) / 2, 1 + successes, 1 + failures)
+    upper = stats.beta.ppf(1 - (1 - credibility) / 2, 1 + successes, 1 + failures)
+    return lower, upper
+
+# Example: 6 of 8 testers said "yes" to net value.
+successes, total = 6, 8
+point_estimate = successes / total
+lower, upper = credible_interval(successes, total)
+print(f"Net value: {point_estimate:.0%} said yes ({successes}/{total}), "
+      f"90% credible interval: {lower:.0%}-{upper:.0%}")
+```
+
+Report it this way — "6/8 testers (90% credible interval: 36%-88%)" — rather than "75% said yes," which implies a precision the sample can't back up. Do the same for the export rate if you want to state it with the same rigor.
+
+4. **State plainly what this sample size can't support.** Borrow the framing directly: a comparison (e.g. "recommendation format A performed better than B") needs a properly powered study to claim statistically; 5-8 sessions cannot support that kind of claim, only a directional trust/value read. Say so explicitly rather than letting a confident-sounding percentage imply otherwise:
+
+```markdown
+**On sample size:** these results are directional evidence from 5-8 real sessions,
+not a statistically powered study. A claim like "testers trusted this more than
+manual research" would need a proper comparative study (with a control group and
+a pre-calculated required sample size) to state with statistical confidence —
+out of scope for a 2-person, 4-week capstone. What we can honestly claim is that
+these specific testers, using this specific prototype, gave these specific
+(reported with credible intervals) responses.
+```
+
+5. **Compute the compliance-rule pass rate** — this one isn't from telemetry, it's from re-running your Card 2.5 privacy filter against every "regulated" test profile you used across Cards P.9–P.11, and checking none of them let a consumer-only tool through:
 
 ```bash
 python3 -c "
@@ -57,22 +108,26 @@ print(f'Compliance-rule pass rate: {pass_rate}% (violations: {violations or \"no
 "
 ```
 
-4. **Assemble one summary table** — this is the artifact this card actually produces:
+6. **Assemble one summary table** — this is the artifact this card actually produces:
 
 ```markdown
 ## Validation Metrics — Final
 
-| Metric | Target | Actual | Met? |
-|---|---|---|---|
-| Trust score (median) | ≥4/5 | ___ | ___ |
-| Net value (% yes) | ≥70% | ___ | ___ |
-| Blueprint export rate | ≥40% | ___ | ___ |
-| Compliance-rule pass rate | 100% | ___ | ___ |
-| Sample size | 5-8 real testers | ___ | ___ |
+| Metric | Target | Actual | 90% Credible Interval | Met? |
+|---|---|---|---|---|
+| Trust score (median) | ≥4/5 | ___ | — (ordinal, not a rate) | ___ |
+| Net value (% yes) | ≥70% | ___ | ___ – ___ | ___ |
+| Blueprint export rate | ≥40% | ___ | ___ – ___ | ___ |
+| Compliance-rule pass rate | 100% | ___ | — (deterministic, not sampled) | ___ |
+| Avg. LLM latency | — (informational) | ___ s | — | — |
+| Sample size | 5-8 real testers | ___ | *not powered for comparative claims — see note above* | — |
 ```
 
 ### How to verify this card is done
 - Every row in the table above has a real, computed number — not a placeholder or an estimate.
+- The funnel (viewed → exported → would-use) is reported as a sequence, not three independent stats.
+- Both rate-based metrics (net value, export rate) carry a credible interval, not a bare percentage.
+- The write-up includes the explicit "what this sample size can't support" statement.
 - If any target was missed, that's written down plainly (e.g., "trust score 3.5/5, below target") rather than reworded to sound like it passed — this is the same honesty standard the whole reconciled document set is built on.
 
 ---
@@ -127,7 +182,7 @@ Turn every gap you already know about into an honestly-labelled "Known Limitatio
 | Privacy filter is directional, not certified | No governance authority backs the tool classification | Would need legal/compliance review, out of scope for a 2-person capstone |
 | Dataset skews toward enterprise productivity tools | Reflects real-world case frequency in the source library | Document transparently (done — see model card); could diversify sources later |
 | No org-size join to case data | Source dataset has no such field | Would require a different/joined dataset |
-| Small sample validation (5-8 testers) | Realistic for a 2-person, 4-week team | Larger N in a post-capstone iteration |
+| Small sample validation (5-8 testers) | Realistic for a 2-person, 4-week team | Larger N in a post-capstone iteration. Rates are reported with credible intervals (Card P.14), and no comparative ("A beat B") claim is made, since that would require a properly powered study this team size/timeline can't run. |
 ```
 
 ### How to verify this card is done
@@ -178,7 +233,7 @@ Turn the outline's Slide 4 (Architecture) and Slide 6 (Real Test Results) into a
 ### Step-by-step
 
 1. **Slide 4 — Architecture:** take the Mermaid diagram exported back in Card P.5 and add short (3–6 word) captions next to each stage explaining *why* it's built that way, not just what it does — e.g. "Filter before LLM → compliance is deterministic code, not a model guess."
-2. **Slide 6 — Real Test Results:** take the metrics table from Card P.14 and turn it into a simple visual (a small bar per metric against its target line works well, or just a clean table — don't over-design this for a 2-person team's time budget).
+2. **Slide 6 — Real Test Results:** take the metrics table from Card P.14 and turn it into a simple visual (a small bar per metric against its target line works well, or just a clean table — don't over-design this for a 2-person team's time budget). Keep the credible intervals on the slide, not just the point estimates — "6/8 said yes (90% CI: 36-88%)" reads as more credible to a technical audience than a bare "75%," and it pre-empts the obvious "isn't that a really small sample?" question in Q&A.
 3. **Write the dataset stats you'll actually say out loud** — 3,023 cases, 2,511 raw tool-name variants normalised to ~24 canonical tools, ≥90% coverage — pull these from your own Card 2.1 terminal output, not from memory (numbers drift when people misremember them under pitch-day nerves).
 4. **Hand both pieces to Person B** so they land in the deck before Card P.19's checklist.
 
