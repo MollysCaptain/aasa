@@ -1,0 +1,110 @@
+{
+  "_meta": {
+    "canonical_domains": [
+      "Operations & Supply Chain",
+      "Customer Service",
+      "CX & Personalization",
+      "Data & Analytics",
+      "IT & Platform",
+      "Process Automation & RPA",
+      "R&D & Engineering",
+      "Content & Creative",
+      "Legal & Compliance",
+      "Risk & Compliance",
+      "Training & L&D",
+      "Marketing",
+      "Sales",
+      "Security & Cyber",
+      "HR",
+      "Finance",
+      "Facilities & EHS",
+      "Procurement"
+    ],
+    "source": "Built from the 59 raw 'Use Case Domain' values observed in data/use-cases.csv (3,023-row AI use-case library). No upstream domain_mapping.json was available locally, so this mapping was constructed fresh to unblock Card 1.2 Stage B / Card 2.1 Step 0 in 12-Build-Guide-Epic1-Intake-v1.md.",
+    "ambiguous_judgment_calls": [
+      "'Operational Efficiency' -> Operations & Supply Chain (generic efficiency language, no more specific signal in the label).",
+      "'Risk & Compliance' and 'Security & Compliance' -> Risk & Compliance (kept distinct from 'Legal & Compliance', which is reserved for the literal 'Legal & Compliance' label; these two mix risk/security framing rather than legal framing).",
+      "'Process Automation', 'Document Automation / RPA', 'Robotics' -> Process Automation & RPA (grouped as their own canonical domain rather than folded into IT & Platform or R&D & Engineering, since automation-of-work is a distinct workflow theme from either).",
+      "'Employee Assistant' -> HR (assistant tools aimed at employees, not customers, treated as an HR-adjacent workflow).",
+      "All 'Computer Vision*' and 'Smart Cities / Edge AI' / 'Personalization / Edge AI' variants -> split: Computer Vision variants and Smart Cities/Edge AI -> R&D & Engineering (hardware/engineering-flavoured); 'Personalization / Edge AI' -> CX & Personalization (personalization-flavoured) despite sharing the '/ Edge AI' suffix."
+    ]
+  },
+  "mapping": {
+    "Operations & Supply Chain": "Operations & Supply Chain",
+    "Supply Chain": "Operations & Supply Chain",
+    "Operational Efficiency": "Operations & Supply Chain",
+
+    "Customer Service": "Customer Service",
+    "Customer Experience": "Customer Service",
+    "Agent Assist": "Customer Service",
+    "Conversational AI / Virtual Agent": "Customer Service",
+
+    "CX & Personalization": "CX & Personalization",
+    "Personalization": "CX & Personalization",
+    "Personalization / Edge AI": "CX & Personalization",
+
+    "Data & Analytics": "Data & Analytics",
+    "Analytics & Business Intelligence": "Data & Analytics",
+    "Data Analysis": "Data & Analytics",
+    "Data Management": "Data & Analytics",
+    "Decision Support": "Data & Analytics",
+    "Forecasting & Prediction": "Data & Analytics",
+    "Knowledge Extraction / Search": "Data & Analytics",
+    "Knowledge Management": "Data & Analytics",
+    "Speech Analytics / Sentiment Analysis": "Data & Analytics",
+
+    "IT & Platform": "IT & Platform",
+    "IT & Platform Operations": "IT & Platform",
+    "Edge Computing": "IT & Platform",
+    "Document Management": "IT & Platform",
+    "Software Development": "IT & Platform",
+
+    "Process Automation": "Process Automation & RPA",
+    "Document Automation / RPA": "Process Automation & RPA",
+    "Robotics": "Process Automation & RPA",
+
+    "R&D & Engineering": "R&D & Engineering",
+    "Product Development / R&D & Engineering": "R&D & Engineering",
+    "Research & Development": "R&D & Engineering",
+    "Product Design & Development": "R&D & Engineering",
+    "Computer Vision": "R&D & Engineering",
+    "Computer Vision / Edge AI": "R&D & Engineering",
+    "Computer Vision / IoT Edge": "R&D & Engineering",
+    "Smart Cities / Edge AI": "R&D & Engineering",
+    "Predictive Maintenance": "R&D & Engineering",
+    "Quality Assurance": "R&D & Engineering",
+
+    "Content & Creative": "Content & Creative",
+    "Content & Creative / Media": "Content & Creative",
+    "Content Creation": "Content & Creative",
+
+    "Legal & Compliance": "Legal & Compliance",
+
+    "Risk": "Risk & Compliance",
+    "Risk & Compliance": "Risk & Compliance",
+    "Security & Compliance": "Risk & Compliance",
+
+    "Training & L&D": "Training & L&D",
+    "Education & Training": "Training & L&D",
+
+    "Marketing": "Marketing",
+    "Marketing & Advertising": "Marketing",
+
+    "Sales": "Sales",
+
+    "Security & Cyber": "Security & Cyber",
+    "Security & Cyber / Risk Management": "Security & Cyber",
+
+    "HR": "HR",
+    "Human Resources (HR)": "HR",
+    "HR & Recruiting": "HR",
+    "Employee Assistant": "HR",
+
+    "Finance": "Finance",
+    "Finance & Accounting": "Finance",
+
+    "Facilities & EHS": "Facilities & EHS",
+
+    "Procurement": "Procurement"
+  }
+}
