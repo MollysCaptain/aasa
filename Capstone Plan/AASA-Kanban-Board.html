@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ATSA Capstone — Kanban Board</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --col-bg:#1b1e26; --card-bg:#20242e;
+    --border:#2b2f3a; --text:#e8e9ec; --muted:#9aa0ab;
+    --epic1:#3b82f6; --epic2:#22c55e; --epic3:#a855f7; --epic4:#eab308; --epic0:#6b7280;
+    --must:#ef4444; --should:#f59e0b; --could:#38bdf8; --wont:#6b7280;
+    --owner-a:#06b6d4; --owner-b:#f472b6; --owner-j:#a3e635;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--text);
+  }
+  header{
+    padding:20px 24px 12px; border-bottom:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;
+  }
+  header h1{margin:0 0 4px; font-size:20px;}
+  header p{margin:0; color:var(--muted); font-size:13px;}
+  .legend{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .legend span{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);
+  }
+  .dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
+  .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+  .filters{display:flex; gap:6px; padding:10px 24px 0; flex-wrap:wrap;}
+  .filters button{
+    background:var(--panel); color:var(--muted); border:1px solid var(--border);
+    padding:5px 12px; border-radius:999px; font-size:12px; cursor:pointer;
+  }
+  .filters button.active{ color:var(--bg); background:var(--text); border-color:var(--text); font-weight:600; }
+  button{
+    background:var(--panel); color:var(--text); border:1px solid var(--border);
+    padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer;
+  }
+  button:hover{background:#22262f;}
+  .board{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+    padding:12px 24px 32px; align-items:start;
+  }
+  .column{
+    background:var(--col-bg); border:1px solid var(--border); border-radius:10px;
+    min-height:70vh; display:flex; flex-direction:column;
+  }
+  .column-head{
+    padding:12px 14px; border-bottom:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:13px; font-weight:600; letter-spacing:.02em;
+  }
+  .count{
+    background:var(--panel); color:var(--muted); font-size:11px; padding:2px 8px;
+    border-radius:999px; font-weight:500;
+  }
+  .cards{padding:10px; flex:1; display:flex; flex-direction:column; gap:8px; min-height:120px;}
+  .cards.dragover{background:#1f2733; outline:2px dashed #3b4252; outline-offset:-6px;}
+  .card{
+    background:var(--card-bg); border:1px solid var(--border); border-left:4px solid var(--epic0);
+    border-radius:8px; padding:10px 12px; cursor:grab; font-size:13px;
+  }
+  .card.hidden{display:none;}
+  .card.dragging{opacity:.4;}
+  .card.epic1{border-left-color:var(--epic1);}
+  .card.epic2{border-left-color:var(--epic2);}
+  .card.epic3{border-left-color:var(--epic3);}
+  .card.epic4{border-left-color:var(--epic4);}
+  .card.epic0{border-left-color:var(--epic0);}
+  .card-top{display:flex; justify-content:space-between; align-items:baseline; gap:6px;}
+  .card-id{font-size:11px; color:var(--muted); font-weight:600;}
+  .card-title{font-weight:600; margin:3px 0 4px; line-height:1.3;}
+  .card-meta{display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;}
+  .chip{
+    font-size:10.5px; padding:2px 7px; border-radius:5px; background:var(--panel); color:var(--muted);
+    border:1px solid var(--border);
+  }
+  .chip.prio-must{color:#fff; background:var(--must); border-color:var(--must);}
+  .chip.prio-should{color:#1a1200; background:var(--should); border-color:var(--should);}
+  .chip.prio-could{color:#00212b; background:var(--could); border-color:var(--could);}
+  .chip.prio-wont{color:#fff; background:var(--wont); border-color:var(--wont);}
+  .chip.owner-A{color:#00232b; background:var(--owner-a); border-color:var(--owner-a);}
+  .chip.owner-B{color:#3a0621; background:var(--owner-b); border-color:var(--owner-b);}
+  .chip.owner-Joint{color:#132600; background:var(--owner-j); border-color:var(--owner-j);}
+  .chip.day{font-weight:600;}
+  .card-file{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; color:var(--muted); margin-top:4px;}
+  footer{padding:10px 24px 24px; color:var(--muted); font-size:12px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>ATSA — AI Stack Architect Capstone Board</h1>
+    <p>Drag cards between columns. Filter by owner or week. State saves automatically in this browser.</p>
+  </div>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--epic1)"></span>Epic 1 — Intake</span>
+    <span><span class="dot" style="background:var(--epic2)"></span>Epic 2 — Retrieval &amp; Costing</span>
+    <span><span class="dot" style="background:var(--epic3)"></span>Epic 3 — Blueprint UI</span>
+    <span><span class="dot" style="background:var(--epic4)"></span>PM, Ethics &amp; Pitch</span>
+    <span><span class="dot" style="background:var(--epic0)"></span>Icebox</span>
+  </div>
+  <div class="toolbar">
+    <button id="resetBtn">Reset board</button>
+  </div>
+</header>
+
+<div class="filters" id="ownerFilters">
+  <button data-owner="all" class="active">All owners</button>
+  <button data-owner="A">Person A</button>
+  <button data-owner="B">Person B</button>
+  <button data-owner="Joint">Joint</button>
+</div>
+<div class="filters" id="weekFilters">
+  <button data-week="all" class="active">All weeks</button>
+  <button data-week="1">Week 1</button>
+  <button data-week="2">Week 2</button>
+  <button data-week="3">Week 3</button>
+  <button data-week="4">Week 4</button>
+</div>
+
+<div class="board" id="board"></div>
+
+<footer>Source: 07-Roadmap, 08-Technical-Work-Breakdown, 09-Effort-Informed-Prioritisation, 10-User-Stories-and-Task-Mapping, 11-4-Week-Action-Plan (v2/v1 docs, ash_capstone_branch1). Day/Week/Owner fields are pulled directly from 11-4-Week-Action-Plan-v1.md.</footer>
+
+<script>
+const COLUMNS = [
+  { id: "todo", name: "To Do" },
+  { id: "inprogress", name: "In Progress" },
+  { id: "done", name: "Done" },
+  { id: "icebox", name: "Icebox (Could / Won't Have)" },
+];
+
+// day/week/owner fields sourced from 11-4-Week-Action-Plan-v1.md
+const CARDS = [
+  // Epic 1 — Intelligent Intake & Profile Contextualisation
+  { id:"1.1", epic:1, title:"Render input controls & dark-mode CSS grid", file:"app/intake.py", effort:"0.5d", depends:"None", prio:"must", owner:"B", week:1, day:5, col:"todo" },
+  { id:"1.2", epic:1, title:"Map Org Size / Industry to dropdowns", file:"app/data/options.py", effort:"0.5d", depends:"1.1", prio:"must", owner:"B", week:1, day:4, col:"todo" },
+  { id:"1.3", epic:1, title:"Frontend validation, block bad submissions", file:"app/validators.py", effort:"0.5d", depends:"1.2", prio:"must", owner:"B", week:2, day:8, col:"todo" },
+  { id:"1.4", epic:1, title:"Direct pipeline call (in-process, no webhook)", file:"app/pipeline.py", effort:"0.5d", depends:"1.3", prio:"must", owner:"B", week:2, day:9, col:"todo" },
+
+  // Epic 2 — Retrieval & Costing Engine
+  { id:"2.1", epic:2, title:"Validate + normalise domains, then build tool-alias map", file:"validate_use_cases.py, normalize_domains.py (Gabi branch, done) + scripts/normalise_cases.py (alias map, still to build)", effort:"1.0d", depends:"None", prio:"must", owner:"A", week:1, day:6, col:"inprogress" },
+  { id:"2.2", epic:2, title:"Chunk cases (3/case) & embed into Chroma vector store", file:"chunk_use_cases.py (Gabi branch, chunks generated) + scripts/embed_cases.py (Chroma ingestion, still to run)", effort:"1.0d", depends:"2.1", prio:"must", owner:"A", week:2, day:8, col:"inprogress" },
+  { id:"2.3", epic:2, title:"Hardcode 24-tool pricing table", file:"app/logic/pricing.py", effort:"0.5d", depends:"None", prio:"should", owner:"A", week:1, day:5, col:"todo" },
+  { id:"2.4", epic:2, title:"Token/seat-aware cost computation", file:"app/logic/cost.py", effort:"0.5d", depends:"2.3", prio:"should", owner:"A", week:2, day:12, col:"todo" },
+  { id:"2.5", epic:2, title:"Deterministic privacy filter", file:"app/logic/filter.py", effort:"1.0d", depends:"2.2", prio:"must", owner:"A", week:2, day:10, col:"todo" },
+  { id:"2.6", epic:2, title:"Few-shot summary prompt (prose-only output)", file:"app/logic/prompt.py", effort:"1.0d", depends:"2.5", prio:"must", owner:"A", week:2, day:13, col:"todo" },
+
+  // Epic 3 — Actionable Blueprint UI
+  { id:"3.1", epic:3, title:"Render 3-block layout: Stack / Cost / Case Refs", file:"app/dashboard.py", effort:"1.0d", depends:"2.6", prio:"should", owner:"B", week:3, day:15, col:"todo" },
+  { id:"3.2", epic:3, title:"Clipboard export handler", file:"app/export.py", effort:"0.5d", depends:"3.1", prio:"should", owner:"B", week:3, day:18, col:"todo" },
+  { id:"3.3", epic:3, title:"Session telemetry (form-start → results-view)", file:"app/analytics/tracker.py", effort:"0.5d", depends:"1.4", prio:"should", owner:"B", week:3, day:19, col:"todo" },
+  { id:"3.4", epic:3, title:"Post-generation trust survey (1–5 rating)", file:"app/survey_modal.py", effort:"0.5d", depends:"3.1", prio:"should", owner:"B", week:3, day:18, col:"todo" },
+
+  // PM, Ethics, Testing & Pitch — from the day-by-day action plan
+  { id:"P.1", epic:4, title:"Draft & sign off the Project Charter", file:"—", effort:"—", depends:"None", prio:"must", owner:"Joint", week:1, day:2, col:"todo" },
+  { id:"P.2", epic:4, title:"Recruit 5–8 real test users (ongoing)", file:"—", effort:"—", depends:"None", prio:"must", owner:"B", week:1, day:1, col:"todo" },
+  { id:"P.3", epic:4, title:"Define 5-field intake / 3-block output schema", file:"—", effort:"—", depends:"P.1", prio:"must", owner:"Joint", week:1, day:3, col:"todo" },
+  { id:"P.4", epic:4, title:"Ethics: data-minimisation confirmation (no PII)", file:"—", effort:"—", depends:"None", prio:"must", owner:"A", week:1, day:7, col:"todo" },
+  { id:"P.5", epic:4, title:"Diagram full pipeline (Mermaid)", file:"—", effort:"—", depends:"2.1", prio:"should", owner:"Joint", week:2, day:9, col:"todo" },
+  { id:"P.6", epic:4, title:"Concept-test prototype with 2–3 users", file:"atsa-prototype.html", effort:"—", depends:"P.2", prio:"should", owner:"B", week:2, day:10, col:"todo" },
+  { id:"P.7", epic:4, title:"Debrief concept test; patch UX", file:"—", effort:"—", depends:"P.6", prio:"should", owner:"B", week:2, day:11, col:"todo" },
+  { id:"P.8", epic:4, title:"Ethics: bias & dataset-skew model card", file:"—", effort:"—", depends:"None", prio:"must", owner:"A", week:2, day:13, col:"todo" },
+  { id:"P.9", epic:4, title:"Full backend dry run (3 sample profiles)", file:"—", effort:"—", depends:"2.6", prio:"must", owner:"Joint", week:2, day:14, col:"todo" },
+  { id:"P.10", epic:4, title:"End-to-end smoke test & integration fixes", file:"—", effort:"—", depends:"P.9", prio:"must", owner:"Joint", week:3, day:17, col:"todo" },
+  { id:"P.11", epic:4, title:"Real user testing (5–8 testers)", file:"—", effort:"—", depends:"P.10", prio:"must", owner:"Joint", week:3, day:20, col:"todo" },
+  { id:"P.12", epic:4, title:"Patch bugs/prompts/rules from testing", file:"—", effort:"—", depends:"P.11", prio:"must", owner:"Joint", week:3, day:21, col:"todo" },
+  { id:"P.13", epic:4, title:"Ethics: inclusion & clarity check", file:"—", effort:"—", depends:"P.11", prio:"must", owner:"B", week:3, day:21, col:"todo" },
+  { id:"P.14", epic:4, title:"Compile final metrics from telemetry", file:"—", effort:"—", depends:"P.11", prio:"must", owner:"A", week:4, day:22, col:"todo" },
+  { id:"P.15", epic:4, title:"Freeze feature scope", file:"—", effort:"—", depends:"P.12", prio:"must", owner:"B", week:4, day:22, col:"todo" },
+  { id:"P.16", epic:4, title:"Write up known limitations (roadmap items)", file:"—", effort:"—", depends:"P.14", prio:"must", owner:"Joint", week:4, day:23, col:"todo" },
+  { id:"P.17", epic:4, title:"Draft 10-slide pitch outline", file:"—", effort:"—", depends:"P.16", prio:"must", owner:"B", week:4, day:24, col:"todo" },
+  { id:"P.18", epic:4, title:"Prepare architecture & results slide content", file:"—", effort:"—", depends:"P.14", prio:"must", owner:"A", week:4, day:24, col:"todo" },
+  { id:"P.19", epic:4, title:"Ethics: final responsible-AI checklist", file:"—", effort:"—", depends:"P.17", prio:"must", owner:"Joint", week:4, day:26, col:"todo" },
+  { id:"P.20", epic:4, title:"Pitch rehearsal", file:"—", effort:"—", depends:"P.19", prio:"must", owner:"Joint", week:4, day:27, col:"todo" },
+  { id:"P.21", epic:4, title:"Final consistency pass & submit", file:"—", effort:"—", depends:"P.20", prio:"must", owner:"Joint", week:4, day:28, col:"todo" },
+
+  // Backlog / Icebox — out of MVP scope
+  { id:"B.1", epic:0, title:"Plain-language cost export (1-pager for boards)", file:"—", effort:"1d", depends:"3.2", prio:"could", owner:"B", week:0, day:0, col:"icebox" },
+  { id:"B.2", epic:0, title:"One-click code boilerplate generator", file:"—", effort:"2d", depends:"3.1", prio:"could", owner:"A", week:0, day:0, col:"icebox" },
+  { id:"B.3", epic:0, title:"Live / continuous pricing scraping", file:"—", effort:"4d+", depends:"2.3", prio:"wont", owner:"A", week:0, day:0, col:"icebox" },
+  { id:"B.4", epic:0, title:"Mainstream Validation Overlay (SO survey benchmarks)", file:"data/technology_landscape.csv (Gabi branch, ready to reuse)", effort:"2d", depends:"3.1", prio:"could", owner:"A", week:0, day:0, col:"icebox" },
+];
+
+const STORAGE_KEY = "atsa-kanban-state-v2";
+const board = document.getElementById("board");
+let ownerFilter = "all";
+let weekFilter = "all";
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){ return null; }
+}
+function saveState(){
+  const state = {};
+  document.querySelectorAll(".card").forEach(c=>{
+    state[c.dataset.id] = c.closest(".cards").dataset.col;
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function prioLabel(p){
+  return {must:"Must Have", should:"Should Have", could:"Could Have", wont:"Won't Have"}[p] || p;
+}
+function ownerLabel(o){
+  return {A:"Person A", B:"Person B", Joint:"Joint"}[o] || o;
+}
+
+function makeCard(card){
+  const el = document.createElement("div");
+  el.className = `card epic${card.epic}`;
+  el.draggable = true;
+  el.dataset.id = card.id;
+  el.dataset.owner = card.owner;
+  el.dataset.week = card.week;
+  const dayBadge = card.week > 0 ? `<span class="chip day">Wk${card.week} · Day ${card.day}</span>` : `<span class="chip day">Roadmap</span>`;
+  el.innerHTML = `
+    <div class="card-top">
+      <span class="card-id">${card.id}</span>
+      <span class="chip prio-${card.prio}">${prioLabel(card.prio)}</span>
+    </div>
+    <div class="card-title">${card.title}</div>
+    ${card.file !== "—" ? `<div class="card-file">${card.file}</div>` : ``}
+    <div class="card-meta">
+      ${dayBadge}
+      <span class="chip owner-${card.owner}">${ownerLabel(card.owner)}</span>
+      ${card.effort !== "—" ? `<span class="chip">⏱ ${card.effort}</span>` : ``}
+      <span class="chip">⛓ ${card.depends}</span>
+    </div>
+  `;
+  el.addEventListener("dragstart", ()=>{ el.classList.add("dragging"); });
+  el.addEventListener("dragend", ()=>{ el.classList.remove("dragging"); saveState(); applyFilters(); });
+  return el;
+}
+
+function applyFilters(){
+  document.querySelectorAll(".card").forEach(c=>{
+    const ownerOk = ownerFilter === "all" || c.dataset.owner === ownerFilter;
+    const weekOk = weekFilter === "all" || c.dataset.week === weekFilter;
+    c.classList.toggle("hidden", !(ownerOk && weekOk));
+  });
+  updateCounts();
+}
+
+function updateCounts(){
+  COLUMNS.forEach(col=>{
+    const list = document.querySelector(`.cards[data-col="${col.id}"]`);
+    const countEl = document.querySelector(`.count[data-for="${col.id}"]`);
+    if(list && countEl){
+      const visible = [...list.children].filter(c=>!c.classList.contains("hidden")).length;
+      countEl.textContent = visible;
+    }
+  });
+}
+
+function render(){
+  board.innerHTML = "";
+  const state = loadState();
+
+  COLUMNS.forEach(col=>{
+    const colEl = document.createElement("div");
+    colEl.className = "column";
+    colEl.innerHTML = `
+      <div class="column-head">
+        <span>${col.name}</span>
+        <span class="count" data-for="${col.id}">0</span>
+      </div>
+      <div class="cards" data-col="${col.id}"></div>
+    `;
+    board.appendChild(colEl);
+  });
+
+  CARDS.forEach(card=>{
+    const targetCol = (state && state[card.id]) ? state[card.id] : card.col;
+    const list = document.querySelector(`.cards[data-col="${targetCol}"]`) ||
+                 document.querySelector(`.cards[data-col="${card.col}"]`);
+    list.appendChild(makeCard(card));
+  });
+
+  document.querySelectorAll(".cards").forEach(list=>{
+    list.addEventListener("dragover", e=>{
+      e.preventDefault();
+      list.classList.add("dragover");
+      const dragging = document.querySelector(".dragging");
+      const after = [...list.children].find(c => e.clientY <= c.getBoundingClientRect().top + c.getBoundingClientRect().height/2);
+      if(after) list.insertBefore(dragging, after);
+      else list.appendChild(dragging);
+    });
+    list.addEventListener("dragleave", ()=> list.classList.remove("dragover"));
+    list.addEventListener("drop", e=>{
+      e.preventDefault();
+      list.classList.remove("dragover");
+      saveState();
+      applyFilters();
+    });
+  });
+
+  applyFilters();
+}
+
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  localStorage.removeItem(STORAGE_KEY);
+  render();
+});
+
+document.getElementById("ownerFilters").addEventListener("click", e=>{
+  const btn = e.target.closest("button");
+  if(!btn) return;
+  ownerFilter = btn.dataset.owner;
+  document.querySelectorAll("#ownerFilters button").forEach(b=>b.classList.toggle("active", b===btn));
+  applyFilters();
+});
+document.getElementById("weekFilters").addEventListener("click", e=>{
+  const btn = e.target.closest("button");
+  if(!btn) return;
+  weekFilter = btn.dataset.week;
+  document.querySelectorAll("#weekFilters button").forEach(b=>b.classList.toggle("active", b===btn));
+  applyFilters();
+});
+
+render();
+</script>
+</body>
+</html>
