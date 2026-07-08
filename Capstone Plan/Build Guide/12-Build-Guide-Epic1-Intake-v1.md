@@ -567,11 +567,11 @@ print(run_pipeline({'workflow':'Customer Service','industry':'Technology','org_s
 ---
 
 ## Epic 1 — Done Checklist
-- [ ] `streamlit run app/intake.py` renders a dark 5-field form with no errors.
-- [ ] Dropdown options come from `app/data/options.py`, not hardcoded inline lists.
-- [ ] Submitting an incomplete/invalid form shows a clear inline error and does not proceed.
-- [ ] Submitting a valid form shows a loading spinner, then a result — with no network calls involved.
-- [ ] The result is stored in `st.session_state` and rendered outside `if submitted:` — clicking any other button on the page doesn't make it disappear.
-- [ ] All four card files exist: `app/intake.py`, `app/data/options.py`, `app/validators.py`, `app/pipeline.py`.
+- [X] `streamlit run app/intake.py` renders a dark 5-field form with no errors.
+- [X] Dropdown options come from `app/data/options.py`, not hardcoded inline lists.
+- [X] Submitting an incomplete/invalid form shows a clear inline error and does not proceed.
+- [X] Submitting a valid form shows a loading spinner, then a result — with no network calls involved.
+- [X] The result is stored in `st.session_state` and rendered outside `if submitted:` — clicking any other button on the page doesn't make it disappear.
+- [X] All four card files exist: `app/intake.py`, `app/data/options.py`, `app/validators.py`, `app/pipeline.py`.
 
 Move on to `13-Build-Guide-Epic2-Retrieval-v1.md` next — it fills in the real logic behind `run_pipeline`.
