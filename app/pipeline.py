@@ -19,7 +19,7 @@ _embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
     model_name="all-MiniLM-L6-v2"
 )
 _chroma_client = chromadb.PersistentClient(path="./chroma_store")
-_collection = _chroma_client.get_collection("atsa_cases", embedding_function=_embedding_fn)
+_collection = _chroma_client.get_collection("aasa_cases", embedding_function=_embedding_fn)
 
 
 def _to_label(canonical_id: str) -> str:

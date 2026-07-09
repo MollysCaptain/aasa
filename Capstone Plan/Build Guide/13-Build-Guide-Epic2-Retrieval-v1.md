@@ -903,7 +903,7 @@ def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: lis
 
     start_time = time.perf_counter()
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",  # Groq-hosted model, swapped in for OpenAI's gpt-4o-mini
+        model=MODEL,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": FEW_SHOT_EXAMPLE_USER},
@@ -1125,5 +1125,7 @@ print(json.dumps(result, indent=2))
 - [x] `run_pipeline` sends `generate_summary` label-ified tool names (via `_to_label`/`PRICING`), not raw canonical ids — `recommended_stack`/`cost_forecast` in the return value stay keyed by canonical id.
 
 **Verified via full backend dry run** on two real profiles (Technology/standard/startup and Healthcare/regulated/smb): confirmed real Chroma retrieval, correct case_id de-duplication, the privacy filter correctly distinguishing `gemini` (stripped under "regulated") from governable ids, `assistant` correctly returning `null` when no seat-priced tool clears the filter, and the LLM summary using human-readable labels end to end.
+
+> **Real deviation, found after merging Gabi's branch into Ash — a merge-introduced collection-name mismatch, not a bug in either branch alone.** Gabi wrote `app/pipeline.py` (and `scripts/embedding_qa_plot.py`) on a branch where `scripts/embed_cases.py`'s `COLLECTION_NAME` was still the pre-rename `"atsa_cases"` — so on her branch, everything matched and her dry run above genuinely passed. Separately, the Ash branch had already renamed the project (ATSA → AASA), including that same constant, to `"aasa_cases"`. Merging the two kept Ash's renamed `embed_cases.py` alongside Gabi's new `pipeline.py`/`embedding_qa_plot.py`, which still hardcoded the old name — a silent mismatch git's merge can't detect, since the two files don't textually overlap. Net effect: after the merge, `embed_cases.py` writes to `aasa_cases` but `pipeline.py` and `embedding_qa_plot.py` read from `atsa_cases`, which would fail at runtime with a "collection does not exist" error despite both branches' own tests having passed independently. Fixed by aligning both files to `"aasa_cases"` (matching this guide's own code samples above, which were already correct). **Lesson for future merges:** a clean git merge (no conflict markers) doesn't mean the result is *behaviorally* correct — cross-file string/constant references like a shared collection name aren't something git's merge algorithm can verify, so re-run the full dry run above after every merge that touches `app/` or `scripts/`, not just after a rebase/conflict.
 
 Move on to `14-Build-Guide-Epic3-Blueprint-UI-v1.md` next.

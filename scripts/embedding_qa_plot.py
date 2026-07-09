@@ -13,7 +13,7 @@ from sklearn.decomposition import PCA
 
 embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
 client = chromadb.PersistentClient(path="./chroma_store")
-collection = client.get_collection("atsa_cases", embedding_function=embedding_fn)
+collection = client.get_collection("aasa_cases", embedding_function=embedding_fn)
 
 # Pull back the stored embeddings + metadata (Chroma keeps both).
 data = collection.get(include=["embeddings", "metadatas"], limit=500)  # sample 500 for a fast, readable plot
