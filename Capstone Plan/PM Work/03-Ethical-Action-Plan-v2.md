@@ -6,6 +6,16 @@
 - **Action:** No accounts, no PII fields, no stored user inputs beyond the current session. The intake form only ever collects the 5 anonymous constraints (workflow, industry, org size, privacy posture, budget).
 - **Milestone:** Baseline data policy drafted and reflected in-app (a one-line "we don't store your inputs" note).
 
+### Week 1 Ethics Checkpoint — Data Minimisation (Card P.4)
+**Date:** 2026-07-09  **Owner:** Person A (Student A / Gabi)
+
+- [x] **No PII collected in any of the 5 intake fields.** All 5 are `st.selectbox`/`st.radio`/`st.number_input` widgets — `workflow`, `industry`, `org_size`, `privacy` (all closed dropdown/radio option lists) and `budget` (a plain number). There is no `st.text_input` or other free-text widget anywhere in `app/intake.py`. None of the 5 values, individually or combined, identify a specific person.
+- [x] **Telemetry log (`data/telemetry.log`) contains only event names, timestamps, and numeric/enum values — no free text.** Verified against the Card 3.3 spec (`14-Build-Guide-Epic3-Blueprint-UI-v1.md`): `log_event()` writes `{"event": <fixed name>, "timestamp": <float>, **fields}`, and every call site passes only numbers or closed-set strings — `elapsed_seconds`, `duration_seconds`, `prompt_tokens`/`completion_tokens`/`tokens_per_second`, `trust_score` (1–5 int), `net_value` ("Yes"/"No"). **Caveat:** `app/analytics/tracker.py` doesn't exist in the repo yet — Card 3.3 hasn't been built — so this is a design-time commitment against the spec, not a runtime audit of running code. Re-verify this line once Card 3.3 actually lands, in case the real implementation drifts from the spec (e.g. someone adds a free-text "any other feedback?" box to the trust survey later).
+- [x] **No account creation, login, or persistent user identifier.** Confirmed by scanning `app/` for `login`, `password`, `email`, `cookie`, `user_id`, and any persistent-identifier pattern — no matches. The only state is Streamlit's own `st.session_state`, which lives in memory for one browser session and isn't tied to an identity or persisted across visits.
+- [x] **No third-party analytics service receiving user data.** `requirements.txt` lists only `pandas`, `streamlit`, `chromadb`, `sentence-transformers` — no Mixpanel/Segment/Amplitude/PostHog/Sentry/etc. Confirmed by scanning `app/` and `scripts/` for those names and for generic analytics-SDK patterns — no matches. Telemetry is a local JSON-lines file by design (Card 3.3's own stated reasoning), not a third-party pipeline.
+
+**Confirmed by:** Ash — audited directly against the actual codebase (`app/intake.py`, `app/validators.py`, `requirements.txt`, and the Card 3.3/3.4 specs in `14-Build-Guide-Epic3-Blueprint-UI-v1.md`), not filled in from memory. Since Person A (Gabi) is this card's assigned owner, she should sanity-check this against her own knowledge of what she's built, especially the Card 3.3 caveat above once that card is actually implemented.
+
 ## Week 2: Bias Mitigation & Model Card — *Owner: Student A*
 **Focus:** Technical objectivity
 - **Action:** Audit that tool ranking is driven purely by real-case frequency, not by our own preferences. Draft a short model card that documents the dataset's known skew toward enterprise productivity AI (Gemini/Workspace, Copilot) rather than hiding it.
