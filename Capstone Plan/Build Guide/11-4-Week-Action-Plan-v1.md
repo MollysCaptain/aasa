@@ -1,5 +1,5 @@
 # 4-Week Day-by-Day Action Plan (v1)
-### AI Stack Architect (ATSA)
+### AI-Assisted Stack Architect (AASA)
 *Built from the reconciled Handbook v2 (§7, §10), Proposal & Scope v2 (Weeks 1-4), and the User Story/Task Mapping v2 (task IDs, files, dependencies). Where docs' effort estimates differ, this plan follows the Handbook's pacing (single source of truth) while keeping doc-10's task IDs for traceability.*
 
 **Team:** Person A — Data & Logic · Person B — UI, Validation & PM Lead. Both share testing, ethics checkpoints, and the pitch.
@@ -27,7 +27,7 @@
 |---|---|---|---|
 | 8 | **Task 2.2** — embed normalised cases into Chroma (`scripts/embed_cases.py`); sanity-check retrieval on sample queries. | **Task 1.3** — frontend validation logic (`app/validators.py`). | — |
 | 9 | Tune chunking/retrieval quality; confirm cases returned match domain of test queries. | **Task 1.4** — direct in-process pipeline call (`app/pipeline.py`), wiring form submit to A's backend contract. | Diagram the full pipeline (input → filter → retrieve → cost → LLM) in Mermaid. |
-| 10 | **Task 2.5** — write the deterministic privacy-filter rule matrix (e.g. `IF privacy == 'regulated' THEN restrict to governable platforms`) in `app/logic/filter.py`. | Concept-test the honest prototype (`atsa-prototype.html`) with 2–3 early users. | — |
+| 10 | **Task 2.5** — write the deterministic privacy-filter rule matrix (e.g. `IF privacy == 'regulated' THEN restrict to governable platforms`) in `app/logic/filter.py`. | Concept-test the honest prototype (`aasa-prototype.html`) with 2–3 early users. | — |
 | 11 | Unit-test the privacy filter against 2–3 known compliance scenarios. | Debrief concept-test feedback; patch intake copy/UX; continue recruiting for Week 3. | — |
 | 12 | **Task 2.4** — cost computation, token- vs. seat-aware (`app/logic/cost.py`); unit tests on pricing-table units. | Scaffold telemetry event plan (groundwork for Task 3.3). | — |
 | 13 | **Task 2.6** — engineer the few-shot summary prompt (prose-only constraint) in `app/logic/prompt.py`; validate against 10 test runs for template drift. | Ethics support — draft short model card: dataset's enterprise-productivity skew; confirm ranking reflects real frequency, not preference. *(Owner: A, supported by B)* | — |
@@ -65,7 +65,7 @@
 
 ## How this maps back to the source docs
 - **Task IDs & files** (1.1–3.4) come from `10-User-Stories-and-Task-Mapping-v2.md` — check that doc for full acceptance criteria per task.
-- **Week-level pacing** follows `ATSA-Project-Handbook-v2.md` §7 (the reconciled source of truth) and `02-Proposal-and-Scope-v2.md`'s day ranges.
+- **Week-level pacing** follows `AASA-Project-Handbook-v2.md` §7 (the reconciled source of truth) and `02-Proposal-and-Scope-v2.md`'s day ranges.
 - **Ethics checkpoints** (Weeks 1–4, owners A/B/both) come from Handbook §10.
 - **Metrics captured Day 20 & compiled Day 22** come from Handbook §8.
-- Kanban cards for every task in this plan are on the board (`ATSA-Kanban-Board.html`) — move cards to "In Progress"/"Done" as each day's work lands.
+- Kanban cards for every task in this plan are on the board (`AASA-Kanban-Board.html`) — move cards to "In Progress"/"Done" as each day's work lands.

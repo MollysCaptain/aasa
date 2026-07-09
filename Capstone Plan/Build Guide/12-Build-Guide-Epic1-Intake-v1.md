@@ -22,17 +22,17 @@ Do this once, before starting Card 1.1. Everything after this section assumes it
 In Terminal, run these commands one at a time (press Enter after each):
 
 ```bash
-mkdir -p ~/atsa-project/app/data
-mkdir -p ~/atsa-project/app/logic
-mkdir -p ~/atsa-project/app/analytics
-mkdir -p ~/atsa-project/scripts
-cd ~/atsa-project
+mkdir -p ~/aasa-project/app/data
+mkdir -p ~/aasa-project/app/logic
+mkdir -p ~/aasa-project/app/analytics
+mkdir -p ~/aasa-project/scripts
+cd ~/aasa-project
 ```
 
-**What just happened:** `mkdir -p` creates a folder (and any parent folders it needs). `cd` moves your Terminal "into" that folder — every command you type from now on happens inside `~/atsa-project` unless you say otherwise. You now have this structure:
+**What just happened:** `mkdir -p` creates a folder (and any parent folders it needs). `cd` moves your Terminal "into" that folder — every command you type from now on happens inside `~/aasa-project` unless you say otherwise. You now have this structure:
 
 ```
-atsa-project/
+aasa-project/
 ├── app/
 │   ├── intake.py         ← Card 1.1
 │   ├── validators.py     ← Card 1.3
@@ -73,7 +73,7 @@ This installs:
 - **streamlit** — turns a Python script into a web app (used in Epic 1 and 3).
 - **pandas** — reads and manipulates the CSV of AI deployment cases (Epic 2).
 - **chromadb** — the local vector database used for retrieval (Epic 2).
-- **openai** — calls the LLM for the summary text (Epic 2, Card 2.6).
+- **openai** — calls the LLM for the summary text (Epic 2, Card 2.6). Despite the name, this is the package we use to call **Groq** — Groq's API is OpenAI-compatible, so the same package works.
 - **python-dotenv** — safely loads secret API keys from a file instead of hardcoding them.
 
 This will take a minute or two. If you see a wall of text ending in something like `Successfully installed ...`, it worked.
@@ -88,14 +88,14 @@ This writes every installed package + version into `requirements.txt`, so anyone
 
 ### 0.6 Get an API key and store it safely
 
-Card 2.6 needs to call an LLM (e.g. OpenAI's API). To get a key:
+Card 2.6 needs to call an LLM. Neither of us has an OpenAI subscription, so this project uses **Groq** instead of OpenAI — same idea, and Groq's API is OpenAI-compatible, but with a free/very cheap tier and no billing setup required. To get a key:
 
-1. Go to [platform.openai.com/api-keys](https://platform.openai.com/api-keys), sign up/log in, click "Create new secret key", copy it. (You'll need billing set up on the account — a few dollars covers the whole project.)
+1. Go to [console.groq.com/keys](https://console.groq.com/keys), sign up/log in, create a key, copy it. No billing details needed.
 2. Back in Terminal, create a secrets file:
 
 ```bash
 touch .env
-echo "OPENAI_API_KEY=paste-your-key-here" >> .env
+echo "GROQ_API_KEY=paste-your-key-here" >> .env
 echo ".env" >> .gitignore
 echo "venv/" >> .gitignore
 ```
@@ -108,11 +108,11 @@ Create a throwaway test file:
 
 ```bash
 echo 'import streamlit as st
-st.title("Hello, ATSA!")' > test_app.py
+st.title("Hello, AASA!")' > test_app.py
 streamlit run test_app.py
 ```
 
-Your browser should open automatically to `http://localhost:8501` showing "Hello, ATSA!" in large text. If it does, Streamlit works — close the browser tab, go back to Terminal, press `Ctrl + C` to stop the app, and delete the test file: `rm test_app.py`.
+Your browser should open automatically to `http://localhost:8501` showing "Hello, AASA!" in large text. If it does, Streamlit works — close the browser tab, go back to Terminal, press `Ctrl + C` to stop the app, and delete the test file: `rm test_app.py`.
 
 **You're now ready for Card 1.1.**
 
@@ -141,7 +141,7 @@ touch app/intake.py
 **2. Open it in any text editor** (VS Code is free and beginner-friendly: [code.visualstudio.com](https://code.visualstudio.com)). If you have VS Code installed, you can open the whole project folder with:
 
 ```bash
-code ~/atsa-project
+code ~/aasa-project
 ```
 
 **3. Paste this starter code into `app/intake.py`:**
@@ -151,7 +151,7 @@ import streamlit as st
 
 # --- Page setup: must be the first Streamlit command in the script ---
 st.set_page_config(
-    page_title="ATSA — AI Stack Architect",
+    page_title="AASA — AI-Assisted Stack Architect",
     page_icon="🧭",
     layout="centered",
 )
@@ -183,7 +183,7 @@ DARK_CSS = """
 """
 st.markdown(DARK_CSS, unsafe_allow_html=True)
 
-st.title("🧭 AI Stack Architect")
+st.title("🧭 AI-Assisted Stack Architect")
 st.caption("Five constraints in. A data-backed blueprint out.")
 
 # --- The 5-field form ---
@@ -238,7 +238,7 @@ streamlit run app/intake.py
 ```
 
 ### How to verify this card is done
-- The browser opens with a dark page titled "🧭 AI Stack Architect".
+- The browser opens with a dark page titled "🧭 AI-Assisted Stack Architect".
 - All 5 fields render without errors and without text being cut off.
 - Clicking "Generate my blueprint" shows the JSON of what you typed/selected.
 - Resize your browser window narrower (or open dev tools and simulate a phone width, ~375px) — the form should still be fully readable with no horizontal scrollbar. If something overflows, add `layout="centered"` (already set above) and avoid putting widgets side-by-side in columns for this MVP.
@@ -296,6 +296,8 @@ PRIVACY_POSTURES = {
 
 This used to require a placeholder-list stopgap because the real column names and a clean categorisation weren't available yet. They are now: the colleague's branch (`stackpunk`/`Gabi`) already normalised the domain data for real — see `19-Gabi-Branch-Integration-Analysis-v1.md` for the full story. Concretely, that means running **Card 2.1's Step 0** first (`scripts/validate_use_cases.py` then `scripts/normalize_domains.py` against `data/use-cases.csv`) — see `13-Build-Guide-Epic2-Retrieval-v1.md` — which adds a `Use Case Domain (Canonical)` column (18 clean values, no near-duplicate spellings) to sit alongside the existing `Use Case Industry` column. There's no need to hand-invent a dropdown list or wait on a placeholder: once Step 0 has run, both dropdowns can be derived directly from the real data, no guessing involved.
 
+Don't have `data/use-cases.csv` yet? It's a third-party, MIT-licensed dataset (not ours), intentionally gitignored rather than committed here — download your own copy from [`abbasmahdi-ai/ai-use-cases-library`](https://github.com/abbasmahdi-ai/ai-use-cases-library) on GitHub. See `13-Build-Guide-Epic2-Retrieval-v1.md`'s "Before you start" section for the license/citation details.
+
 Run this **one-off** snippet in Terminal to pull the real lists:
 
 ```bash
@@ -349,7 +351,7 @@ privacy_key = st.radio(
 - `INDUSTRIES` and `WORKFLOWS` match the real unique values from `data/use-cases.csv` after Card 2.1 Step 0 has run — no invented categories, and `WORKFLOWS` has exactly 18 real values (+ "Any workflow").
 
 ### Common pitfalls
-- `ModuleNotFoundError: No module named 'app'` → run Streamlit from the project root (`~/atsa-project`), not from inside `app/`. Also create an empty `app/__init__.py` and `app/data/__init__.py` file so Python treats these as importable packages: `touch app/__init__.py app/data/__init__.py`.
+- `ModuleNotFoundError: No module named 'app'` → run Streamlit from the project root (`~/aasa-project`), not from inside `app/`. Also create an empty `app/__init__.py` and `app/data/__init__.py` file so Python treats these as importable packages: `touch app/__init__.py app/data/__init__.py`.
 - `KeyError: 'Use Case Domain (Canonical)'` → Card 2.1 Step 0 hasn't been run yet against `data/use-cases.csv`. Run `validate_use_cases.py` then `normalize_domains.py` first (see `13-Build-Guide-Epic2-Retrieval-v1.md`).
 - If you genuinely need to unblock the Card 1.1 UI *before* Card 2.1 Step 0 is done, it's fine to temporarily hardcode a short list in Step 3 and swap in the real `INDUSTRIES`/`WORKFLOWS` once Step 0 has run — just don't ship the hardcoded version.
 
@@ -567,11 +569,11 @@ print(run_pipeline({'workflow':'Customer Service','industry':'Technology','org_s
 ---
 
 ## Epic 1 — Done Checklist
-- [ ] `streamlit run app/intake.py` renders a dark 5-field form with no errors.
-- [ ] Dropdown options come from `app/data/options.py`, not hardcoded inline lists.
-- [ ] Submitting an incomplete/invalid form shows a clear inline error and does not proceed.
-- [ ] Submitting a valid form shows a loading spinner, then a result — with no network calls involved.
-- [ ] The result is stored in `st.session_state` and rendered outside `if submitted:` — clicking any other button on the page doesn't make it disappear.
-- [ ] All four card files exist: `app/intake.py`, `app/data/options.py`, `app/validators.py`, `app/pipeline.py`.
+- [X] `streamlit run app/intake.py` renders a dark 5-field form with no errors.
+- [X] Dropdown options come from `app/data/options.py`, not hardcoded inline lists.
+- [X] Submitting an incomplete/invalid form shows a clear inline error and does not proceed.
+- [X] Submitting a valid form shows a loading spinner, then a result — with no network calls involved.
+- [X] The result is stored in `st.session_state` and rendered outside `if submitted:` — clicking any other button on the page doesn't make it disappear.
+- [X] All four card files exist: `app/intake.py`, `app/data/options.py`, `app/validators.py`, `app/pipeline.py`.
 
 Move on to `13-Build-Guide-Epic2-Retrieval-v1.md` next — it fills in the real logic behind `run_pipeline`.

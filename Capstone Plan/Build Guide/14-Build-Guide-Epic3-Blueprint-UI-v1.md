@@ -160,7 +160,7 @@ from app.logic.pricing import PRICING
 
 
 def blueprint_to_text(result: dict) -> str:
-    lines = ["=== AI Stack Architect — Blueprint ===", ""]
+    lines = ["=== AI-Assisted Stack Architect — Blueprint ===", ""]
 
     lines.append("RECOMMENDED STACK:")
     for rank, tool_id in enumerate(result["recommended_stack"], start=1):

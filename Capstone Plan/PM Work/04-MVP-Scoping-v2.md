@@ -1,5 +1,5 @@
 # MVP Scoping (v2)
-### AI Stack Architect (ATSA)
+### AI-Assisted Stack Architect (AASA)
 *Supersedes the original MVP Scoping. Fixes: replaces Flowise with a simpler Python pipeline; corrects the dataset description; makes the cost model seat/token-aware; consolidates learning goals to 2 people.*
 
 ## 1. MVP Goal
@@ -25,7 +25,7 @@ Build a functional AI Stack Advisor that retrieves comparable real-world AI depl
 - **Student B (UI & Validation):** designing a scannable 3-block output; running real user tests and tracking trust/value telemetry.
 
 ## Deliverable Summary
-The ATSA MVP is a specialised AI-tool advisor. Five constraints feed a Python retrieval pipeline that searches a curated, normalised set of 3,023 real AI deployments, ranks tools by real adoption frequency, and estimates cost against a hand-built pricing table that correctly separates seat-based and token-based pricing. The output is a traceable, source-linked blueprint — not a black box.
+The AASA MVP is a specialised AI-tool advisor. Five constraints feed a Python retrieval pipeline that searches a curated, normalised set of 3,023 real AI deployments, ranks tools by real adoption frequency, and estimates cost against a hand-built pricing table that correctly separates seat-based and token-based pricing. The output is a traceable, source-linked blueprint — not a black box.
 
 ## Project Q&A (updated)
 

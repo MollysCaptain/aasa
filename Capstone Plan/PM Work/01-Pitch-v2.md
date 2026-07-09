@@ -1,5 +1,5 @@
 # Capstone Project Pitch (v2)
-### Project: AI Stack Architect (ATSA)
+### Project: AI-Assisted Stack Architect (AASA)
 *Supersedes the original Pitch. Scope corrected from "general tech stack" to AI-specific, per lecturer feedback and verification of the source dataset.*
 
 ## Problem Statement
@@ -7,7 +7,7 @@
 - Companies currently rely on expensive consultants or subjective forum advice.
 - There is no lightweight, evidence-backed system that maps a company's constraints to AI tools that comparable real organisations have actually deployed successfully.
 
-**Scope correction from v1:** our original pitch described a general software/cloud/database architect. We are narrowing to an **AI Stack Architect** — models, APIs, model platforms, and agent frameworks only — because that is what our knowledge base actually contains, and because a 4-week, 2-person team cannot responsibly cover general infrastructure too.
+**Scope correction from v1:** our original pitch described a general software/cloud/database architect. We are narrowing to an **AI-Assisted Stack Architect** — models, APIs, model platforms, and agent frameworks only — because that is what our knowledge base actually contains, and because a 4-week, 2-person team cannot responsibly cover general infrastructure too.
 
 ## Users
 - **Startup founders & product leads** who need an AI adoption shortlist without a consultant's budget.

@@ -1,4 +1,4 @@
-# ATSA — AI Stack Architect · Project Handbook v2 (reconciled)
+# AASA — AI-Assisted Stack Architect · Project Handbook v2 (reconciled)
 
 **Team:** 2 students · **Duration:** 4 weeks (3-week build + 1-week package/pitch)
 **Status:** post-pivot, post-feedback reconciliation. This handbook is now the single source of truth. Where it disagrees with any earlier document (Pitch, original Ethical Action Plan, or the first prototype), **this wins.**
@@ -25,7 +25,7 @@ We received feedback that our artefacts described *three different projects*: th
 
 ## 1. Reconciled scope statement
 
-**ATSA is an AI Stack Architect.** It takes five constraints and returns a three-block blueprint — recommended **AI models/APIs/frameworks**, an **illustrative cost forecast**, and **real-world case references** — grounded in a retrieval knowledge base of 3,023 real AI deployments.
+**AASA is an AI-Assisted Stack Architect.** It takes five constraints and returns a three-block blueprint — recommended **AI models/APIs/frameworks**, an **illustrative cost forecast**, and **real-world case references** — grounded in a retrieval knowledge base of 3,023 real AI deployments.
 
 **In scope:** AI models, APIs, model platforms, and agent/orchestration frameworks; illustrative monthly cost; traceable real-case evidence.
 
@@ -132,7 +132,7 @@ The first prototype was a Lovable-generated marketing shell. Everything below wa
 - **Changed:** scope realigned from general tech-stack → AI stack; the rejected "StackPunk" steampunk theme replaced with the **neo-industrial blueprint** direction our user research chose; stats are now **real** (197 curated cases, 24 priced tools, 15 industries) with a visible "prototype · demo data" tag.
 - **Added:** a plain "known limitations" section; source links on every case; "no data stored" and "illustrative pricing / directional, not advice" disclaimers.
 
-The rebuilt prototype (`atsa-prototype.html`) runs on the actual dataset: pick five constraints → it retrieves real matched deployments, ranks their tools, estimates a seat+token cost against your budget, and links every recommendation back to its source.
+The rebuilt prototype (`aasa-prototype.html`) runs on the actual dataset: pick five constraints → it retrieves real matched deployments, ranks their tools, estimates a seat+token cost against your budget, and links every recommendation back to its source.
 
 ---
 
@@ -165,6 +165,6 @@ This handbook is the index and change-rationale. The individual capstone deliver
 | `08-Technical-Work-Breakdown-v2.md` | Rewritten, then **corrected on re-audit** — a cost-calculation task was double-counted across two features; totals now reconcile with the priority matrix |
 | `09-Effort-Informed-Prioritisation-v2.md` | Rewritten, then **corrected on re-audit** — its effort totals didn't match the Technical Work Breakdown for the same scope; both now sum to the same 15 days |
 | `10-User-Stories-and-Task-Mapping-v2.md` | Rewritten — webhook tasks replaced with direct function calls |
-| `atsa-prototype.html` | Rebuilt — fabrications removed, runs on real curated data |
+| `aasa-prototype.html` | Rebuilt — fabrications removed, runs on real curated data |
 
 *End of handbook v2. Together with the files above, this is now a fully reconciled, internally consistent capstone submission.*
