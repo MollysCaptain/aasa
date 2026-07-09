@@ -1,8 +1,8 @@
 # Build Guide — Epic 2: Retrieval & Costing Engine
 
-*Companion to the kanban board (cards 2.1–2.6). Assumes you've completed `12-Build-Guide-Epic1-Intake-v1.md`'s one-time setup (Section 0) — same virtual environment, same `~/atsa-project` folder. This is the most important epic: it's the "real differentiator" of the whole project (Handbook §2).*
+*Companion to the kanban board (cards 2.1–2.6). Assumes you've completed `12-Build-Guide-Epic1-Intake-v1.md`'s one-time setup (Section 0) — same virtual environment, same `~/aasa-project` folder. This is the most important epic: it's the "real differentiator" of the whole project (Handbook §2).*
 
-**Before you start:** you need the actual case dataset — the 3,023-row CSV of real AI deployments. Save it at `data/use-cases.csv` inside `~/atsa-project` (per the Handbook, the source is the `ai-use-cases-library` dataset).
+**Before you start:** you need the actual case dataset — the 3,023-row CSV of real AI deployments. Save it at `data/use-cases.csv` inside `~/aasa-project` (per the Handbook, the source is the `ai-use-cases-library` dataset).
 
 **This is someone else's dataset, not ours — download your own copy, don't fetch it via this repo.** The source is [`abbasmahdi-ai/ai-use-cases-library`](https://github.com/abbasmahdi-ai/ai-use-cases-library) on GitHub. It's MIT-licensed, but `data/use-cases.csv` is deliberately **gitignored** here rather than committed — everyone on the project should pull their own copy directly from the source repo (that's also the easiest way to get updates if the upstream data changes). If you use this dataset in research or publications, the upstream README asks for this citation:
 
@@ -382,7 +382,7 @@ from chromadb.utils import embedding_functions
 
 CHUNKS_PATH = "data/use_cases_chunks.jsonl"
 CHROMA_PATH = "./chroma_store"
-COLLECTION_NAME = "atsa_cases"
+COLLECTION_NAME = "aasa_cases"
 
 embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
     model_name="all-MiniLM-L6-v2"
@@ -497,7 +497,7 @@ from sklearn.decomposition import PCA
 
 embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
 client = chromadb.PersistentClient(path="./chroma_store")
-collection = client.get_collection("atsa_cases", embedding_function=embedding_fn)
+collection = client.get_collection("aasa_cases", embedding_function=embedding_fn)
 
 # Pull back the stored embeddings + metadata (Chroma keeps both).
 data = collection.get(include=["embeddings", "metadatas"], limit=500)  # sample 500 for a fast, readable plot
@@ -1004,7 +1004,7 @@ _embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
     model_name="all-MiniLM-L6-v2"
 )
 _chroma_client = chromadb.PersistentClient(path="./chroma_store")
-_collection = _chroma_client.get_collection("atsa_cases", embedding_function=_embedding_fn)
+_collection = _chroma_client.get_collection("aasa_cases", embedding_function=_embedding_fn)
 
 
 def run_pipeline(inputs: dict) -> dict:

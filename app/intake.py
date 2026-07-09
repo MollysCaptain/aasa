@@ -18,7 +18,7 @@ from app.pipeline import run_pipeline
 
 # --- Page setup: must be the first Streamlit command in the script ---
 st.set_page_config(
-    page_title="ATSA — AI Stack Architect",
+    page_title="AASA — AI-Assisted Stack Architect",
     page_icon="🧭",
     layout="centered",
 )
@@ -50,7 +50,7 @@ DARK_CSS = """
 """
 st.markdown(DARK_CSS, unsafe_allow_html=True)
 
-st.title("🧭 AI Stack Architect")
+st.title("🧭 AI-Assisted Stack Architect")
 st.caption("Five constraints in. A data-backed blueprint out.")
 
 # --- The 5-field form ---

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ATSA — AI Stack Architect (prototype)</title>
+<title>AASA — AI-Assisted Stack Architect (prototype)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -175,14 +175,14 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 </head>
 <body>
 <div class="topbar"><div class="wrap">
-  <div class="mark"><span class="glyph"></span>ATSA <small>AI&nbsp;Stack&nbsp;Architect</small></div>
+  <div class="mark"><span class="glyph"></span>AASA <small>AI-Assisted&nbsp;Stack&nbsp;Architect</small></div>
   <span class="proto-tag">Prototype · demo data</span>
 </div></div>
 
 <header class="hero"><div class="wrap">
   <div class="eyebrow">Capstone MVP · grounded in 3,023 real AI deployments</div>
   <h1>Match your constraints to <em>what teams like yours actually shipped.</em></h1>
-  <p class="lede">Give ATSA five constraints. It retrieves comparable real-world AI implementations, ranks the models, APIs and frameworks they used, and estimates a monthly cost against your budget — with every recommendation traceable to a real source.</p>
+  <p class="lede">Give AASA five constraints. It retrieves comparable real-world AI implementations, ranks the models, APIs and frameworks they used, and estimates a monthly cost against your budget — with every recommendation traceable to a real source.</p>
   <div class="factrow">
     <div class="fact"><b id="f-cases">—</b><span>curated real cases</span></div>
     <div class="fact"><b id="f-tools">—</b><span>tools priced</span></div>
@@ -254,7 +254,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
     <h3>Known limitations (what this MVP does not do)</h3>
     <ul>
       <li>Pricing is manually curated and illustrative — it is not a live feed and may be out of date. Always confirm on the vendor's own pricing page.</li>
-      <li>Compliance filtering is <em>directional</em>. ATSA does not certify HIPAA/GDPR/SOC 2 fitness; treat it as a shortlist, not sign-off.</li>
+      <li>Compliance filtering is <em>directional</em>. AASA does not certify HIPAA/GDPR/SOC 2 fitness; treat it as a shortlist, not sign-off.</li>
       <li>The case library skews toward enterprise productivity AI (Gemini/Workspace, Copilot), so recommendations reflect that adoption pattern.</li>
       <li>Company-size usage patterns are population-level (from the Stack Overflow survey), not per-case — there is no org-size field in the case data.</li>
     </ul>
@@ -262,7 +262,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 </div></section>
 
 <footer><div class="wrap">
-  <span>ATSA — AI Stack Architect · 4-week capstone prototype</span>
+  <span>AASA — AI-Assisted Stack Architect · 4-week capstone prototype</span>
   <span>Data: AI Use-Cases Library (CC-BY) · pricing illustrative · no data stored</span>
 </div></footer>
 
@@ -419,7 +419,7 @@ function render(r){
     </div>`;
 
   $('#copy').onclick=()=>{
-    const txt=`ATSA blueprint — ${r.domain}${r.industry?' / '+r.industry:''} (${r.org.label})\n`+
+    const txt=`AASA blueprint — ${r.domain}${r.industry?' / '+r.industry:''} (${r.org.label})\n`+
       `Recommended stack:\n`+r.stack.map(t=>` - ${t.label} [${t.kind}]`).join('\n')+
       `\nEstimated: ${eur(r.total)}/mo (${r.ok?'within':'over'} €${r.budget} budget)\n`+
       `Based on ${r.matches.length} real cases. Pricing illustrative; verify before committing.`;

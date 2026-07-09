@@ -14,7 +14,7 @@ from chromadb.utils import embedding_functions
 
 CHUNKS_PATH = "data/use_cases_chunks.jsonl"
 CHROMA_PATH = "./chroma_store"
-COLLECTION_NAME = "atsa_cases"
+COLLECTION_NAME = "aasa_cases"
 
 embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
     model_name="all-MiniLM-L6-v2"

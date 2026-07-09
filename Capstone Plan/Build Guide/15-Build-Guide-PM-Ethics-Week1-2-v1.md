@@ -22,7 +22,7 @@ A **project charter** is a single page that both of you can point to any time so
 ### Template
 
 ```markdown
-# Project Charter — AI Stack Architect (ATSA)
+# Project Charter — AI-Assisted Stack Architect (AASA)
 
 **Problem:** [1-2 sentences: what problem are we solving, for whom?]
 
@@ -199,7 +199,7 @@ flowchart TD
 **Depends on:** Card P.2 · **Owner:** Person B · **Day:** 10 (Week 2)
 
 ### Goal in plain language
-Before the real backend is fully wired, get 2–3 people to react to the existing prototype (`atsa-prototype.html`) so you can catch confusing or untrustworthy-feeling UI cheaply — fixing a layout problem now is much cheaper than fixing it after Week 3's full test.
+Before the real backend is fully wired, get 2–3 people to react to the existing prototype (`aasa-prototype.html`) so you can catch confusing or untrustworthy-feeling UI cheaply — fixing a layout problem now is much cheaper than fixing it after Week 3's full test.
 
 ### Step-by-step
 
@@ -266,7 +266,7 @@ A **model card** is a short, standard-format document (a practice that started a
 ### Template
 
 ```markdown
-# Model / Dataset Card — ATSA Case Library
+# Model / Dataset Card — AASA Case Library
 
 **Dataset:** 3,023 real AI deployment case rows (see Handbook §2 for source).
 

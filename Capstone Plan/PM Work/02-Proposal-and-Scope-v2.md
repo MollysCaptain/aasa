@@ -1,5 +1,5 @@
 # Capstone Project Proposal & Scope (v2)
-### AI Stack Architect (ATSA)
+### AI-Assisted Stack Architect (AASA)
 *Supersedes the original Proposal & Scope. Fixes: (1) it listed 3 roles ("Student A/B/C") for a 2-person team, (2) it built the plan around Flowise, adding an integration/webhook risk we can remove entirely, (3) it assumed a data-cleaning task that the real dataset doesn't require.*
 
 ## Team structure — corrected to 2 roles for 2 people

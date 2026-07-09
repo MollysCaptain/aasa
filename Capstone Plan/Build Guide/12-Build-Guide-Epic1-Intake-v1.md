@@ -22,17 +22,17 @@ Do this once, before starting Card 1.1. Everything after this section assumes it
 In Terminal, run these commands one at a time (press Enter after each):
 
 ```bash
-mkdir -p ~/atsa-project/app/data
-mkdir -p ~/atsa-project/app/logic
-mkdir -p ~/atsa-project/app/analytics
-mkdir -p ~/atsa-project/scripts
-cd ~/atsa-project
+mkdir -p ~/aasa-project/app/data
+mkdir -p ~/aasa-project/app/logic
+mkdir -p ~/aasa-project/app/analytics
+mkdir -p ~/aasa-project/scripts
+cd ~/aasa-project
 ```
 
-**What just happened:** `mkdir -p` creates a folder (and any parent folders it needs). `cd` moves your Terminal "into" that folder — every command you type from now on happens inside `~/atsa-project` unless you say otherwise. You now have this structure:
+**What just happened:** `mkdir -p` creates a folder (and any parent folders it needs). `cd` moves your Terminal "into" that folder — every command you type from now on happens inside `~/aasa-project` unless you say otherwise. You now have this structure:
 
 ```
-atsa-project/
+aasa-project/
 ├── app/
 │   ├── intake.py         ← Card 1.1
 │   ├── validators.py     ← Card 1.3
@@ -108,11 +108,11 @@ Create a throwaway test file:
 
 ```bash
 echo 'import streamlit as st
-st.title("Hello, ATSA!")' > test_app.py
+st.title("Hello, AASA!")' > test_app.py
 streamlit run test_app.py
 ```
 
-Your browser should open automatically to `http://localhost:8501` showing "Hello, ATSA!" in large text. If it does, Streamlit works — close the browser tab, go back to Terminal, press `Ctrl + C` to stop the app, and delete the test file: `rm test_app.py`.
+Your browser should open automatically to `http://localhost:8501` showing "Hello, AASA!" in large text. If it does, Streamlit works — close the browser tab, go back to Terminal, press `Ctrl + C` to stop the app, and delete the test file: `rm test_app.py`.
 
 **You're now ready for Card 1.1.**
 
@@ -141,7 +141,7 @@ touch app/intake.py
 **2. Open it in any text editor** (VS Code is free and beginner-friendly: [code.visualstudio.com](https://code.visualstudio.com)). If you have VS Code installed, you can open the whole project folder with:
 
 ```bash
-code ~/atsa-project
+code ~/aasa-project
 ```
 
 **3. Paste this starter code into `app/intake.py`:**
@@ -151,7 +151,7 @@ import streamlit as st
 
 # --- Page setup: must be the first Streamlit command in the script ---
 st.set_page_config(
-    page_title="ATSA — AI Stack Architect",
+    page_title="AASA — AI-Assisted Stack Architect",
     page_icon="🧭",
     layout="centered",
 )
@@ -183,7 +183,7 @@ DARK_CSS = """
 """
 st.markdown(DARK_CSS, unsafe_allow_html=True)
 
-st.title("🧭 AI Stack Architect")
+st.title("🧭 AI-Assisted Stack Architect")
 st.caption("Five constraints in. A data-backed blueprint out.")
 
 # --- The 5-field form ---
@@ -238,7 +238,7 @@ streamlit run app/intake.py
 ```
 
 ### How to verify this card is done
-- The browser opens with a dark page titled "🧭 AI Stack Architect".
+- The browser opens with a dark page titled "🧭 AI-Assisted Stack Architect".
 - All 5 fields render without errors and without text being cut off.
 - Clicking "Generate my blueprint" shows the JSON of what you typed/selected.
 - Resize your browser window narrower (or open dev tools and simulate a phone width, ~375px) — the form should still be fully readable with no horizontal scrollbar. If something overflows, add `layout="centered"` (already set above) and avoid putting widgets side-by-side in columns for this MVP.
@@ -351,7 +351,7 @@ privacy_key = st.radio(
 - `INDUSTRIES` and `WORKFLOWS` match the real unique values from `data/use-cases.csv` after Card 2.1 Step 0 has run — no invented categories, and `WORKFLOWS` has exactly 18 real values (+ "Any workflow").
 
 ### Common pitfalls
-- `ModuleNotFoundError: No module named 'app'` → run Streamlit from the project root (`~/atsa-project`), not from inside `app/`. Also create an empty `app/__init__.py` and `app/data/__init__.py` file so Python treats these as importable packages: `touch app/__init__.py app/data/__init__.py`.
+- `ModuleNotFoundError: No module named 'app'` → run Streamlit from the project root (`~/aasa-project`), not from inside `app/`. Also create an empty `app/__init__.py` and `app/data/__init__.py` file so Python treats these as importable packages: `touch app/__init__.py app/data/__init__.py`.
 - `KeyError: 'Use Case Domain (Canonical)'` → Card 2.1 Step 0 hasn't been run yet against `data/use-cases.csv`. Run `validate_use_cases.py` then `normalize_domains.py` first (see `13-Build-Guide-Epic2-Retrieval-v1.md`).
 - If you genuinely need to unblock the Card 1.1 UI *before* Card 2.1 Step 0 is done, it's fine to temporarily hardcode a short list in Step 3 and swap in the real `INDUSTRIES`/`WORKFLOWS` once Step 0 has run — just don't ship the hardcoded version.
 

@@ -206,7 +206,7 @@ Before touching slide design, decide what each slide is *for* in one sentence. A
 1. Title — project name, one-line value, both names.
 2. Problem — the "Consultancy Gap": resource-constrained founders can't afford
    real AI-stack advice and default to scattered forum research.
-3. Solution — ATSA in one sentence + a screenshot of the 3-block output.
+3. Solution — AASA in one sentence + a screenshot of the 3-block output.
 4. How it works (Architecture) — the Card P.5 pipeline diagram.
 5. Data foundation — 3,023 real deployments, the normalisation challenge (2,511 → 24 tools), honestly labelled as a retrieval corpus, not a compliance authority.
 6. Real test results — the Card P.14 metrics table.
