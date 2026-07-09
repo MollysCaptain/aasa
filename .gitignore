@@ -231,3 +231,6 @@ data/use_cases_chunks.jsonl
 # the source repo link, license, and citation — everyone should download their
 # own copy from there rather than get it via this repo.
 data/use-cases.csv
+
+# macOS
+.DS_Store
