@@ -1,12 +1,30 @@
 """
 The single entry point that turns validated form inputs into a blueprint.
-Each numbered step below is a placeholder — Epic 2 cards replace them in order:
+Epic 2 is now wired in for real:
   Step 1 (normalise/retrieve) <- Cards 2.1, 2.2
   Step 2 (privacy filter)     <- Card 2.5
   Step 3 (cost)               <- Cards 2.3, 2.4
   Step 4 (LLM summary)        <- Card 2.6
 """
-import time
+import chromadb
+from chromadb.utils import embedding_functions
+from app.logic.filter import apply_privacy_filter, rank_tools_by_frequency
+from app.logic.cost import estimate_cost
+from app.logic.prompt import generate_summary
+from app.logic.pricing import PRICING
+
+# Must match the embedding function named in Card 2.2 Step 2's embed_cases.py —
+# Chroma needs the same embedding function every time this collection is opened.
+_embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name="all-MiniLM-L6-v2"
+)
+_chroma_client = chromadb.PersistentClient(path="./chroma_store")
+_collection = _chroma_client.get_collection("atsa_cases", embedding_function=_embedding_fn)
+
+
+def _to_label(canonical_id: str) -> str:
+    """canonical_id -> its human-readable PRICING label, or the id itself if unknown."""
+    return PRICING.get(canonical_id, {}).get("label", canonical_id)
 
 
 def run_pipeline(inputs: dict) -> dict:
@@ -15,30 +33,69 @@ def run_pipeline(inputs: dict) -> dict:
              "privacy": str, "budget": float}
     returns: a dict the dashboard (Card 3.1) can render directly.
     """
-    # --- Step 1: retrieve comparable cases (placeholder) ---
-    # Real version (Card 2.2) will query the Chroma vector store here.
+    # Step 1: retrieve.
+    # Card 2.2 stores 3 chunks per case (implementation/outcome/domain), so a
+    # single case can legitimately fill several of the top results. Ask for
+    # more results than we need (15, not 5) so that after de-duplicating down
+    # to unique cases below, we still have a healthy number of distinct cases
+    # to rank tools and pull "social proof" references from.
+    query_text = f"{inputs['workflow']} in the {inputs['industry']} industry"
+    results = _collection.query(query_texts=[query_text], n_results=15)
+
+    # De-duplicate by case_id: keep only the first (best-ranked) chunk per
+    # case, so one case can't count as 2-3 pieces of evidence in the ranking
+    # below just because it happened to produce multiple matching chunks.
+    seen_case_ids = set()
     matched_cases = []
+    for meta in results["metadatas"][0]:
+        case_id = meta["case_id"]
+        if case_id in seen_case_ids:
+            continue
+        seen_case_ids.add(case_id)
+        matched_cases.append({
+            "case_id": case_id,
+            "organization": meta["organization"],
+            "title": meta["title"],
+            "industry": meta["industry"],
+            "source_url": meta["source_url"],
+            "canonical_tools": meta["canonical_tools"].split(",") if meta["canonical_tools"] else [],
+        })
 
-    # --- Step 2: privacy filter (placeholder) ---
-    # Real version (Card 2.5) removes ungovernable tools when inputs["privacy"] == "regulated".
-    filtered_cases = matched_cases
+    # Step 2: privacy filter + rank
+    filtered_cases = apply_privacy_filter(matched_cases, inputs["privacy"])
+    ranked_tools = rank_tools_by_frequency(filtered_cases, top_n=5)
 
-    # --- Step 3: cost forecast (placeholder) ---
-    # Real version (Cards 2.3-2.4) looks up the pricing table and computes an estimate.
-    cost_forecast = {"primary_api_monthly": None, "assistant_monthly": None}
+    # Step 3: cost
+    cost_forecast = estimate_cost(ranked_tools, inputs["org_size"])
 
-    # --- Step 4: LLM summary (placeholder) ---
-    # Real version (Card 2.6) calls the model with a few-shot prompt.
-    summary_text = (
-        "This is a placeholder blueprint. Once Epic 2 is wired up, this will "
-        "be a real, evidence-backed recommendation."
-    )
-
-    time.sleep(1)  # simulates work so the loading spinner (Step 3 below) is visible
+    # Step 4: summary.
+    # Card 2.6 was tested by feeding generate_summary raw canonical ids
+    # (e.g. "ms-copilot") — the model doesn't reliably translate those to
+    # human-readable names on its own (its few-shot example does, but real
+    # ids outside that example leaked through verbatim during Card 2.6
+    # eval). Cost/ranking logic above still keys everything by canonical id
+    # (that's what pricing.py/filter.py expect), so only build label-ified
+    # copies for the two things that get read by the LLM.
+    ranked_tool_labels = [_to_label(t) for t in ranked_tools]
+    cost_forecast_for_prompt = {
+        "primary_api": {**cost_forecast["primary_api"], "tool": _to_label(cost_forecast["primary_api"]["tool"])}
+                        if cost_forecast["primary_api"] else None,
+        "assistant": {**cost_forecast["assistant"], "tool": _to_label(cost_forecast["assistant"]["tool"])}
+                     if cost_forecast["assistant"] else None,
+        "disclaimer": cost_forecast["disclaimer"],
+    }
+    summary = generate_summary(ranked_tool_labels, cost_forecast_for_prompt, filtered_cases, inputs["privacy"])
 
     return {
-        "recommended_stack": [],       # Card 3.1 renders this as Block A
-        "cost_forecast": cost_forecast,  # Card 3.1 renders this as Block B
-        "matched_cases": filtered_cases,  # Card 3.1 renders this as Block C
-        "summary_text": summary_text,
+        "recommended_stack": ranked_tools,
+        "cost_forecast": cost_forecast,
+        "matched_cases": filtered_cases,
+        "summary_text": summary["text"],
+        # Card 3.3 logs this to telemetry once tracker.py exists — see that card.
+        "llm_metrics": {
+            "duration_seconds": summary["duration_seconds"],
+            "prompt_tokens": summary["prompt_tokens"],
+            "completion_tokens": summary["completion_tokens"],
+            "tokens_per_second": summary["tokens_per_second"],
+        },
     }

@@ -826,6 +826,8 @@ The LLM's *only* job is to turn already-decided facts (the ranked tools, the cos
 touch app/logic/prompt.py
 ```
 
+**Real deviation: this project uses Groq, not OpenAI directly, for this call.** `OPENAI_API_KEY`/`platform.openai.com` from Epic 1 Section 0.6 was the original plan, but this build actually uses `GROQ_API_KEY` against Groq's API instead — cheaper/faster, and Groq's endpoint is OpenAI-compatible, so the same `openai` Python client works unchanged; only the `api_key`, `base_url`, and `model` differ. Model is `openai/gpt-oss-20b` (a Groq-hosted open-weight model — that's a model *name* Groq happens to use, not a call to OpenAI's own API). Verify against [Groq's current model list](https://console.groq.com/docs/models) before relying on this: Groq has been actively deprecating older models (`llama-3.1-8b-instant`, `llama-3.3-70b-versatile` were flagged for deprecation shortly before this was written), and their own recommended migration target for both is the `gpt-oss` family used here.
+
 **2. Paste this in:**
 
 ```python
@@ -833,14 +835,23 @@ touch app/logic/prompt.py
 Card 2.6 — Few-shot prompt that constrains the LLM to prose-only summarisation.
 The LLM never selects tools or invents prices — those are computed in
 Cards 2.4/2.5 and simply handed to it as already-decided facts.
+
+Uses Groq instead of OpenAI directly: Groq exposes an OpenAI-compatible endpoint,
+so the same `openai` Python client works unchanged — just point it at Groq's
+base_url and use GROQ_API_KEY instead of OPENAI_API_KEY. Model is
+"openai/gpt-oss-20b" (Groq-hosted open-weight model), not GPT-4o-mini.
 """
 import os
 import time
 from openai import OpenAI
 from dotenv import load_dotenv
 
-load_dotenv()  # reads OPENAI_API_KEY from your .env file (see Epic 1, Section 0.6)
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+load_dotenv()  # reads GROQ_API_KEY from your .env file (see Epic 1, Section 0.6)
+client = OpenAI(
+    api_key=os.environ["GROQ_API_KEY"],
+    base_url="https://api.groq.com/openai/v1",
+)
+MODEL = "openai/gpt-oss-20b"
 
 SYSTEM_PROMPT = """You are a plain-language technical writer. You will be given:
 - a ranked list of recommended AI tools (already decided — do not change the order or add tools)
@@ -888,7 +899,7 @@ def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: lis
 
     start_time = time.perf_counter()
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=MODEL,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": FEW_SHOT_EXAMPLE_USER},
@@ -983,7 +994,7 @@ Run it (`python3 scripts/eval_prompt.py`) and read every output, checking: plain
 - All 4+ eval-set cases above produce prose-only summaries, with no invented tools or prices, including the two edge cases.
 - `temperature=0` is set explicitly (not left at a default or a "low but nonzero" value) — check this is a step that phrases facts, not one that needs creative variety.
 - If you spot drift, tighten `SYSTEM_PROMPT` and re-run the *entire* eval set, not just the failing case.
-- `OPENAI_API_KEY` is read from `.env`, never hardcoded in `prompt.py`.
+- `GROQ_API_KEY` is read from `.env`, never hardcoded in `prompt.py`.
 
 ---
 
@@ -991,12 +1002,23 @@ Run it (`python3 scripts/eval_prompt.py`) and read every output, checking: plain
 
 Once all six cards above are done, go back to `app/pipeline.py` (Card 1.4) and replace the placeholders with real calls:
 
+> **Real deviation — canonical ids leak into the LLM summary unless translated.**
+> Card 2.6's eval set fed `generate_summary` raw canonical ids (e.g. `["ms-copilot", "azure-openai"]`)
+> and, in real Groq output, they sometimes came back out verbatim ("the combination of
+> ms‑copilot and azure‑openai is a proven starting point..."). The few-shot example in
+> `prompt.py` shows the model translating ids to nice names, but that's a memorized example,
+> not a real mapping — it doesn't generalize to ids outside that one example. Fix: keep every
+> other function keyed by canonical id (that's what `pricing.py`/`filter.py`/the dashboard need),
+> and only build human-readable copies of `ranked_tools` and `cost_forecast` right before the
+> `generate_summary` call, via a small `_to_label()` helper that looks up `PRICING[id]["label"]`.
+
 ```python
 import chromadb
 from chromadb.utils import embedding_functions
 from app.logic.filter import apply_privacy_filter, rank_tools_by_frequency
 from app.logic.cost import estimate_cost
 from app.logic.prompt import generate_summary
+from app.logic.pricing import PRICING
 
 # Must match the embedding function named in Card 2.2 Step 2's embed_cases.py —
 # Chroma needs the same embedding function every time this collection is opened.
@@ -1005,6 +1027,11 @@ _embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
 )
 _chroma_client = chromadb.PersistentClient(path="./chroma_store")
 _collection = _chroma_client.get_collection("atsa_cases", embedding_function=_embedding_fn)
+
+
+def _to_label(canonical_id: str) -> str:
+    """canonical_id -> its human-readable PRICING label, or the id itself if unknown."""
+    return PRICING.get(canonical_id, {}).get("label", canonical_id)
 
 
 def run_pipeline(inputs: dict) -> dict:
@@ -1043,8 +1070,18 @@ def run_pipeline(inputs: dict) -> dict:
     # Step 3: cost
     cost_forecast = estimate_cost(ranked_tools, inputs["org_size"])
 
-    # Step 4: summary
-    summary = generate_summary(ranked_tools, cost_forecast, filtered_cases, inputs["privacy"])
+    # Step 4: summary. recommended_stack/cost_forecast returned below stay keyed
+    # by canonical id (Card 3.1 may want that for icons/lookups); only the copies
+    # sent into generate_summary get translated to labels — see the deviation note above.
+    ranked_tool_labels = [_to_label(t) for t in ranked_tools]
+    cost_forecast_for_prompt = {
+        "primary_api": {**cost_forecast["primary_api"], "tool": _to_label(cost_forecast["primary_api"]["tool"])}
+                        if cost_forecast["primary_api"] else None,
+        "assistant": {**cost_forecast["assistant"], "tool": _to_label(cost_forecast["assistant"]["tool"])}
+                     if cost_forecast["assistant"] else None,
+        "disclaimer": cost_forecast["disclaimer"],
+    }
+    summary = generate_summary(ranked_tool_labels, cost_forecast_for_prompt, filtered_cases, inputs["privacy"])
 
     return {
         "recommended_stack": ranked_tools,
@@ -1073,13 +1110,16 @@ print(json.dumps(result, indent=2))
 ```
 
 ## Epic 2 — Done Checklist
-- [ ] `data/use-cases.csv` has `Use Case Domain (Canonical)` and `canonical_tools` columns added in place, coverage ≥ 90%; `validate_use_cases.py` exits 0.
-- [ ] `data/use_cases_chunks.jsonl` exists with 9,069 lines (3,023 cases x 3 chunk types).
-- [ ] `chroma_store/` exists and returns plausible results for a test query, using the explicitly-named `all-MiniLM-L6-v2` embedding function.
-- [ ] Every canonical tool id has a pricing entry.
-- [ ] `estimate_cost` returns separate primary-API and assistant figures, never a sum of everything.
-- [ ] `apply_privacy_filter` demonstrably removes consumer tools under "regulated" on 2–3 hand-checked scenarios.
-- [ ] `generate_summary` stays prose-only and tool/price-accurate across the eval set (including edge cases), and returns a dict with timing/token fields, not a bare string.
-- [ ] `run_pipeline` de-duplicates retrieval results by `case_id` before ranking, and now returns real data end-to-end, not placeholders, including an `llm_metrics` key.
+- [x] `data/use-cases.csv` has `Use Case Domain (Canonical)` and `canonical_tools` columns added in place, coverage ≥ 90% (88.7%, deliberately accepted — see Card 2.1's coverage note); `validate_use_cases.py` exits 0.
+- [x] `data/use_cases_chunks.jsonl` exists with 9,069 lines (3,023 cases x 3 chunk types).
+- [x] `chroma_store/` exists and returns plausible results for a test query, using the explicitly-named `all-MiniLM-L6-v2` embedding function.
+- [x] Every canonical tool id has a pricing entry.
+- [x] `estimate_cost` returns separate primary-API and assistant figures, never a sum of everything.
+- [x] `apply_privacy_filter` demonstrably removes consumer tools under "regulated" on 2–3 hand-checked scenarios.
+- [x] `generate_summary` stays prose-only and tool/price-accurate across the eval set (including edge cases), and returns a dict with timing/token fields, not a bare string.
+- [x] `run_pipeline` de-duplicates retrieval results by `case_id` before ranking, and now returns real data end-to-end, not placeholders, including an `llm_metrics` key.
+- [x] `run_pipeline` sends `generate_summary` label-ified tool names (via `_to_label`/`PRICING`), not raw canonical ids — `recommended_stack`/`cost_forecast` in the return value stay keyed by canonical id.
+
+**Verified via full backend dry run** on two real profiles (Technology/standard/startup and Healthcare/regulated/smb): confirmed real Chroma retrieval, correct case_id de-duplication, the privacy filter correctly distinguishing `gemini` (stripped under "regulated") from governable ids, `assistant` correctly returning `null` when no seat-priced tool clears the filter, and the LLM summary using human-readable labels end to end.
 
 Move on to `14-Build-Guide-Epic3-Blueprint-UI-v1.md` next.

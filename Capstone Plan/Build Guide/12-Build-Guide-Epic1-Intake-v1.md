@@ -88,14 +88,14 @@ This writes every installed package + version into `requirements.txt`, so anyone
 
 ### 0.6 Get an API key and store it safely
 
-Card 2.6 needs to call an LLM (e.g. OpenAI's API). To get a key:
+Card 2.6 needs to call an LLM. **Real deviation: this project uses [Groq](https://console.groq.com/) instead of OpenAI directly** — cheaper/faster, and Groq's endpoint is OpenAI-compatible so the same client code works, just pointed at a different `base_url` with a different key/model. See `13-Build-Guide-Epic2-Retrieval-v1.md`'s Card 2.6 for the client setup. To get a key:
 
-1. Go to [platform.openai.com/api-keys](https://platform.openai.com/api-keys), sign up/log in, click "Create new secret key", copy it. (You'll need billing set up on the account — a few dollars covers the whole project.)
+1. Go to [console.groq.com/keys](https://console.groq.com/keys), sign up/log in, create an API key, copy it.
 2. Back in Terminal, create a secrets file:
 
 ```bash
 touch .env
-echo "OPENAI_API_KEY=paste-your-key-here" >> .env
+echo "GROQ_API_KEY=paste-your-key-here" >> .env
 echo ".env" >> .gitignore
 echo "venv/" >> .gitignore
 ```
