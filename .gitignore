@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
+__pycache__/
 *.py[codz]
 *$py.class
 
@@ -215,9 +216,18 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
-app/__init__.py
 .agents/skills/developing-with-streamlit
 .claude/skills/developing-with-streamlit
-.gitignore
-data/use-cases.csv
 data/StackOverflow/results.csv
+
+# ATSA — Chroma vector store and chunk file (Card 2.2): both fully regenerable
+# from data/use-cases.csv via scripts/chunk_use_cases.py + scripts/embed_cases.py,
+# and chroma_store/ in particular is large binary data that doesn't belong in git.
+chroma_store/
+data/use_cases_chunks.jsonl
+
+# ATSA — third-party dataset (MIT-licensed, not our work): intentionally not
+# committed. See "Before you start" in 13-Build-Guide-Epic2-Retrieval-v1.md for
+# the source repo link, license, and citation — everyone should download their
+# own copy from there rather than get it via this repo.
+data/use-cases.csv

@@ -4,13 +4,22 @@
 
 **Before you start:** you need the actual case dataset — the 3,023-row CSV of real AI deployments. Save it at `data/use-cases.csv` inside `~/atsa-project` (per the Handbook, the source is the `ai-use-cases-library` dataset).
 
-**Column names are now real, not placeholders.** An earlier version of this guide had you print your CSV's columns and guess, because neither of us had the actual file yet. Your colleague's `stackpunk` repo (Gabi branch) has since verified the real schema against the actual data — `data/stackpunk-schema.md` there is now the authoritative reference, and every column name below matches it exactly:
+**This is someone else's dataset, not ours — download your own copy, don't fetch it via this repo.** The source is [`abbasmahdi-ai/ai-use-cases-library`](https://github.com/abbasmahdi-ai/ai-use-cases-library) on GitHub. It's MIT-licensed, but `data/use-cases.csv` is deliberately **gitignored** here rather than committed — everyone on the project should pull their own copy directly from the source repo (that's also the easiest way to get updates if the upstream data changes). If you use this dataset in research or publications, the upstream README asks for this citation:
 
-`CaseID, Organization, Use Case Title, Description, Org Industry, Use Case Industry, Subindustry Tags, Use Case Domain, Tools/Technologies, Outcomes & Benefits, Source URL, Source`
+```
+AI Use Cases Library. (2026).
+Retrieved from https://github.com/abbasmahdi-ai/ai-use-cases-library
+```
 
-Two things worth knowing about the data itself: `Tools/Technologies` is **semicolon-delimited** (`"OpenAI's Whisper API ; GPT-4 ; GPT-4 Vision"`), not comma-delimited as the dataset's own upstream doc implies — though as you'll see in Card 2.1, the alias-matching approach here doesn't actually need to split on the delimiter, so this is good background, not a blocker. `Outcomes & Benefits` is bullet-pointed prose (`•`-prefixed lines), not a short tag list — matters for Card 2.2's chunk text.
+**Column names are now real, not placeholders — but verify against your own file, not just this guide.** An earlier version of this guide had you print your CSV's columns and guess, because neither of us had the actual file yet. Your colleague's `stackpunk` repo (Gabi branch) verified a schema against the actual data — `data/stackpunk-schema.md` there was believed to be the authoritative reference — but running `print(pd.read_csv('data/use-cases.csv').columns)` against the real, current `data/use-cases.csv` turned up one mismatch worth flagging loudly:
 
-If you ever pull a fresh copy of the dataset and something looks different, re-verify with `print(pd.read_csv('data/use-cases.csv').columns)` rather than assuming this guide is still accurate — but as of this integration, it is.
+`CaseID, Organization, Use Case Title, Description, Org Industry, Use Case Industry, Subindustry Tags, Use Case Domain, Tool/Technology, Outcomes & Benefits, Source URL, Source`
+
+**Correction:** the tools column is `Tool/Technology` — **singular**, not `Tools/Technologies` (plural) as this guide originally said and as `stackpunk-schema.md` also states. This isn't a typo in one place; it was wrong everywhere: the intro above, Card 2.1's `TOOL_COLUMN` constant, and `scripts/validate_use_cases.py`'s required-columns list all originally assumed the plural form and would fail (`KeyError` / `Missing columns`) against the real file. All of those have been corrected — see Card 2.1 below and the "Common pitfalls" note.
+
+Two things worth knowing about the data itself: `Tool/Technology` is **semicolon-delimited** (`"OpenAI's Whisper API ; GPT-4 ; GPT-4 Vision"`), not comma-delimited as the dataset's own upstream doc implies — though as you'll see in Card 2.1, the alias-matching approach here doesn't actually need to split on the delimiter, so this is good background, not a blocker. `Outcomes & Benefits` is bullet-pointed prose (`•`-prefixed lines), not a short tag list — matters for Card 2.2's chunk text.
+
+If you ever pull a fresh copy of the dataset and something looks different, re-verify with `print(pd.read_csv('data/use-cases.csv').columns)` rather than assuming this guide is still accurate — that's exactly how the column-name error above was caught.
 
 ---
 
@@ -84,10 +93,13 @@ ALIAS_MAP = {
     "gemini-workspace":  ["gemini for workspace", "gemini in docs", "duet ai"],
     "gemini":            ["gemini", "bard"],
     "chatgpt":           ["chatgpt", "chat gpt"],
-    "openai-api":        ["openai api", "gpt-4", "gpt-3.5", "gpt4o", "gpt-4o"],
+    "openai-api":        ["openai api", "gpt-4", "gpt-3.5", "gpt4o", "gpt-4o",
+                           "gpt-5", "gpt-3", "openai o1", "openai deep research",
+                           "sora", "agents sdk", "realtime api"],
     "azure-openai":      ["azure openai", "azure open ai"],
     "ms-copilot":        ["microsoft copilot", "m365 copilot", "copilot for microsoft 365",
-                           "bing chat enterprise"],
+                           "microsoft 365 copilot", "bing chat enterprise"],
+    "copilot-studio":    ["copilot studio"],
     "github-copilot":    ["github copilot", "copilot for github"],
     "claude-api":        ["claude api", "anthropic api"],
     "claude":            ["claude", "claude.ai"],
@@ -106,6 +118,40 @@ ALIAS_MAP = {
     "chroma":            ["chromadb", "chroma"],
     "notion-ai":         ["notion ai"],
     "salesforce-einstein": ["einstein copilot", "salesforce einstein"],
+
+    # --- Added after the first real coverage pass came in at 46.8%, well under
+    # the 90% target below — this dataset leans heavily on named cloud/enterprise
+    # platforms that the starter list above (model/agent-framework focused)
+    # didn't cover at all. Still specific, named products, not generic technique
+    # words like "machine learning" or "RAG" — see the coverage note in Step 5. ---
+    "vertex-ai":         ["vertex ai"],
+    "ibm-watsonx":       ["watson", "ibm granite", "ibm research", "ibm ai@scale",
+                           "ibm instana"],  # "watson" also matches "watsonx"
+    "ibm-cloud":         ["ibm cloud"],
+    "google-cloud":      ["google cloud", "bigquery", "google kubernetes engine",
+                           "cloud run", "looker", "google workspace", "google vids"],
+    "azure-platform":    ["microsoft azure", "azure ai foundry", "azure ai services",
+                           "azure cognitive services", "azure machine learning",
+                           "azure synapse", "azure databricks", "microsoft fabric",
+                           "microsoft sentinel", "microsoft purview", "azure ai search",
+                           "azure ai", "azure", "microsoft ai"],
+    "aws-platform":      ["amazon sagemaker", "amazon s3", "amazon ec2", "aws lambda",
+                           "amazon dynamodb", "amazon redshift", "aws glue",
+                           "amazon connect", "amazon lex", "amazon rekognition",
+                           "amazon q", "amazon ads", "amazon emr", "amazon alexa",
+                           "amazon music", "amazon one", "aws"],
+    "nvidia":            ["nvidia", "cuda", "cudnn"],
+    "tensorflow":        ["tensorflow"],
+    "pytorch":           ["pytorch"],
+    "ms365-suite":       ["microsoft 365", "microsoft teams", "sharepoint", "outlook"],
+    "ms-dynamics":       ["dynamics 365", "dax copilot"],
+    "perplexity":        ["perplexity", "sonar pro", "sonar api"],
+    "google-ai":         ["notebooklm", "imagen", "veo", "google ai", "dialogflow",
+                           "agentspace", "google distributed cloud", "document ai",
+                           "security command center", "google security operations",
+                           "code assist"],
+    "flowforma":         ["flowforma"],
+    "nuance-dragon":     ["dragon medical one"],
 }
 
 # Junk values that appear in the raw data but carry no real signal.
@@ -135,11 +181,13 @@ def main():
     df = pd.read_csv(CSV_PATH)
 
     # Real column name, verified against the actual data (see the top of this
-    # guide): "Tools/Technologies", semicolon-delimited. normalise_tool_string
-    # does substring matching over the WHOLE cell, not a per-item split — so a
-    # multi-tool cell like "OpenAI's Whisper API ; GPT-4 ; GPT-4 Vision" still
-    # matches every phrase it contains without needing to split on ";" first.
-    TOOL_COLUMN = "Tools/Technologies"
+    # guide): "Tool/Technology" — SINGULAR, not "Tools/Technologies" as an
+    # earlier version of this guide (and stackpunk-schema.md) assumed. Still
+    # semicolon-delimited. normalise_tool_string does substring matching over
+    # the WHOLE cell, not a per-item split — so a multi-tool cell like
+    # "OpenAI's Whisper API ; GPT-4 ; GPT-4 Vision" still matches every phrase
+    # it contains without needing to split on ";" first.
+    TOOL_COLUMN = "Tool/Technology"
 
     df["canonical_tools"] = df[TOOL_COLUMN].apply(normalise_tool_string)
 
@@ -169,24 +217,29 @@ if __name__ == "__main__":
 python3 scripts/normalise_cases.py
 ```
 
-**4. Read the output.** You'll see something like:
+**4. Read the output.** With just the starter alias map above, the real run against the actual 3,023-row file came in at:
 
 ```
-Coverage: 74.3% of 3023 rows resolved to >=1 canonical tool.
-418 unmatched raw strings logged to data/unmatched_tools.log
+Coverage: 46.8% of 3023 rows resolved to >=1 canonical tool.
+1334 unmatched raw strings logged to data/unmatched_tools.log
 ```
+
+Far below target — the starter list is model/agent-framework focused, but the real dataset skews heavily toward named cloud/enterprise platforms (Vertex AI, IBM Watsonx, Azure, AWS, NVIDIA, Perplexity, etc.) that it doesn't cover at all. This isn't a sign something's broken; it's exactly the "iterate using the unmatched log" step below, just starting from a lower number than the example.
 
 **5. Improve the alias map using the unmatched log.** Open `data/unmatched_tools.log` — it's a plain list of every raw string that matched nothing. Skim it, spot patterns (e.g. you might see "Copilot Studio", "M365 Copilot for Sales" — both should map to `ms-copilot`), and add those phrases to `ALIAS_MAP`. Re-run the script. Repeat until coverage is **≥ 90%** — this back-and-forth *is* the actual work of this card; don't expect to nail it on the first pass.
 
+**Real outcome for this dataset: 88.7%, not ≥90%.** Three iterations of expanding `ALIAS_MAP` (the full expanded map above already reflects this) took coverage from 46.8% → 84.3% → 88.7%. Past that point, what's left in `data/unmatched_tools.log` is almost entirely generic, vendor-agnostic phrasing with no real product to map to — "AI", "generative AI", "machine learning", "not specified", "AI agents", "computer vision" — plus a few one-off bespoke descriptions that mention a vendor name incidentally (e.g. "on Amazon Kindle hardware") rather than as a named AI product. Forcing matches on those would inflate the coverage number while corrupting the tool-frequency data Cards 2.3/2.5 depend on. This is judged to be the guide's own stated exception in the pitfall below, not a shortfall to keep chasing — but it's a judgment call, not a hard rule, so revisit it if Cards 2.3–2.5 turn out to need better coverage than this.
+
 ### How to verify this card is done
 - `data/use-cases.csv` now has two extra columns added in place: `Use Case Domain (Canonical)` (from Step 0's `normalize_domains.py`) and `canonical_tools` (from this card's alias map). The original columns are untouched — nothing here forks a new file.
-- Terminal output shows coverage ≥ 90% for `canonical_tools`.
+- Terminal output shows coverage ≥ 90% for `canonical_tools` — **or, per the real-outcome note above, a documented reason it stopped short of that** (88.7% on this dataset).
 - `data/unmatched_tools.log` exists and is reasonably short (the remaining unmatched strings are genuinely junk, not real tools you missed).
 - `python3 scripts/validate_use_cases.py` (Step 0) exits with code 0 — if it doesn't, fix the data before trusting anything downstream.
 
 ### Common pitfalls
 - **Order-of-checking bug:** if `"gemini"` is checked before `"gemini for workspace"`, every Workspace mention gets miscategorised as plain Gemini. Keep specific phrases earlier in the dictionary, as shown above.
 - Don't aim for 100% coverage — some rows will genuinely say "AI" or "Not specified" with no recoverable tool. 90%+ is the target for a reason.
+- **Column name mismatch (`KeyError: 'Tools/Technologies'`).** The real column is `Tool/Technology`, singular — see the correction at the top of this guide. This also broke `scripts/validate_use_cases.py`'s required-columns check the same way; both are already fixed in the code shown here, but if you're working from an older copy of either file, re-check the column name first.
 
 ---
 
@@ -365,9 +418,23 @@ def main():
         })
         ids.append(f"chunk-{i}")
 
-    # add() will error on duplicate ids if you re-run — for a clean re-run, delete
-    # the ./chroma_store folder first, or switch to collection.upsert(...) instead.
-    collection.add(documents=documents, metadatas=metadatas, ids=ids)
+    # Chroma enforces a hard max batch size per add() call (client.get_max_batch_size(),
+    # e.g. 5461) — with 9,069 real chunks (3,023 cases x 3), a single add() call exceeds
+    # that and raises "Batch size of 9069 is greater than max batch size of 5461". This
+    # only surfaces once you run against the full real dataset, not on a small test —
+    # split into batches under the limit. add() will error on duplicate ids if you
+    # re-run — for a clean re-run, delete the ./chroma_store folder first, or switch
+    # to collection.upsert(...) instead.
+    max_batch_size = client.get_max_batch_size()
+    total = len(documents)
+    for start in range(0, total, max_batch_size):
+        end = min(start + max_batch_size, total)
+        collection.add(
+            documents=documents[start:end],
+            metadatas=metadatas[start:end],
+            ids=ids[start:end],
+        )
+        print(f"  added batch {start}-{end} of {total}")
 
     print(f"Embedded {collection.count()} chunks into Chroma at {CHROMA_PATH}")
 
@@ -383,7 +450,9 @@ if __name__ == "__main__":
     main()
 ```
 
-**3. Run it:**
+**3. Before running it, make sure `sentence-transformers` is actually installed** — it's a separate package from `chromadb`, not a dependency `chromadb` pulls in automatically. `embedding_functions.SentenceTransformerEmbeddingFunction` will raise `ModuleNotFoundError: No module named 'sentence_transformers'` at import time if it's missing. Add it to `requirements.txt` alongside `pandas`/`streamlit`/`chromadb` and `pip install -r requirements.txt` (or `pip install sentence-transformers` directly) before continuing.
+
+**4. Run it:**
 
 ```bash
 python3 scripts/embed_cases.py
@@ -393,11 +462,13 @@ The first run will download the `all-MiniLM-L6-v2` model (a few hundred MB) — 
 
 ### How to verify this card is done
 - `data/use_cases_chunks.jsonl` exists with **9,069 lines** (3,023 cases x 3 chunk types) — not 3,023. If you see 3,023, Step 1 didn't run, or you're looking at the wrong file.
-- Terminal prints `Embedded 9069 chunks into Chroma...`.
+- Terminal prints one `added batch ...` line per batch (2 batches for 9,069 chunks at a 5,461 max batch size), then `Embedded 9069 chunks into Chroma...`.
 - The "Top 5 matches" printout for the test query is *plausibly relevant* — e.g. querying about "customer service chatbot" returns chunks actually about customer service, not random unrelated ones. Expect to sometimes see 2-3 chunks from the *same* `case_id` (different `chunk_type`s) in one result set — that's normal here, and is exactly why Card 2.5 de-duplicates by `case_id` before ranking.
 - A `chroma_store/` folder now exists in your project.
 
 ### Common pitfalls
+- **`ModuleNotFoundError: No module named 'sentence_transformers'`.** Not covered by installing `chromadb` alone — see Step 3 above. Add it to `requirements.txt`.
+- **`chromadb.errors.InternalError: ... Batch size of 9069 is greater than max batch size of 5461`.** This is real, and will happen on the full dataset with a single un-batched `collection.add(...)` call — Chroma caps how many items one `add()` call can take (`client.get_max_batch_size()`). The code above already batches around this; if you're working from an older copy of this script that doesn't, add the batching loop shown here.
 - **Re-running `embed_cases.py` fails with a "duplicate ID" error.** This is expected — `add()` refuses to insert an id that already exists. Either delete `chroma_store/` before re-running during development (`rm -rf chroma_store`), or switch `collection.add(...)` to `collection.upsert(...)` once you're past initial testing.
 - **Chunk count is 3,023 instead of 9,069.** Step 1 (`chunk_use_cases.py`) didn't run, or ran against an older `use-cases.csv`. Re-run Step 1 first, then Step 2.
 - **`ast.literal_eval` throws an error in Step 1.** This means `canonical_tools` wasn't saved as a proper Python-list-looking string in Card 2.1's CSV — open `data/use-cases.csv` in a text editor and check what that column actually looks like. Card 2.1 must run before this card.
