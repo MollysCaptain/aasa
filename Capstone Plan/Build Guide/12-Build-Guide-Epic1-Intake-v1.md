@@ -73,7 +73,7 @@ This installs:
 - **streamlit** — turns a Python script into a web app (used in Epic 1 and 3).
 - **pandas** — reads and manipulates the CSV of AI deployment cases (Epic 2).
 - **chromadb** — the local vector database used for retrieval (Epic 2).
-- **openai** — calls the LLM for the summary text (Epic 2, Card 2.6).
+- **openai** — calls the LLM for the summary text (Epic 2, Card 2.6). Despite the name, this is the package we use to call **Groq** — Groq's API is OpenAI-compatible, so the same package works.
 - **python-dotenv** — safely loads secret API keys from a file instead of hardcoding them.
 
 This will take a minute or two. If you see a wall of text ending in something like `Successfully installed ...`, it worked.
@@ -88,14 +88,14 @@ This writes every installed package + version into `requirements.txt`, so anyone
 
 ### 0.6 Get an API key and store it safely
 
-Card 2.6 needs to call an LLM (e.g. OpenAI's API). To get a key:
+Card 2.6 needs to call an LLM. Neither of us has an OpenAI subscription, so this project uses **Groq** instead of OpenAI — same idea, and Groq's API is OpenAI-compatible, but with a free/very cheap tier and no billing setup required. To get a key:
 
-1. Go to [platform.openai.com/api-keys](https://platform.openai.com/api-keys), sign up/log in, click "Create new secret key", copy it. (You'll need billing set up on the account — a few dollars covers the whole project.)
+1. Go to [console.groq.com/keys](https://console.groq.com/keys), sign up/log in, create a key, copy it. No billing details needed.
 2. Back in Terminal, create a secrets file:
 
 ```bash
 touch .env
-echo "OPENAI_API_KEY=paste-your-key-here" >> .env
+echo "GROQ_API_KEY=paste-your-key-here" >> .env
 echo ".env" >> .gitignore
 echo "venv/" >> .gitignore
 ```

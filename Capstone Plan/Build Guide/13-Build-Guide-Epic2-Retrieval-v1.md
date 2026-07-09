@@ -256,7 +256,7 @@ We want to be able to ask "which real deployments are most similar to what this 
 - A **chunk** is one retrievable piece of text. This card uses **3 chunks per case** — Implementation (what they built), Outcome (what happened), Domain (industry/function) — instead of 1, so different question types (how vs. what-happened vs. who-else) each have a chunk written to match them well.
 - An **embedding** is a list of numbers (a vector) that represents the meaning of a piece of text. Similar meanings → similar numbers.
 - **Chroma** is a database built specifically to store embeddings and quickly find the closest ones to a new query.
-- We're using a **local HuggingFace sentence-transformers model** (`all-MiniLM-L6-v2`) to generate embeddings — no API key or cost, and it keeps the whole knowledge-base layer local. We save the OpenAI API budget for Card 2.6's summary-writing step. Naming the model explicitly (rather than relying on Chroma's implicit default, which happens to be the same model) means this is a provable shared decision with the colleague's branch, not a coincidence.
+- We're using a **local HuggingFace sentence-transformers model** (`all-MiniLM-L6-v2`) to generate embeddings — no API key or cost, and it keeps the whole knowledge-base layer local. We save the Groq API budget for Card 2.6's summary-writing step. Naming the model explicitly (rather than relying on Chroma's implicit default, which happens to be the same model) means this is a provable shared decision with the colleague's branch, not a coincidence.
 
 ### Step 1 — Generate the chunks
 
@@ -818,6 +818,10 @@ The LLM's *only* job is to turn already-decided facts (the ranked tools, the cos
 - **Temperature** controls randomness: `0` means "always pick the most likely next word" (fully deterministic, same input → same output every time); higher values add randomness for creative variety. Since this step's whole job is faithfully phrasing facts that are already decided — not being creative — `temperature=0` is the right setting, not just "low."
 - **An eval set** is a small, fixed list of representative test inputs you re-run every time you change a prompt, so you can compare "did this change make things better or worse?" on the same cases instead of eyeballing whatever you happen to type that day.
 
+### Which LLM API to use
+
+Neither of us has an OpenAI subscription, so this uses **Groq** instead of OpenAI — we already have keys for it, it has a free/very cheap tier (no billing setup required), and because Groq's API is OpenAI-compatible, the code below is almost identical to a plain OpenAI integration: same `openai` package, same `client.chat.completions.create(...)` call, just a different `base_url`, key, and model name.
+
 ### Step-by-step
 
 **1. Create the file:**
@@ -836,11 +840,11 @@ Cards 2.4/2.5 and simply handed to it as already-decided facts.
 """
 import os
 import time
-from openai import OpenAI
+from openai import OpenAI  # Groq's API is OpenAI-compatible — same client, different base_url
 from dotenv import load_dotenv
 
-load_dotenv()  # reads OPENAI_API_KEY from your .env file (see Epic 1, Section 0.6)
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+load_dotenv()  # reads GROQ_API_KEY from your .env file (see Epic 1, Section 0.6)
+client = OpenAI(api_key=os.environ["GROQ_API_KEY"], base_url="https://api.groq.com/openai/v1")
 
 SYSTEM_PROMPT = """You are a plain-language technical writer. You will be given:
 - a ranked list of recommended AI tools (already decided — do not change the order or add tools)
@@ -888,7 +892,7 @@ def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: lis
 
     start_time = time.perf_counter()
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="llama-3.3-70b-versatile",  # Groq-hosted model, swapped in for OpenAI's gpt-4o-mini
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": FEW_SHOT_EXAMPLE_USER},
@@ -983,7 +987,7 @@ Run it (`python3 scripts/eval_prompt.py`) and read every output, checking: plain
 - All 4+ eval-set cases above produce prose-only summaries, with no invented tools or prices, including the two edge cases.
 - `temperature=0` is set explicitly (not left at a default or a "low but nonzero" value) — check this is a step that phrases facts, not one that needs creative variety.
 - If you spot drift, tighten `SYSTEM_PROMPT` and re-run the *entire* eval set, not just the failing case.
-- `OPENAI_API_KEY` is read from `.env`, never hardcoded in `prompt.py`.
+- `GROQ_API_KEY` is read from `.env`, never hardcoded in `prompt.py`.
 
 ---
 
