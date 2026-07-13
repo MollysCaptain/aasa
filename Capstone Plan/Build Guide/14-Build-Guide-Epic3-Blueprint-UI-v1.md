@@ -105,12 +105,24 @@ def _render_case_references_block(matched_cases: list):
         title = case.get("title", "")
         industry = case.get("industry", "")
         url = case.get("source_url", "")
+        outcomes = case.get("outcomes", "")
         with st.container(border=True):
             st.markdown(f"**{org}** — {title}")
             st.caption(industry)
+            # "outcomes" is bullet-pointed prose from the dataset's own
+            # Outcomes & Benefits column (see 18-Build-Guide-Updates-Epic1-2-v1.md,
+            # Update B, for how this got wired through from Card 2.2/pipeline.py).
+            # Comparative review of a second prototype (aasa-proto2.lovable.app)
+            # showed reported outcomes per case in its trace step — this is our
+            # equivalent. Collapsed by default so the block stays scannable at 4 cases.
+            if outcomes:
+                with st.expander("Reported outcomes"):
+                    st.markdown(outcomes)
             if url:
                 st.markdown(f"[Source]({url})")
 ```
+
+**Requires Update B in `18-Build-Guide-Updates-Epic1-2-v1.md` to already be applied** (`app/pipeline.py`'s `matched_cases` dicts need an `outcomes` key) — if it isn't yet, `case.get("outcomes", "")` falls back to an empty string and the expander simply won't render, so this is safe to build against even before that update lands, but won't show anything until it does.
 
 **3. Wire it into `app/intake.py`.** Replace the temporary `st.json(st.session_state.result)` line from Card 1.4 (in the `if "result" in st.session_state:` block, **not** inside `if submitted:` — see Card 1.4's session-state note if that distinction is unfamiliar) with:
 
@@ -132,6 +144,7 @@ if "result" in st.session_state:
 
 ### Common pitfalls
 - `matched_cases` dicts should already contain `organization`/`title`/`industry`/`source_url`/`case_id`/`canonical_tools` out of the box — Card 2.2's chunk metadata (adopted from the colleague's `chunk_use_cases.py`, see `13-Build-Guide-Epic2-Retrieval-v1.md`) carries all of these per chunk, and the pipeline-wiring step copies them straight into each case dict. If a key is missing, check `app/pipeline.py`'s Step 1 first (it should read `meta["organization"]`, `meta["title"]`, etc. from the Chroma query results) before assuming Card 2.2 needs changes.
+- An `outcomes` key is also expected now (see the "Reported outcomes" expander above) — this one is *not* automatic the way the others are; it requires Update B in `18-Build-Guide-Updates-Epic1-2-v1.md` to have been applied to `scripts/chunk_use_cases.py`, `scripts/embed_cases.py`, and `app/pipeline.py` first, plus a re-embed (delete `./chroma_store` and re-run, or switch to `upsert`). Missing outcomes text is expected/safe (the expander just won't show) until that update lands.
 
 ---
 
