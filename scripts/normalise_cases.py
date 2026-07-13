@@ -34,6 +34,8 @@ UNMATCHED_LOG_PATH = "data/unmatched_tools.log"
 # (e.g. "gemini for workspace" must be checked before bare "gemini").
 ALIAS_MAP = {
     "gemini-workspace":  ["gemini for workspace", "gemini in docs", "duet ai"],
+    "gemini-api":        ["gemini api", "gemini pro api", "gemini 1.5 pro api",
+                           "generative language api"],
     "gemini":            ["gemini", "bard"],
     "chatgpt":           ["chatgpt", "chat gpt"],
     "openai-api":        ["openai api", "gpt-4", "gpt-3.5", "gpt4o", "gpt-4o",

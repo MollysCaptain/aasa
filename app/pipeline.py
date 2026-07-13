@@ -59,6 +59,7 @@ def run_pipeline(inputs: dict) -> dict:
             "industry": meta["industry"],
             "source_url": meta["source_url"],
             "canonical_tools": meta["canonical_tools"].split(",") if meta["canonical_tools"] else [],
+            "outcomes": meta["outcomes"],   # NEW — bullet-pointed prose, ready for Epic 3 to render
         })
 
     # Step 2: privacy filter + rank

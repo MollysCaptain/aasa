@@ -40,6 +40,7 @@ def chunk_use_cases(input_path: str = CSV_PATH, output_path: str = CHUNKS_PATH):
             "domain": domain,
             "tools": row["canonical_tools"],
             "source_url": row["Source URL"],
+            "outcomes": row["Outcomes & Benefits"],   # NEW — needed for Epic 3's trace display
         }
 
         # Chunk 1 — Implementation: what they built.

@@ -8,7 +8,7 @@
 
 ## Update A — Vendor/pricing coverage audit (Card 2.1 / 2.3)
 
-**Files:** `scripts/normalise_cases.py`, `app/logic/pricing.py`
+**Files:** `scripts/normalise_cases.py`, `app/logic/pricing.py`, `app/logic/filter.py`
 
 ### What prompted this
 The Lovable prototype's Case Library page displays raw vendor tags per case (`openai-api`, `chatgpt`, `sagemaker`, `bedrock`, `watsonx`, `anthropic-api`, `vertex-ai`, `gemini-api`, `llama`, `azure-ai-foundry`, `nvidia-ai-ent`, among others). Worth checking whether our own `ALIAS_MAP` (Card 2.1) and `PRICING` dict (Card 2.3) actually cover all of these.
@@ -54,9 +54,15 @@ In `app/logic/pricing.py`, add a matching entry (token-priced, same shape as `ve
 ```
 
 ### How to verify
-- Re-run `python3 scripts/normalise_cases.py`, confirm coverage % doesn't drop (it should hold or improve slightly — this only reclassifies rows that previously matched bare `"gemini"`).
-- `python3 -c "from scripts.normalise_cases import ALIAS_MAP; from app.logic.pricing import PRICING; print(set(ALIAS_MAP) - set(PRICING))"` should print `set()`, matching Card 2.3's existing cross-check.
-- Spot-check `data/unmatched_tools.log` doesn't newly include any Gemini-related string (would indicate the new phrase list needs adjusting).
+- Re-run `python3 scripts/normalise_cases.py`, confirm coverage % doesn't drop (it should hold or improve slightly — this only reclassifies rows that previously matched bare `"gemini"`). Verified: coverage held exactly at 88.7%.
+- `python3 -c "from scripts.normalise_cases import ALIAS_MAP; from app.logic.pricing import PRICING; print(set(ALIAS_MAP) - set(PRICING))"` should print `set()`, matching Card 2.3's existing cross-check. Verified: both files still import cleanly and the diff is `set()` in both directions.
+- Spot-check `data/unmatched_tools.log` doesn't newly include any Gemini-related string (would indicate the new phrase list needs adjusting). Verified: zero Gemini-related strings in the log after re-running.
+
+### Extra: `app/logic/filter.py` also needed a decision
+Every canonical id needs an explicit governability call in Card 2.5's `GOVERNABLE_FOR_REGULATED` set — the guide didn't mention `filter.py` for this update, but a new id can't be left unaddressed there without silently (and undocumentedly) defaulting to "not governable." Added `gemini-api` to the documented-exclusion list alongside `perplexity`/`google-ai`/`flowforma`: the standalone Gemini Developer API (AI Studio / `generativelanguage.googleapis.com`) has historically had different data-handling terms than the Vertex-AI-hosted Gemini (already covered, and governable, under `vertex-ai`) — same "fails closed until independently confirmed" reasoning as the other three.
+
+### Note: this update was lost once already
+The first implementation of this update (and Update B) was made directly in the working directory but never committed before a `git reset --hard` (resetting branch `Gabi` to match `main`) silently discarded it. Reapplied identically from the assistant's conversation history. **Lesson: commit each update to `Gabi` as soon as it's verified, before touching branches again** — uncommitted changes don't survive a hard reset, and git gives no warning when this happens.
 
 ---
 
@@ -121,8 +127,11 @@ In `run_pipeline()`'s Step 1 loop (currently lines 55–62):
 - `Outcomes & Benefits` is bullet-pointed prose, potentially a few hundred characters — fine for Chroma metadata (no size limit issue at this scale), but don't feed it raw into `app/logic/prompt.py`'s few-shot prompt without checking token budget if it's ever wired into Card 2.6's LLM call (it isn't currently — the LLM only sees `len(matched_cases)`, not their content — no change needed there).
 
 ### How to verify
-- After re-running Steps 1–2, `python3 -c "..."` a `collection.get(limit=1, include=['metadatas'])` call and confirm the returned metadata dict has a non-empty `outcomes` key.
-- A manual `run_pipeline(...)` call's `matched_cases[0]` should now contain an `outcomes` string alongside the existing five keys.
+- After re-running Steps 1–2, `python3 -c "..."` a `collection.get(limit=1, include=['metadatas'])` call and confirm the returned metadata dict has a non-empty `outcomes` key. Verified: real bullet-pointed outcome text present.
+- A manual `run_pipeline(...)` call's `matched_cases[0]` should now contain an `outcomes` string alongside the existing five keys. Verified: confirmed on a live Technology/standard/startup dry run.
+
+### Note: this update was lost once already
+Same as Update A above — the first implementation was uncommitted when `Gabi` was hard-reset to `main`, discarding it. Reapplied identically. Commit as soon as both updates are verified, before any further branch operations.
 
 ---
 
@@ -134,7 +143,7 @@ In `run_pipeline()`'s Step 1 loop (currently lines 55–62):
 The Lovable prototype's stated limitations note that its "company-size usage patterns are population-level (from the Stack Overflow survey), not per-case." Our `app/logic/cost.py` currently uses flat, hand-picked constants per org-size band (`ASSUMED_SEATS`, `ASSUMED_TOKEN_VOLUME_MM`) with no data source behind them at all — worth checking if we can do better, since `data/StackOverflow/schema.csv` is already sitting in the repo.
 
 ### Important finding before proposing a fix
-`data/StackOverflow/schema.csv` (147 rows, 102 unique question ids) is **only the survey's question schema — the question text and ids, not any actual respondent data.** The real response file, `data/StackOverflow/results.csv`, is already named in `.gitignore` (line 221) but isn't present in the repo — it needs to be downloaded separately, the same pattern already established for `data/use-cases.csv`. **This update can't be finished until that file is obtained;** what follows is the plan for once it is.
+`data/StackOverflow/schema.csv` (147 rows, 102 unique question ids) is **only the survey's question schema — the question text and ids, not any actual respondent data.** The real response file, `data/StackOverflow/results.csv`, is already named in `.gitignore` (line 221) but wasn't present in the repo when this doc was first written — it needed to be downloaded separately, the same pattern already established for `data/use-cases.csv`. **Update: `results.csv` has since been obtained** (49,191 rows) — see "Actual mapping and computed rates" below for the real numbers. The plan as originally written follows first, for the historical record.
 
 The most directly relevant question is **`QID16` / `OrgSize`**: *"Approximately how many people are employed by your employer?"* — a multiple-choice headcount-bracket question. There's no direct "monthly AI token spend" or "seats licensed" question in the schema (this is a developer-attitudes survey, not a billing survey), so the honest use of this data is as a **seat-utilization proxy** — cross-tabbing `OrgSize` against `QID78`/`AISelect` ("Do you currently use AI tools in your development process?") and `QID85`/`AIAgents` — not a literal per-seat cost figure. Don't overclaim precision here; the illustrative disclaimer in `pricing.py` still applies.
 
@@ -165,6 +174,46 @@ ASSUMED_SEATS = {
 
 (Exact numbers to be filled in once `results.csv` is downloaded and the crosstab is run — don't hardcode placeholder figures into the real file.)
 
+### Actual mapping and computed rates (now that `results.csv` is available)
+
+**Real `OrgSize` bracket labels** (not guessable from `schema.csv` alone, per the pitfall above): `"Just me - I am a freelancer, sole proprietor, etc."`, `"Less than 20 employees"`, `"20 to 99 employees"`, `"100 to 499 employees"`, `"500 to 999 employees"`, `"1,000 to 4,999 employees"`, `"5,000 to 9,999 employees"`, `"10,000 or more employees"`, plus `"I don't know"` and blank (both excluded from the crosstab).
+
+**Band mapping — a genuine judgment call, documented rather than hidden**, since the survey's bracket boundaries don't line up with our solo(1-4)/startup(5-49)/smb(50-249)/mid(250-999)/ent(1000+) bands:
+
+| Our band | Survey bracket(s) mapped to it |
+|---|---|
+| `solo` | "Just me - I am a freelancer, sole proprietor, etc." |
+| `startup` | "Less than 20 employees" |
+| `smb` | "20 to 99 employees" |
+| `mid` | "100 to 499 employees" + "500 to 999 employees" (combined) |
+| `ent` | "1,000 to 4,999" + "5,000 to 9,999" + "10,000 or more" (combined) |
+
+None of these are exact fits (e.g. "Less than 20" technically overlaps `solo`'s 1-4 range too), but this is the closest reasonable single-bracket-per-band assignment, and it's the same imprecision the Lovable prototype's own limitations text already owns up to for its side of this problem.
+
+**Adoption rate** = fraction of respondents in each mapped band answering "Yes" to `AISelect` ("Do you currently use AI tools in your development process?"), among those who gave a Yes/No-type answer (non-responses excluded from both numerator and denominator):
+
+| Band | Respondents (n) | Adoption rate |
+|---|---|---|
+| solo | 1,321 | 77.8% |
+| startup | 4,306 | 82.0% |
+| smb | 5,215 | 82.0% |
+| mid | 6,731 | 80.2% |
+| ent | 8,548 | 79.2% |
+
+All five bands have healthy sample sizes (>1,300 each) — no small-sample noise risk to flag here. Rates are fairly flat across bands (78-82%), so most of the differentiation between bands in the final numbers comes from the base-headcount assumption, not the adoption rate.
+
+**Final `ASSUMED_SEATS`**, using the base headcounts from the code sample above (4/20/150/600/3000) x these rates:
+
+| Band | Old flat value | New survey-grounded value |
+|---|---|---|
+| solo | 2 | 3 |
+| startup | 8 | 16 |
+| smb | 40 | 123 |
+| mid | 200 | 481 |
+| ent | 800 | 2,377 |
+
+This is a real, roughly 2-3x increase across every band — flagged to Gabi before implementing, decision: proceed with these numbers as-is.
+
 **4. `ASSUMED_TOKEN_VOLUME_MM` has no equivalent survey question to ground it against** (no token/usage-volume question exists in the schema) — leave as a hand-picked illustrative constant, but add a code comment saying so explicitly, so a future reader doesn't assume it's survey-derived when only the seat side is.
 
 ### Common pitfalls
@@ -173,6 +222,8 @@ ASSUMED_SEATS = {
 - If `results.csv` turns out to have too few respondents in a given `OrgSize` bracket for a stable rate (small-sample risk, same concern already documented in `17-Build-Guide-Package-Pitch-Week4-v1.md`'s trust-survey methodology), say so in a code comment rather than silently using a noisy number.
 
 ### How to verify
-- `data/StackOverflow/results.csv` exists locally (gitignored, not committed) and loads with `pd.read_csv`.
-- The crosstab script prints an adoption rate between 0 and 1 for each of the 5 mapped bands.
-- `estimate_cost(['ms-copilot'], 'ent')` produces a different (likely higher, given real enterprise AI-adoption rates) seat count than the current flat `800` — confirms the new numbers are actually wired in, not just computed and discarded.
+- `data/StackOverflow/results.csv` exists locally (gitignored, not committed) and loads with `pd.read_csv`. Verified: 49,191 rows.
+- The crosstab script (`scripts/map_stackoverflow_orgsize.py`) prints an adoption rate between 0 and 1 for each of the 5 mapped bands. Verified: 0.7782/0.8203/0.8199/0.8018/0.7922 for solo/startup/smb/mid/ent.
+- `estimate_cost(['ms-copilot'], 'ent')` produces a different (likely higher, given real enterprise AI-adoption rates) seat count than the current flat `800` — confirms the new numbers are actually wired in, not just computed and discarded. Verified: 2,377 seats, €71,310/mo (was 800 seats, €24,000/mo under the old flat constant).
+
+**Status: implemented and verified.** `scripts/map_stackoverflow_orgsize.py` created; `app/logic/cost.py`'s `ASSUMED_SEATS` replaced with the survey-grounded values and a comment showing the source numbers; `ASSUMED_TOKEN_VOLUME_MM` left unchanged with an explicit "not survey-derived" comment added, per point 4 above.
