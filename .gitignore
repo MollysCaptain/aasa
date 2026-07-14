@@ -234,3 +234,7 @@ data/use-cases.csv
 
 # macOS
 .DS_Store
+
+# Our PM slides
+PM_slides/
+AASA_Week2_Stakeholder_Checkin.pptx
