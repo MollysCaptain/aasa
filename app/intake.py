@@ -15,6 +15,7 @@ import streamlit as st
 from app.data.options import ORG_SIZES, PRIVACY_POSTURES, INDUSTRIES, WORKFLOWS
 from app.validators import validate_intake
 from app.pipeline import run_pipeline
+from app.dashboard import render_blueprint
 
 # --- Page setup: must be the first Streamlit command in the script ---
 st.set_page_config(
@@ -100,4 +101,4 @@ if submitted:
 # buttons inside the results view, those reruns would otherwise wipe the blueprint.
 if "result" in st.session_state:
     st.success("Blueprint ready — see below.")
-    st.json(st.session_state.result)  # Card 3.1 will replace this raw JSON dump with the real 3-block layout
+    render_blueprint(st.session_state.result)
