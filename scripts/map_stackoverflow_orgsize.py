@@ -22,10 +22,15 @@ import pandas as pd
 RESULTS_PATH = "data/StackOverflow/results.csv"
 
 # Real OrgSize bracket labels -> our 5 bands. Not a clean 1:1 mapping — the
-# survey's bracket boundaries don't line up with ours (solo 1-4 / startup
-# 5-49 / smb 50-249 / mid 250-999 / ent 1000+). This is a documented judgment
-# call, not a guess — see the guide doc's "Actual mapping and computed
-# rates" section for the reasoning.
+# survey's bracket boundaries don't line up with ours. Our real bands, per
+# app/data/options.py's ORG_SIZES (verified against that file directly, not
+# assumed): solo 1-4 / startup 5-20 / smb 21-200 / mid 201-1,000 / ent 1,000+.
+# (An earlier draft of this comment stated 5-49 / 50-249 / 250-999 here —
+# those are the aasa-proto2.lovable.app prototype's bands, not ours; the
+# team explicitly decided not to adopt that boundary scheme. Corrected during
+# Ash2 review — see 19-Ash2-Gabi-Integration-and-Band-Fix-v1.md.) This is a
+# documented judgment call, not a guess — see the guide doc's "Actual mapping
+# and computed rates" section for the reasoning.
 BAND_MAP = {
     "Just me - I am a freelancer, sole proprietor, etc.": "solo",
     "Less than 20 employees": "startup",

@@ -178,7 +178,7 @@ ASSUMED_SEATS = {
 
 **Real `OrgSize` bracket labels** (not guessable from `schema.csv` alone, per the pitfall above): `"Just me - I am a freelancer, sole proprietor, etc."`, `"Less than 20 employees"`, `"20 to 99 employees"`, `"100 to 499 employees"`, `"500 to 999 employees"`, `"1,000 to 4,999 employees"`, `"5,000 to 9,999 employees"`, `"10,000 or more employees"`, plus `"I don't know"` and blank (both excluded from the crosstab).
 
-**Band mapping — a genuine judgment call, documented rather than hidden**, since the survey's bracket boundaries don't line up with our solo(1-4)/startup(5-49)/smb(50-249)/mid(250-999)/ent(1000+) bands:
+**Band mapping — a genuine judgment call, documented rather than hidden**, since the survey's bracket boundaries don't line up with our real bands. **Correction (Ash2 review):** an earlier draft of this section stated our bands as solo(1-4)/startup(5-49)/smb(50-249)/mid(250-999)/ent(1000+) — those are `aasa-proto2.lovable.app`'s bands, not ours, and the team explicitly decided not to adopt that boundary scheme (see the original comparative-review response, point 4/5: "Ignore"). Our actual bands, per `app/data/options.py`'s `ORG_SIZES`: **solo 1-4 / startup 5-20 / smb 21-200 / mid 201-1,000 / ent 1,000+**. See `19-Ash2-Gabi-Integration-and-Band-Fix-v1.md` for the full writeup of this correction.
 
 | Our band | Survey bracket(s) mapped to it |
 |---|---|
@@ -188,7 +188,7 @@ ASSUMED_SEATS = {
 | `mid` | "100 to 499 employees" + "500 to 999 employees" (combined) |
 | `ent` | "1,000 to 4,999" + "5,000 to 9,999" + "10,000 or more" (combined) |
 
-None of these are exact fits (e.g. "Less than 20" technically overlaps `solo`'s 1-4 range too), but this is the closest reasonable single-bracket-per-band assignment, and it's the same imprecision the Lovable prototype's own limitations text already owns up to for its side of this problem.
+None of these are exact fits against our *real* bands either: "Less than 20" technically overlaps `solo`'s 1-4 range too, and — the more material one — "100 to 499" spans across our own `smb`/`mid` boundary (200/201), so respondents with 100-200 employees (who should count as `smb` under our own definition) get folded into the `mid` bucket here. The survey doesn't offer a bracket split at 200, so a single-bracket-per-band assignment can't avoid this; it's a disclosed limitation, not an error, but it does mean the `mid` band's adoption rate and seat count are computed from a slightly broader population (100+) than our own `mid` definition (201+) covers.
 
 **Adoption rate** = fraction of respondents in each mapped band answering "Yes" to `AISelect` ("Do you currently use AI tools in your development process?"), among those who gave a Yes/No-type answer (non-responses excluded from both numerator and denominator):
 
