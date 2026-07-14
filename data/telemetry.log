@@ -1,0 +1,12 @@
+{"event": "form_start", "timestamp": 1784042023.9443233}
+{"event": "results_shown", "timestamp": 1784042090.8823285, "elapsed_seconds": 66.9}
+{"event": "llm_summary_generated", "timestamp": 1784042090.8828232, "duration_seconds": 1.73, "prompt_tokens": 629, "completion_tokens": 933, "tokens_per_second": 539.3}
+{"event": "form_start", "timestamp": 1784042484.7248561}
+{"event": "results_shown", "timestamp": 1784042587.941771, "elapsed_seconds": 103.2}
+{"event": "llm_summary_generated", "timestamp": 1784042587.9420707, "duration_seconds": 1.5, "prompt_tokens": 612, "completion_tokens": 653, "tokens_per_second": 435.3}
+{"event": "export_clicked", "timestamp": 1784042596.190816}
+{"event": "form_start", "timestamp": 1784044062.85425}
+{"event": "results_shown", "timestamp": 1784044123.9243932, "elapsed_seconds": 61.1}
+{"event": "llm_summary_generated", "timestamp": 1784044123.9249477, "duration_seconds": 1.6, "prompt_tokens": 575, "completion_tokens": 577, "tokens_per_second": 360.6}
+{"event": "survey_submitted", "timestamp": 1784044147.0858, "trust_score": 4, "net_value": "Yes"}
+{"event": "export_clicked", "timestamp": 1784044150.6196017}
