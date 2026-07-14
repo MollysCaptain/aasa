@@ -25,7 +25,7 @@ Added `scripts/rebuild_knowledge_base.py`: deletes `chroma_store/` if present, t
 Being direct about what could and couldn't actually be "implemented" here:
 
 - **Chroma rebuild** — the *risk of doing it wrong* is fixed (the new script above). The *actual rebuild* is still outstanding and needs to happen on a machine that has `data/use-cases.csv`. This isn't something that can be completed from here.
-- **Re-confirming the seat-multiplier sign-off with Gabi** — this is a decision that belongs to her, not a file edit. It hasn't been "implemented" because there's nothing to implement — it needs her to actually look at the corrected bands (now fixed in `18-Build-Guide-Updates-Epic1-2-v1.md` and `scripts/map_stackoverflow_orgsize.py`) and say whether she'd still approve the same numbers. Flagging this as still open rather than marking it resolved.
+- **Re-confirming the seat-multiplier sign-off with Gabi** — **resolved.** She reviewed the corrected bands (`18-Build-Guide-Updates-Epic1-2-v1.md`, `scripts/map_stackoverflow_orgsize.py`) and confirmed she still agrees with the 2-3x `ASSUMED_SEATS` increase. No numbers changed as a result.
 
 ## 4. Everything else from the Lovable-comparison thread, for the record
 
