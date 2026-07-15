@@ -1,0 +1,12 @@
+flowchart TD
+    A[User submits 5-field form] --> B[Validate inputs]
+    B --> C[Retrieve comparable cases<br/>from Chroma vector store]
+    C --> D{Privacy posture?}
+    D -->|standard| E[Keep all matched tools]
+    D -->|regulated| F[Strip non-governable tools]
+    E --> G[Rank tools by evidence frequency]
+    F --> G
+    G --> H[Estimate cost:<br/>1 primary API + 1 assistant]
+    H --> I[LLM writes prose summary<br/>tools/prices already decided]
+    I --> J[Render 3-block blueprint]
+    J --> K[Export + trust survey]
