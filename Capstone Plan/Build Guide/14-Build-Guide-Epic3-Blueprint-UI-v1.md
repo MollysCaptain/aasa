@@ -428,9 +428,9 @@ This median is a fine quick check while you're still testing. For the final writ
 ## Epic 3 — Done Checklist
 - [x] The 3-block layout renders real data from the full pipeline, with evidence bars and clickable source links.
 - [x] A copy-able plain-text export of the full blueprint is visible below the blocks.
-- [ ] Every form-start, results-shown, and llm_summary_generated event is appended to `data/telemetry.log` with a timestamp.
-- [ ] The trust survey appears after every blueprint and logs `trust_score` + `net_value`.
-- [ ] You can compute average time-to-results, average LLM latency, and median trust score directly from the log file, with no external analytics tool.
-- [ ] Clicking the export button or submitting the trust survey does **not** make the blueprint disappear (session-state fix from Card 1.4/3.1).
+- [x] Every form-start, results-shown, and llm_summary_generated event is appended to `data/telemetry.log` with a timestamp.
+- [x] The trust survey appears after every blueprint and logs `trust_score` + `net_value`.
+- [x] You can compute average time-to-results, average LLM latency, and median trust score directly from the log file, with no external analytics tool.
+- [x] Clicking the export button or submitting the trust survey does **not** make the blueprint disappear (session-state fix from Card 1.4/3.1).
 
 **At this point, all 14 build cards are complete and wired together end-to-end** — form → validated inputs → retrieval → privacy filter → ranking → cost → LLM summary → 3-block display → export → telemetry → trust survey. This is the point in the 4-week action plan where Week 3's "wire full pipeline; polish 3-block output; telemetry" milestone is done, and you're ready for real user testing.
