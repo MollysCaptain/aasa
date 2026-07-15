@@ -4,14 +4,30 @@ Deliberately estimates ONE primary API + ONE assistant tool, never the sum of ev
 """
 from app.logic.pricing import PRICING, ILLUSTRATIVE_DISCLAIMER
 
-# Rough seat-count assumption per org-size band — used only for seat-priced tools.
-# These are directional assumptions for an illustrative estimate, not a real headcount lookup.
+# Seat-count assumption per org-size band — used only for seat-priced tools.
+# Was a flat hand-picked constant per band; now grounded in the Stack Overflow
+# Developer Survey (data/StackOverflow/results.csv, QID16/OrgSize x QID78/
+# AISelect), computed by scripts/map_stackoverflow_orgsize.py. This is a
+# seat-UTILIZATION PROXY (base headcount assumption x real AI-tool-adoption
+# rate for that org-size band) — the survey has no billing/seats-licensed
+# question at all, so this still isn't a real headcount lookup, just a less
+# arbitrary one. See 18-Build-Guide-Updates-Epic1-2-v1.md, Update C, for the
+# full band-mapping reasoning and source numbers.
+#   solo:    4 headcount x 0.7782 adoption rate (n=1,321) = 3
+#   startup: 20 headcount x 0.8203 adoption rate (n=4,306) = 16
+#   smb:     150 headcount x 0.8199 adoption rate (n=5,215) = 123
+#   mid:     600 headcount x 0.8018 adoption rate (n=6,731) = 481
+#   ent:     3000 headcount x 0.7922 adoption rate (n=8,548) = 2377
 ASSUMED_SEATS = {
-    "solo": 2, "startup": 8, "smb": 40, "mid": 200, "ent": 800,
+    "solo": 3, "startup": 16, "smb": 123, "mid": 481, "ent": 2377,
 }
 
 # Rough monthly token-volume assumption (in millions of tokens) per org-size band —
 # used only for token-priced tools. Split roughly 3:1 input:output, a common ratio.
+# NOTE: unlike ASSUMED_SEATS above, this one is NOT survey-derived — the Stack
+# Overflow survey has no token/usage-volume question of any kind to ground it
+# against (checked as part of Update C). Still a hand-picked illustrative
+# constant; don't assume it shares the same evidentiary basis as the seat side.
 ASSUMED_TOKEN_VOLUME_MM = {
     "solo": 2, "startup": 10, "smb": 50, "mid": 250, "ent": 1000,
 }

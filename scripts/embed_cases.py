@@ -46,6 +46,7 @@ def main():
             "domain": str(meta["domain"]),
             "canonical_tools": ",".join(meta["tools"]),  # Chroma metadata must be simple types
             "source_url": str(meta["source_url"]),
+            "outcomes": str(meta["outcomes"]),   # NEW
             "chunk_type": meta["chunk_type"],
         })
         ids.append(f"chunk-{i}")

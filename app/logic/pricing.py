@@ -23,6 +23,7 @@ PRICING = {
     "github-copilot":    {"label": "GitHub Copilot Business",      "kind": "Coding assistant",     "model": "seat",  "seat_pm": 19.0},
     "gemini":            {"label": "Gemini (consumer)",            "kind": "AI assistant",         "model": "seat",  "seat_pm": 0.0},
     "gemini-workspace":  {"label": "Gemini for Google Workspace",  "kind": "AI assistant (SaaS)",  "model": "seat",  "seat_pm": 20.0},
+    "gemini-api":        {"label": "Google Gemini API",            "kind": "LLM API",              "model": "token", "in_ppm": 1.25, "out_ppm": 5.0, "note": "Illustrative; Gemini has multiple tiered models with different per-token rates — verify against the specific model before quoting."},
     "claude":            {"label": "Claude.ai (consumer/Pro)",     "kind": "AI assistant",         "model": "seat",  "seat_pm": 18.0},
     "notion-ai":         {"label": "Notion AI",                    "kind": "AI assistant (SaaS)",  "model": "seat",  "seat_pm": 8.0},
     "salesforce-einstein": {"label": "Salesforce Einstein Copilot", "kind": "AI assistant (SaaS)", "model": "seat",  "seat_pm": 50.0},

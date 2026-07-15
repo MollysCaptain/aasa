@@ -34,6 +34,14 @@ GOVERNABLE_FOR_REGULATED = {
     #                   with consumer-facing tools (NotebookLM, Imagen, Veo)
     #   "flowforma"   — plausibly governable (markets itself at regulated
     #                   industries) but not independently verified here
+    #   "gemini-api"  — added in the Epic 1/2 updates doc (Update A) for the
+    #                   standalone Gemini Developer API (generativelanguage.
+    #                   googleapis.com / AI Studio), which historically has
+    #                   different data-handling terms than the Vertex-AI-hosted
+    #                   Gemini (already covered, and governable, under
+    #                   "vertex-ai"). Same ambiguity class as "perplexity" —
+    #                   fails closed until the DPA terms of this specific
+    #                   surface are independently confirmed.
 }
 
 

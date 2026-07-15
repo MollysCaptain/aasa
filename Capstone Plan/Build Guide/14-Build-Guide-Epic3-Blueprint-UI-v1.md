@@ -426,8 +426,8 @@ This median is a fine quick check while you're still testing. For the final writ
 ---
 
 ## Epic 3 — Done Checklist
-- [ ] The 3-block layout renders real data from the full pipeline, with evidence bars and clickable source links.
-- [ ] A copy-able plain-text export of the full blueprint is visible below the blocks.
+- [x] The 3-block layout renders real data from the full pipeline, with evidence bars and clickable source links.
+- [x] A copy-able plain-text export of the full blueprint is visible below the blocks.
 - [ ] Every form-start, results-shown, and llm_summary_generated event is appended to `data/telemetry.log` with a timestamp.
 - [ ] The trust survey appears after every blueprint and logs `trust_score` + `net_value`.
 - [ ] You can compute average time-to-results, average LLM latency, and median trust score directly from the log file, with no external analytics tool.
