@@ -118,7 +118,3 @@ if "result" in st.session_state:
     st.success("Blueprint ready — see below.")
     render_blueprint(st.session_state.result)
     render_trust_survey()
-
-    if st.button("✅ I've copied my blueprint"):
-        log_event("export_clicked")
-        st.success("Noted — thanks!")

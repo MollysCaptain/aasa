@@ -23,8 +23,8 @@ def render_blueprint(result: dict):
     st.divider()
     st.markdown("### 📋 Export")
     blueprint_text = blueprint_to_text(result)
+    st.caption("Hover the code block below and click the copy icon in the top-right corner.")
     st.code(blueprint_text, language=None)
-    st.caption("Hover the code block above and click the copy icon in the top-right corner.")
 
 
 def _render_stack_block(ranked_tools: list, matched_cases: list):
