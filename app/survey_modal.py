@@ -8,7 +8,12 @@ from app.analytics.tracker import log_event
 
 
 def render_trust_survey():
-    st.markdown("### 🙋 Quick check")
+    st.markdown("### 🙋 Feedback")
+
+    if st.button("✅ I've copied my blueprint"):
+        log_event("export_clicked")
+        st.success("Noted — thanks!")
+
     with st.form("trust_survey_form"):
         trust_score = st.slider(
             "How much do you trust this recommendation?",
