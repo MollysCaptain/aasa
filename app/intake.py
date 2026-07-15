@@ -18,7 +18,7 @@ from app.validators import validate_intake
 from app.pipeline import run_pipeline
 from app.dashboard import render_blueprint
 from app.analytics.tracker import log_event
-
+from app.survey_modal import render_trust_survey
 
 # --- Page setup: must be the first Streamlit command in the script ---
 st.set_page_config(
@@ -117,6 +117,7 @@ if submitted:
 if "result" in st.session_state:
     st.success("Blueprint ready — see below.")
     render_blueprint(st.session_state.result)
+    render_trust_survey()
 
     if st.button("✅ I've copied my blueprint"):
         log_event("export_clicked")
