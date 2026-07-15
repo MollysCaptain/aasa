@@ -8,11 +8,11 @@ from app.analytics.tracker import log_event
 
 
 def render_trust_survey():
-    st.markdown("### 🙋 Feedback")
-
     if st.button("✅ I've copied my blueprint"):
         log_event("export_clicked")
         st.success("Noted — thanks!")
+
+    st.markdown("### 🙋 Feedback")
 
     with st.form("trust_survey_form"):
         trust_score = st.slider(
