@@ -67,7 +67,10 @@ def run_pipeline(inputs: dict) -> dict:
     ranked_tools = rank_tools_by_frequency(filtered_cases, top_n=5)
 
     # Step 3: cost
-    cost_forecast = estimate_cost(ranked_tools, inputs["org_size"])
+    # Update D: budget is now actually passed through — previously it was
+    # captured on the intake form and validated but never read again, so the
+    # forecast could come back many multiples over budget with no flag at all.
+    cost_forecast = estimate_cost(ranked_tools, inputs["org_size"], inputs["budget"])
 
     # Step 4: summary.
     # Card 2.6 was tested by feeding generate_summary raw canonical ids
@@ -84,6 +87,12 @@ def run_pipeline(inputs: dict) -> dict:
         "assistant": {**cost_forecast["assistant"], "tool": _to_label(cost_forecast["assistant"]["tool"])}
                      if cost_forecast["assistant"] else None,
         "disclaimer": cost_forecast["disclaimer"],
+        # Update D — pass the budget-fit fields through too, so Card 2.6 can
+        # honestly flag an over-budget forecast instead of describing it neutrally.
+        "total_monthly_eur": cost_forecast["total_monthly_eur"],
+        "budget": cost_forecast["budget"],
+        "within_budget": cost_forecast["within_budget"],
+        "budget_delta_eur": cost_forecast["budget_delta_eur"],
     }
     summary = generate_summary(ranked_tool_labels, cost_forecast_for_prompt, filtered_cases, inputs["privacy"])
 

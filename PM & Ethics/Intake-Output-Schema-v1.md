@@ -45,29 +45,47 @@ Example: `["openai-api", "chatgpt", "github-copilot"]`
   "primary_api": { "tool": str, "model": "token"|"seat"|"compute"|"free",
                     "monthly_eur": float|None, "assumption": str } | None,
   "assistant":   { same shape } | None,
-  "disclaimer":  str
+  "disclaimer":  str,
+  "total_monthly_eur": float|None,
+  "budget": float|None,
+  "within_budget": bool|None,
+  "budget_delta_eur": float|None
 }
 ```
 
-(`estimate_cost()`, `13-Build-Guide-Epic2-Retrieval-v1.md:672–690`.) When a tool has no pricing entry, or is `"compute"`/`"free"`-priced, its sub-dict has `"monthly_eur": None` and a `"note"` key instead of `"assumption"` (`...:645–667`).
+(`estimate_cost()`, `13-Build-Guide-Epic2-Retrieval-v1.md:672–690`, updated by Update D in `18-Build-Guide-Updates-Epic1-2-v1.md`.) When a tool has no pricing entry, or is `"compute"`/`"free"`-priced, its sub-dict has `"monthly_eur": None` and a `"note"` key instead of `"assumption"` (`...:645–667`).
 
-Worked example (startup, `["openai-api", "chatgpt", "langchain"]`):
+**The last four keys are new (Update D)** — previously `budget` was collected on the intake form and validated (`> 0`) but never read again anywhere downstream; the forecast could come back many multiples over budget with no comparison or flag at all. Now:
+- `total_monthly_eur` — sum of whichever of `primary_api`/`assistant` are actually costed (skips `None`/uncosted entries). `None` if nothing was costed.
+- `budget` — passed straight through from the intake form for convenience at render/prompt time.
+- `within_budget` — `total_monthly_eur <= budget`, or `None` if either side is `None` (e.g. an ad-hoc call to `estimate_cost()` that didn't pass a budget).
+- `budget_delta_eur` — `budget - total_monthly_eur` (negative when over budget), or `None` under the same conditions as above.
+
+**Important: this is comparison-only, not budget-fitting.** `estimate_cost()` never drops or swaps tools to force a result under budget — the ranked tool list is Card 2.5's decision, not this card's. The forecast can still legitimately come back over budget; the point of these fields is to make that visible and honest (in the UI and in Card 2.6's summary) rather than silent.
+
+Worked example (startup, `["openai-api", "chatgpt", "langchain"]`, budget €1200):
 
 ```json
 {
   "primary_api": {
-    "tool": "openai-api", "model": "token", "monthly_eur": 262.5,
+    "tool": "openai-api", "model": "token", "monthly_eur": 43.75,
     "assumption": "~10M tokens/mo (75% in / 25% out) at €2.5/€10.0 per M tokens"
   },
   "assistant": {
-    "tool": "chatgpt", "model": "seat", "monthly_eur": 480.0,
-    "assumption": "8 seats x €60.0/seat/mo"
+    "tool": "chatgpt", "model": "seat", "monthly_eur": 960.0,
+    "assumption": "16 seats x €60.0/seat/mo"
   },
-  "disclaimer": "Pricing shown is illustrative and may be out of date. Always verify current pricing on the vendor's official page before budgeting."
+  "disclaimer": "Pricing shown is illustrative and may be out of date. Always verify current pricing on the vendor's official page before budgeting.",
+  "total_monthly_eur": 1003.75,
+  "budget": 1200,
+  "within_budget": true,
+  "budget_delta_eur": 196.25
 }
 ```
 
-**Rule, not a detail:** at most one `primary_api` (the first token-priced tool in the ranked list) and one `assistant` (the first seat-priced tool) — deliberately never a sum across every recommended tool (`...:672–676`, and originally called out as a mistake to avoid in `08-Technical-Work-Breakdown-v2.md`).
+**Rule, not a detail:** at most one `primary_api` (the first token-priced tool in the ranked list) and one `assistant` (the first seat-priced tool) — deliberately never a sum-per-tool across every recommended tool (`...:672–676`, and originally called out as a mistake to avoid in `08-Technical-Work-Breakdown-v2.md`). `total_monthly_eur` is a sum of just these two figures, not a change to that rule.
+
+**Also new (Update D): seat counts are now capped by a `SEAT_CEILING` (currently 25) regardless of org-size band** — see `app/logic/cost.py` and Update D for why (a flat per-org-size seat assumption was costing a single-workflow query, e.g. "Customer Service," as if the whole company adopted the tool).
 
 ### C. Case references — `matched_cases`
 
@@ -105,10 +123,8 @@ Full return shape:
 
 ## Implementation status (check before trusting the live code)
 
-The schema above is the **target contract** — what Cards 1.1–1.4 and Epic 2 are building toward, per the Epic 2 guide's own "Wiring Epic 2 into the pipeline" section. As of this writing, the checked-in `app/pipeline.py` is still **Epic 1's placeholder**, not this shape:
+Epics 1–3 are all wired in and merged into `Ash2` — this doc now matches the live `app/pipeline.py`/`app/logic/cost.py`/`app/logic/prompt.py`, not Epic 1's original placeholder. (This section previously described the placeholder pipeline from before Epic 2 was wired in; corrected here as a housekeeping fix while this file was open for Update D, since it had gone stale without anyone noticing.)
 
-- `matched_cases = []` always (no retrieval wired in yet).
-- `cost_forecast = {"primary_api_monthly": None, "assistant_monthly": None}` — old placeholder keys, not the real `primary_api`/`assistant`/`disclaimer` shape above.
-- No `llm_metrics` key at all yet.
-
-Update this note (or delete it) once Epic 2's cards are actually wired into `pipeline.py` and the live output matches this doc — until then, treat this file as the spec, not a description of current behaviour.
+Known, disclosed limitations of the current implementation, as of Update D:
+- `total_monthly_eur`/`within_budget`/`budget_delta_eur` compare the forecast against budget but never alter tool selection to force a fit — an over-budget result is a legitimate, honestly-flagged outcome, not a bug to hide.
+- `SEAT_CEILING` (25, in `app/logic/cost.py`) is a flat, hand-picked stopgap applied uniformly regardless of workflow — not a real per-workflow headcount estimate. See Update D in `18-Build-Guide-Updates-Epic1-2-v1.md` for the fuller "workflow-fraction table" alternative (Option A) that was considered and deliberately deferred.
