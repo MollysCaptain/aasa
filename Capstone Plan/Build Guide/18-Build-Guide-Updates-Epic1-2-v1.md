@@ -268,6 +268,6 @@ Re-running the exact reported scenario's tool ranking (`['ibm-watsonx', 'vertex-
 ### How to verify
 - `estimate_cost(['ibm-watsonx', 'vertex-ai'], 'mid', budget=1800)` returns `total_monthly_eur: 4046.88`, `within_budget: False`, `budget_delta_eur: -2246.88`. Verified.
 - `estimate_cost(['openai-api', 'chatgpt', 'langchain'], 'startup')` (no budget arg) still runs unchanged and returns `within_budget: None`, `budget_delta_eur: None` — confirms old call sites aren't broken. Verified.
-- A live Streamlit run of the original reported scenario should now show a Cost Forecast in the low thousands, not tens of thousands, and the summary text should explicitly say it's over budget and by roughly how much. **Not yet re-verified live in the running app — see the companion build guide for this step, to be done by Ash.**
+- A live Streamlit run of the original reported scenario should now show a Cost Forecast in the low thousands, not tens of thousands, and the summary text should explicitly say it's over budget and by roughly how much. **Verified live** — Ash re-ran the exact reported scenario in a running Streamlit session; the resulting numbers were very close to the unit-tested prediction (€4,046.88/mo total, €2,246.88 over the €1,800 budget), and the summary text disclosed the over-budget result plainly.
 
-**Status: implemented, unit-verified. Live Streamlit re-test still pending — see `21-Build-Guide-Budget-Fix-Verification-v1.md`.**
+**Status: implemented and verified, including a live Streamlit re-test.** See `21-Build-Guide-Budget-Fix-Verification-v1.md` for the verification steps and remaining housekeeping (diagram re-render, `SEAT_CEILING` sanity-check, board update).

@@ -4,9 +4,9 @@
 
 ---
 
-## 1. Re-test the original scenario in the live Streamlit app
+## 1. Re-test the original scenario in the live Streamlit app — DONE
 
-The code-level fix is unit-verified (see Update D's "How to verify" section), but hasn't been re-run through the actual running app yet. Steps:
+**Confirmed by Ash:** re-ran the exact reported scenario in a running Streamlit session; the numbers came back very close to what the unit-level fix predicted (a low-thousands total, not tens of thousands), and the summary text disclosed the over-budget result plainly. Steps taken, for the record:
 
 1. Pull the latest `Ash2` branch, rebuild the chroma store if you haven't already this session (`python3 scripts/rebuild_knowledge_base.py`), and start Streamlit as usual.
 2. Re-enter the exact scenario that surfaced this bug: **Customer Service** workflow, **Mid-Market (201–1,000 people)** org size, **Energy & Utilities** industry, **Regulated** privacy posture, **€1,800/month** budget.
