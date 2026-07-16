@@ -10,3 +10,22 @@
 {"event": "llm_summary_generated", "timestamp": 1784044123.9249477, "duration_seconds": 1.6, "prompt_tokens": 575, "completion_tokens": 577, "tokens_per_second": 360.6}
 {"event": "survey_submitted", "timestamp": 1784044147.0858, "trust_score": 4, "net_value": "Yes"}
 {"event": "export_clicked", "timestamp": 1784044150.6196017}
+{"event": "form_start", "timestamp": 1784207617.8696618}
+{"event": "form_start", "timestamp": 1784207953.792256}
+{"event": "form_start", "timestamp": 1784207953.9384544}
+{"event": "form_start", "timestamp": 1784209316.54799}
+{"event": "form_start", "timestamp": 1784209639.1159987}
+{"event": "form_start", "timestamp": 1784209775.0101724}
+{"event": "results_shown", "timestamp": 1784209879.9126835, "elapsed_seconds": 104.9}
+{"event": "llm_summary_generated", "timestamp": 1784209879.9128184, "duration_seconds": 1.61, "prompt_tokens": 620, "completion_tokens": 609, "tokens_per_second": 378.3}
+{"event": "survey_submitted", "timestamp": 1784209916.9747787, "trust_score": 3, "net_value": "Yes"}
+{"event": "export_clicked", "timestamp": 1784209928.1113338}
+{"event": "results_shown", "timestamp": 1784209952.2556076, "elapsed_seconds": 177.2}
+{"event": "llm_summary_generated", "timestamp": 1784209952.2561836, "duration_seconds": 1.01, "prompt_tokens": 618, "completion_tokens": 692, "tokens_per_second": 685.1}
+{"event": "form_start", "timestamp": 1784214154.4144192}
+{"event": "results_shown", "timestamp": 1784214161.169877, "elapsed_seconds": 6.8}
+{"event": "llm_summary_generated", "timestamp": 1784214161.1707542, "duration_seconds": 0.82, "prompt_tokens": 612, "completion_tokens": 452, "tokens_per_second": 551.2}
+{"event": "form_start", "timestamp": 1784214483.7976825}
+{"event": "results_shown", "timestamp": 1784215195.3405244, "elapsed_seconds": 711.5}
+{"event": "llm_summary_generated", "timestamp": 1784215195.3409858, "duration_seconds": 1.56, "prompt_tokens": 612, "completion_tokens": 588, "tokens_per_second": 376.9}
+{"event": "form_start", "timestamp": 1784229897.652045}
