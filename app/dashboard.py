@@ -7,6 +7,7 @@ Block C: Real case references (source-linked)
 import streamlit as st
 from app.logic.pricing import PRICING
 from app.export import blueprint_to_text
+from app.survey_modal import render_copy_confirmation
 
 
 def render_blueprint(result: dict):
@@ -25,6 +26,7 @@ def render_blueprint(result: dict):
     blueprint_text = blueprint_to_text(result)
     st.caption("Hover the code block below and click the copy icon in the top-right corner.")
     st.code(blueprint_text, language=None)
+    render_copy_confirmation()
     st.divider()
     _render_methodology_block()
 
