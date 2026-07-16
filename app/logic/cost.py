@@ -122,3 +122,17 @@ def estimate_cost(recommended_tools: list[str], org_size_key: str, budget: float
         "within_budget": within_budget,
         "budget_delta_eur": budget_delta_eur,
     }
+
+
+def estimate_all_tool_costs(recommended_tools: list[str], org_size_key: str) -> dict:
+    """
+    Update E (Card 3.1 UI support) — unlike estimate_cost()'s "one primary API +
+    one assistant, never the sum" rule, this costs EVERY tool in the ranked list,
+    keyed by canonical id. Block A uses this to show a per-tool monthly price
+    instead of just the two winning picks. Reuses _cost_for_tool() exactly as-is
+    (same seat ceiling, same token-volume assumption, same illustrative caveats)
+    — this is a display convenience for browsing the ranked list, not a second
+    pricing model, and it does not change what estimate_cost() decides is the
+    blueprint's headline primary_api/assistant pair.
+    """
+    return {tool_id: _cost_for_tool(tool_id, org_size_key) for tool_id in recommended_tools}

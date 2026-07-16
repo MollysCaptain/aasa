@@ -9,7 +9,7 @@ Epic 2 is now wired in for real:
 import chromadb
 from chromadb.utils import embedding_functions
 from app.logic.filter import apply_privacy_filter, rank_tools_by_frequency
-from app.logic.cost import estimate_cost
+from app.logic.cost import estimate_cost, estimate_all_tool_costs
 from app.logic.prompt import generate_summary
 from app.logic.pricing import PRICING
 
@@ -72,6 +72,11 @@ def run_pipeline(inputs: dict) -> dict:
     # forecast could come back many multiples over budget with no flag at all.
     cost_forecast = estimate_cost(ranked_tools, inputs["org_size"], inputs["budget"])
 
+    # Update E (Card 3.1 UI): per-tool costs for every ranked tool, not just the
+    # winning primary_api/assistant pair — lets Block A show a price under each
+    # recommendation instead of just the pricing-model label.
+    tool_costs = estimate_all_tool_costs(ranked_tools, inputs["org_size"])
+
     # Step 4: summary.
     # Card 2.6 was tested by feeding generate_summary raw canonical ids
     # (e.g. "ms-copilot") — the model doesn't reliably translate those to
@@ -99,6 +104,7 @@ def run_pipeline(inputs: dict) -> dict:
     return {
         "recommended_stack": ranked_tools,
         "cost_forecast": cost_forecast,
+        "tool_costs": tool_costs,
         "matched_cases": filtered_cases,
         "summary_text": summary["text"],
         # Card 3.3 logs this to telemetry once tracker.py exists — see that card.

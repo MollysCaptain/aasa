@@ -100,12 +100,13 @@ Worked example (startup, `["openai-api", "chatgpt", "langchain"]`, budget €120
 
 **Correction to the task's draft template:** the field is `organization`, not `org`.
 
-**On "up to 4":** the pipeline itself does not cap this list — it returns every case that survived de-dup (one entry per `case_id`) and the privacy filter, from an initial retrieval of 15 chunks (`...:988–1000`). The **4-case cap is UI-only** — both the results page and the export view independently slice `matched_cases[:4]` for display, "per the prototype's own convention" (`14-Build-Guide-Epic3-Blueprint-UI-v1.md:103, 181`). So: Cards 1.1–1.4/Epic 2 should pass through the *full* filtered list; Epic 3 does the slicing to 4, not the pipeline.
+**On "up to 4":** the pipeline itself does not cap this list — it returns every case that survived de-dup (one entry per `case_id`) and the privacy filter, from an initial retrieval of 15 chunks (`...:988–1000`). The **4-case cap is UI-only**. **Update F correction:** this used to be a fixed slice in both places; as of Update F, the results page has a 4/8/All toggle (`app/dashboard.py`, `_render_case_references_block()`) while the export view (`app/export.py`) deliberately stays fixed at `matched_cases[:4]` regardless of what's toggled on-screen, so the exported blueprint text is always predictable. So: Cards 1.1–1.4/Epic 2 should pass through the *full* filtered list; Epic 3 does the slicing everywhere, not the pipeline.
 
 ### Also part of the output (not one of the 3 "blocks," but real)
 
 - **`summary_text`** (`str`) — the LLM-generated plain-English paragraph from Card 2.6, rendered above Block A (`intake.py`-era pattern; `14-Build-Guide-Epic3-Blueprint-UI-v1.md:45`).
 - **`llm_metrics`** (`dict`) — `{"duration_seconds": float, "prompt_tokens": int, "completion_tokens": int, "tokens_per_second": float|None}`, straight from `generate_summary()`'s return value, kept for Card 3.3's telemetry log (`13-Build-Guide-Epic2-Retrieval-v1.md:1032–1064`).
+- **`tool_costs`** (`dict`, new in Update E) — `{canonical_tool_id: {"tool": str, "model": str, "monthly_eur": float|None, "assumption"|"note": str}}`, one entry per tool in `recommended_stack` (not just the two winning `cost_forecast` picks), from `estimate_all_tool_costs()` in `app/logic/cost.py`. Powers Block A's per-tool price display — see Update E in `18-Build-Guide-Updates-Epic1-2-v1.md` (or the Epic 3 updates doc, once created) for why this needed to exist separately from `cost_forecast`. Not sent to Card 2.6's LLM prompt — the model still only ever describes the single decided `primary_api`/`assistant` pair.
 
 Full return shape:
 
@@ -113,6 +114,7 @@ Full return shape:
 {
     "recommended_stack": [...],   # Block A
     "cost_forecast": {...},       # Block B
+    "tool_costs": {...},          # Block A per-tool prices (Update E)
     "matched_cases": [...],       # Block C (unsliced)
     "summary_text": "...",
     "llm_metrics": {...},

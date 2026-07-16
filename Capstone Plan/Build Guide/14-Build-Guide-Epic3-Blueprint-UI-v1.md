@@ -432,5 +432,6 @@ This median is a fine quick check while you're still testing. For the final writ
 - [x] The trust survey appears after every blueprint and logs `trust_score` + `net_value`.
 - [x] You can compute average time-to-results, average LLM latency, and median trust score directly from the log file, with no external analytics tool.
 - [x] Clicking the export button or submitting the trust survey does **not** make the blueprint disappear (session-state fix from Card 1.4/3.1).
+- [ ] **Updates E/F/G** (per-tool pricing + pricing-type toggle in Block A, case-count toggle + "Stack used" line in Block C, "How the recommendation is made" section — see `22-Build-Guide-Updates-Epic3-v1.md`): unit-verified, **live Streamlit re-test still pending** — see `23-Build-Guide-Epic3-UI-Verification-v1.md`.
 
 **At this point, all 14 build cards are complete and wired together end-to-end** — form → validated inputs → retrieval → privacy filter → ranking → cost → LLM summary → 3-block display → export → telemetry → trust survey. This is the point in the 4-week action plan where Week 3's "wire full pipeline; polish 3-block output; telemetry" milestone is done, and you're ready for real user testing.
