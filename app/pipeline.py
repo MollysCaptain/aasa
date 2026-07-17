@@ -9,7 +9,7 @@ Epic 2 is now wired in for real:
 import chromadb
 from chromadb.utils import embedding_functions
 from app.logic.filter import apply_privacy_filter, rank_tools_by_frequency
-from app.logic.cost import estimate_cost
+from app.logic.cost import estimate_cost, estimate_all_tool_costs
 from app.logic.prompt import generate_summary
 from app.logic.pricing import PRICING
 
@@ -67,7 +67,15 @@ def run_pipeline(inputs: dict) -> dict:
     ranked_tools = rank_tools_by_frequency(filtered_cases, top_n=5)
 
     # Step 3: cost
-    cost_forecast = estimate_cost(ranked_tools, inputs["org_size"])
+    # Update D: budget is now actually passed through — previously it was
+    # captured on the intake form and validated but never read again, so the
+    # forecast could come back many multiples over budget with no flag at all.
+    cost_forecast = estimate_cost(ranked_tools, inputs["org_size"], inputs["budget"])
+
+    # Update E (Card 3.1 UI): per-tool costs for every ranked tool, not just the
+    # winning primary_api/assistant pair — lets Block A show a price under each
+    # recommendation instead of just the pricing-model label.
+    tool_costs = estimate_all_tool_costs(ranked_tools, inputs["org_size"])
 
     # Step 4: summary.
     # Card 2.6 was tested by feeding generate_summary raw canonical ids
@@ -84,12 +92,19 @@ def run_pipeline(inputs: dict) -> dict:
         "assistant": {**cost_forecast["assistant"], "tool": _to_label(cost_forecast["assistant"]["tool"])}
                      if cost_forecast["assistant"] else None,
         "disclaimer": cost_forecast["disclaimer"],
+        # Update D — pass the budget-fit fields through too, so Card 2.6 can
+        # honestly flag an over-budget forecast instead of describing it neutrally.
+        "total_monthly_eur": cost_forecast["total_monthly_eur"],
+        "budget": cost_forecast["budget"],
+        "within_budget": cost_forecast["within_budget"],
+        "budget_delta_eur": cost_forecast["budget_delta_eur"],
     }
     summary = generate_summary(ranked_tool_labels, cost_forecast_for_prompt, filtered_cases, inputs["privacy"])
 
     return {
         "recommended_stack": ranked_tools,
         "cost_forecast": cost_forecast,
+        "tool_costs": tool_costs,
         "matched_cases": filtered_cases,
         "summary_text": summary["text"],
         # Card 3.3 logs this to telemetry once tracker.py exists — see that card.

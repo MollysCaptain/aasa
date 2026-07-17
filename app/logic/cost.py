@@ -22,6 +22,22 @@ ASSUMED_SEATS = {
     "solo": 3, "startup": 16, "smb": 123, "mid": 481, "ent": 2377,
 }
 
+# Fixed Ceiling Stopgap (Update D — decided with Gabi after a live test surfaced a
+# €67,340/mo "assistant" figure for a Customer-Service-only query at "mid").
+# ASSUMED_SEATS above is grounded in FULL-COMPANY headcount x adoption rate —
+# realistic for "the whole company adopts this," but every query uses that same
+# org-size seat count regardless of how narrow the requested workflow is, so a
+# single-department ask (e.g. "Customer Service") gets costed as if the entire
+# company rolled the tool out. We don't have per-workflow headcount-share data to
+# scope this properly (that fuller fix — a workflow-fraction table — is Option A,
+# left for a future card; see 18-Build-Guide-Updates-Epic1-2-v1.md, Update D).
+# As an immediate stopgap, cap the seat count used for costing at a flat ceiling
+# representing a plausible single-workflow team size, regardless of org-size band.
+# This is a rough, hand-picked judgment call — not survey-derived, same caveat as
+# ASSUMED_TOKEN_VOLUME_MM below. Bands already below the ceiling (solo, startup)
+# are unaffected; smb/mid/ent are capped down to it.
+SEAT_CEILING = 25
+
 # Rough monthly token-volume assumption (in millions of tokens) per org-size band —
 # used only for token-priced tools. Split roughly 3:1 input:output, a common ratio.
 # NOTE: unlike ASSUMED_SEATS above, this one is NOT survey-derived — the Stack
@@ -42,7 +58,8 @@ def _cost_for_tool(canonical_id: str, org_size_key: str) -> dict:
     model = entry["model"]
 
     if model == "seat":
-        seats = ASSUMED_SEATS.get(org_size_key, ASSUMED_SEATS["startup"])
+        org_seats = ASSUMED_SEATS.get(org_size_key, ASSUMED_SEATS["startup"])
+        seats = min(org_seats, SEAT_CEILING)
         monthly = round(entry["seat_pm"] * seats, 2)
         return {"tool": canonical_id, "model": "seat", "monthly_eur": monthly,
                 "assumption": f"{seats} seats x €{entry['seat_pm']}/seat/mo"}
@@ -60,11 +77,18 @@ def _cost_for_tool(canonical_id: str, org_size_key: str) -> dict:
             "note": entry.get("note", "Not costed in this MVP")}
 
 
-def estimate_cost(recommended_tools: list[str], org_size_key: str) -> dict:
+def estimate_cost(recommended_tools: list[str], org_size_key: str, budget: float | None = None) -> dict:
     """
     recommended_tools: ranked list of canonical tool ids (best match first).
     Picks the first token-priced tool as the "primary API" and the first
     seat-priced tool as the "assistant" — this is the "one + one, not the sum" rule.
+
+    budget: the user's stated monthly budget in EUR (Update D). Optional — pass
+    None (the default) for ad-hoc/test calls that don't have one; in that case
+    total_monthly_eur is still computed but within_budget/budget_delta_eur stay
+    None rather than guessing. This function only compares the total against the
+    budget and reports the result — it never drops or swaps tools to force a fit,
+    since the ranked list is Card 2.5's decision, not this card's.
     """
     primary_api, assistant = None, None
 
@@ -77,8 +101,38 @@ def estimate_cost(recommended_tools: list[str], org_size_key: str) -> dict:
         elif entry["model"] == "seat" and assistant is None:
             assistant = _cost_for_tool(tool_id, org_size_key)
 
+    costed_amounts = [
+        c["monthly_eur"] for c in (primary_api, assistant)
+        if c is not None and c["monthly_eur"] is not None
+    ]
+    total_monthly_eur = round(sum(costed_amounts), 2) if costed_amounts else None
+
+    within_budget = None
+    budget_delta_eur = None
+    if budget is not None and total_monthly_eur is not None:
+        within_budget = total_monthly_eur <= budget
+        budget_delta_eur = round(budget - total_monthly_eur, 2)  # negative when over budget
+
     return {
         "primary_api": primary_api,
         "assistant": assistant,
         "disclaimer": ILLUSTRATIVE_DISCLAIMER,
+        "total_monthly_eur": total_monthly_eur,
+        "budget": budget,
+        "within_budget": within_budget,
+        "budget_delta_eur": budget_delta_eur,
     }
+
+
+def estimate_all_tool_costs(recommended_tools: list[str], org_size_key: str) -> dict:
+    """
+    Update E (Card 3.1 UI support) — unlike estimate_cost()'s "one primary API +
+    one assistant, never the sum" rule, this costs EVERY tool in the ranked list,
+    keyed by canonical id. Block A uses this to show a per-tool monthly price
+    instead of just the two winning picks. Reuses _cost_for_tool() exactly as-is
+    (same seat ceiling, same token-volume assumption, same illustrative caveats)
+    — this is a display convenience for browsing the ranked list, not a second
+    pricing model, and it does not change what estimate_cost() decides is the
+    blueprint's headline primary_api/assistant pair.
+    """
+    return {tool_id: _cost_for_tool(tool_id, org_size_key) for tool_id in recommended_tools}

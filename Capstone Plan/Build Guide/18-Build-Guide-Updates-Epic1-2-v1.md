@@ -227,3 +227,47 @@ This is a real, roughly 2-3x increase across every band — flagged to Gabi befo
 - `estimate_cost(['ms-copilot'], 'ent')` produces a different (likely higher, given real enterprise AI-adoption rates) seat count than the current flat `800` — confirms the new numbers are actually wired in, not just computed and discarded. Verified: 2,377 seats, €71,310/mo (was 800 seats, €24,000/mo under the old flat constant).
 
 **Status: implemented and verified.** `scripts/map_stackoverflow_orgsize.py` created; `app/logic/cost.py`'s `ASSUMED_SEATS` replaced with the survey-grounded values and a comment showing the source numbers; `ASSUMED_TOKEN_VOLUME_MM` left unchanged with an explicit "not survey-derived" comment added, per point 4 above.
+
+---
+
+## Update D — Budget threading + Fixed Ceiling Stopgap for seat costing (Cards 2.4 / 2.6 / pipeline wiring)
+
+**Files:** `app/logic/cost.py`, `app/pipeline.py`, `app/logic/prompt.py`, `PM & Ethics/Intake-Output-Schema-v1.md`, `PM & Ethics/pipeline-diagram.mmd`
+
+### What prompted this
+A live test (Customer Service workflow, Mid-Market org, Energy & Utilities, Regulated privacy, €1,800/mo budget) returned a Cost Forecast of €1,093.75/mo (primary API) + €67,340.00/mo (assistant, 481 seats of IBM watsonx) — a combined €68,433.75/mo, roughly 3,800% over the stated budget, with the summary text giving no indication anything was wrong. Tracing this back surfaced two separate, compounding root causes, not one:
+
+1. **`budget` was captured on the intake form and validated (`> 0`) but never read again anywhere downstream.** Confirmed at every layer: `app/pipeline.py`'s `run_pipeline()` never referenced `inputs["budget"]`; `app/logic/cost.py`'s `estimate_cost()` had no budget parameter at all; `app/logic/prompt.py`'s `generate_summary()` had no budget parameter and `SYSTEM_PROMPT` had no rule instructing the model to ever mention affordability. Even this doc's own `cost_forecast` shape (before this update) had zero budget-related fields — this traces back to Card 2.4's original design never specifying budget-aware behaviour, not just a missed implementation step.
+2. **`ASSUMED_SEATS` (Update C) is a flat per-org-size-band constant with no workflow scoping**, grounded in *full-company* headcount × adoption rate. Every query for a given org-size band gets the identical seat count regardless of how narrow the requested workflow is — a "Customer Service"-only query for a "mid" org was costed as if the entire ~600-person company adopted the assistant (481 seats), which is what actually produced the €67,340/mo figure. IBM watsonx itself was a legitimate, correctly-ranked, governable choice for this regulated scenario — the seat count, not the tool choice, was the problem.
+
+A third factor was investigated and found to be a real but non-bug consideration, not something to fix: the "regulated" privacy filter's `GOVERNABLE_FOR_REGULATED` allow-list (Card 2.5) skews toward larger enterprise platforms (Azure, AWS, IBM watsonx, Google Cloud, MS365/Dynamics) with few or no cheap governable alternatives — this is a defensible reflection of reality (governable tooling in regulated industries generally does cost more), so it's addressed here by making the app state affordability honestly, not by second-guessing the allow-list.
+
+### Decision: Fixed Ceiling Stopgap (Option B), not the workflow-fraction table (Option A)
+Two fix directions were proposed for root cause 2: (A) a per-workflow seat-fraction table (e.g. "Customer Service ≈ X% of headcount"), which would be more accurate but needs real data or a documented judgment call per workflow, deferred to a future card; or (B) a flat seat ceiling applied uniformly across all org-size bands, a rougher but immediate stopgap. **Decided with Gabi: Option B.**
+
+### Implementation
+
+**1. `app/logic/cost.py`** — added `SEAT_CEILING = 25` (a hand-picked, illustrative "plausible single-workflow team size," not survey-derived — same caveat as `ASSUMED_TOKEN_VOLUME_MM`). `_cost_for_tool()`'s seat branch now does `seats = min(ASSUMED_SEATS.get(org_size_key, ...), SEAT_CEILING)` — `solo`/`startup` are unaffected (already below 25), `smb`/`mid`/`ent` are capped down to it.
+
+**2. `app/logic/cost.py`** — `estimate_cost()` gained a `budget: float | None = None` parameter (default keeps old call sites working unchanged) and now returns four new keys: `total_monthly_eur` (sum of whichever of `primary_api`/`assistant` are actually costed), `budget` (passed through), `within_budget` (`total <= budget`, or `None` if either side is `None`), and `budget_delta_eur` (`budget - total`, negative when over). **This never drops or swaps tools to force a fit** — it only compares and reports; the ranked list stays Card 2.5's decision.
+
+**3. `app/pipeline.py`** — `run_pipeline()` now passes `inputs["budget"]` into `estimate_cost(...)`, and `cost_forecast_for_prompt` carries the four new fields through to Card 2.6.
+
+**4. `app/logic/prompt.py`** — `generate_summary()` precomputes a plain-English `budget_line` from the (already-calculated) total/budget/within_budget values — same "the LLM phrases facts, it doesn't calculate them" principle already used for cost figures — and appends it to the prompt. `SYSTEM_PROMPT` gained explicit rules: state plainly and by how much when over budget (never soften or omit it), briefly note when it fits, say nothing when budget wasn't specified. Added a second few-shot pair (`FEW_SHOT_EXAMPLE_USER_2`/`_ASSISTANT_2`) demonstrating the over-budget disclosure — there was previously only a "fits" example, so the model had no anchor for the over-budget phrasing at all.
+
+**5. Docs** — `PM & Ethics/Intake-Output-Schema-v1.md`'s `cost_forecast` shape and worked example updated for the four new fields; its stale "Implementation status" section (still describing Epic 1's placeholder pipeline, long after Epics 1–3 were wired in and merged) corrected as a housekeeping fix while the file was open. `PM & Ethics/pipeline-diagram.mmd` gained a `Within stated budget?` decision node after the cost-estimation step, and the render step now notes it surfaces an over-budget result honestly.
+
+### Result on the original test scenario
+Re-running the exact reported scenario's tool ranking (`['ibm-watsonx', 'vertex-ai']`, `mid`, budget €1,800) through the updated `estimate_cost()`: assistant drops from €67,340.00/mo (481 seats) to €3,500.00/mo (25 seats); combined total drops from €68,433.75/mo to €4,046.88/mo. **Still over the €1,800 budget** — by €2,246.88, not €66,633.75 — and that's expected, not a remaining bug: even a realistically-scoped single-department rollout of an enterprise-tier governable platform can legitimately cost more than €1,800/mo. The fix's job was to stop the seat estimate from being absurdly inflated and to make the app say so honestly when the result still doesn't fit — not to force every result under any given budget regardless of whether that's realistic.
+
+### Common pitfalls
+- Don't confuse "budget-aware" with "budget-fitting" — nothing here re-ranks or substitutes tools to hit a number. Doing that would risk quietly recommending a worse-suited tool just to make a total look better.
+- `within_budget`/`budget_delta_eur` are `None`, not `False`/`0`, when budget wasn't supplied — check for `None` explicitly in any UI code that reads these fields, don't treat `None` as falsy-equals-over-budget.
+- `SEAT_CEILING` is a single global constant, not workflow-aware — a genuinely company-wide-rollout query (if that's ever a real use case) will now be *under*-costed relative to before. This is the known trade-off of choosing Option B over Option A; worth revisiting if that scenario becomes common.
+
+### How to verify
+- `estimate_cost(['ibm-watsonx', 'vertex-ai'], 'mid', budget=1800)` returns `total_monthly_eur: 4046.88`, `within_budget: False`, `budget_delta_eur: -2246.88`. Verified.
+- `estimate_cost(['openai-api', 'chatgpt', 'langchain'], 'startup')` (no budget arg) still runs unchanged and returns `within_budget: None`, `budget_delta_eur: None` — confirms old call sites aren't broken. Verified.
+- A live Streamlit run of the original reported scenario should now show a Cost Forecast in the low thousands, not tens of thousands, and the summary text should explicitly say it's over budget and by roughly how much. **Verified live** — Ash re-ran the exact reported scenario in a running Streamlit session; the resulting numbers were very close to the unit-tested prediction (€4,046.88/mo total, €2,246.88 over the €1,800 budget), and the summary text disclosed the over-budget result plainly.
+
+**Status: implemented and verified, including a live Streamlit re-test.** See `21-Build-Guide-Budget-Fix-Verification-v1.md` for the verification steps and remaining housekeeping (diagram re-render, `SEAT_CEILING` sanity-check, board update).
