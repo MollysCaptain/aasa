@@ -107,6 +107,7 @@ Worked example (startup, `["openai-api", "chatgpt", "langchain"]`, budget €120
 - **`summary_text`** (`str`) — the LLM-generated plain-English paragraph from Card 2.6, rendered above Block A (`intake.py`-era pattern; `14-Build-Guide-Epic3-Blueprint-UI-v1.md:45`).
 - **`llm_metrics`** (`dict`) — `{"duration_seconds": float, "prompt_tokens": int, "completion_tokens": int, "tokens_per_second": float|None}`, straight from `generate_summary()`'s return value, kept for Card 3.3's telemetry log (`13-Build-Guide-Epic2-Retrieval-v1.md:1032–1064`).
 - **`tool_costs`** (`dict`, new in Update E) — `{canonical_tool_id: {"tool": str, "model": str, "monthly_eur": float|None, "assumption"|"note": str}}`, one entry per tool in `recommended_stack` (not just the two winning `cost_forecast` picks), from `estimate_all_tool_costs()` in `app/logic/cost.py`. Powers Block A's per-tool price display — see Update E in `18-Build-Guide-Updates-Epic1-2-v1.md` (or the Epic 3 updates doc, once created) for why this needed to exist separately from `cost_forecast`. Not sent to Card 2.6's LLM prompt — the model still only ever describes the single decided `primary_api`/`assistant` pair.
+- **`query`** (`dict`, new in the Lovable-parity UI round) — `{"workflow": str, "industry": str, "org_size": str, "privacy": str}`, a plain echo of the validated intake inputs. Display-only: `app/dashboard.py` reads it for the status-chip row ("REGULATED POSTURE" chip), the "DIRECTIONAL ONLY" banner text, and Block C's per-case "why:" lines (same-industry check). Never re-enters any pipeline logic and is not sent to the LLM. Dashboard code reads it with `.get("query", {})` so results saved before this key existed still render.
 
 Full return shape:
 
@@ -117,6 +118,7 @@ Full return shape:
     "tool_costs": {...},          # Block A per-tool prices (Update E)
     "matched_cases": [...],       # Block C (unsliced)
     "summary_text": "...",
+    "query": {...},               # intake echo, display-only (UI-parity round)
     "llm_metrics": {...},
 }
 ```

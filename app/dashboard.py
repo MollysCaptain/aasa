@@ -6,18 +6,24 @@ Block C: Real case references (source-linked)
 """
 import streamlit as st
 from app.logic.pricing import PRICING
-from app.export import blueprint_to_text
+from app.logic.scaffold import build_scaffold
+from app.export import blueprint_to_text, blueprint_to_markdown
 from app.survey_modal import render_copy_confirmation
+from app.analytics.tracker import log_event
 
 
 def render_blueprint(result: dict):
     st.markdown("## 🧩 Your AI Stack Blueprint")
 
+    _render_status_chips(result)
+    _render_directional_banner(result)
+
     _render_stack_block(result["recommended_stack"], result["matched_cases"], result["tool_costs"])
     st.divider()
     _render_cost_block(result["cost_forecast"])
     st.divider()
-    _render_case_references_block(result["matched_cases"], result["recommended_stack"])
+    _render_case_references_block(result["matched_cases"], result["recommended_stack"],
+                                  result.get("query", {}))
     st.divider()
     st.markdown("### 📝 Summary")
     st.write(result["summary_text"])
@@ -26,9 +32,74 @@ def render_blueprint(result: dict):
     blueprint_text = blueprint_to_text(result)
     st.caption("Hover the code block below and click the copy icon in the top-right corner.")
     st.code(blueprint_text, language=None)
+    _render_action_row(result)
     render_copy_confirmation()
     st.divider()
     _render_methodology_block()
+
+
+# --- Lovable-parity UI round: status chips + banner -------------------------
+# Mirrors the second prototype's (aasa-proto2.lovable.app) chip row under the
+# action buttons: matched-case count, regulated-filter notice, budget fit.
+# Styling classes (.aasa-chip / -ok / -warn, .aasa-banner) live in intake.py's
+# DARK_CSS block, which is injected before this ever renders.
+
+def _render_status_chips(result: dict):
+    query = result.get("query", {})
+    cost = result["cost_forecast"]
+
+    chips = [f'<span class="aasa-chip">{len(result["matched_cases"])} MATCHED CASES</span>']
+    if query.get("privacy") == "regulated":
+        chips.append('<span class="aasa-chip">REGULATED POSTURE · '
+                     'SENSITIVE VENDORS FILTERED</span>')
+    if cost.get("budget") is not None and cost.get("within_budget") is not None:
+        if cost["within_budget"]:
+            chips.append('<span class="aasa-chip aasa-chip-ok">WITHIN BUDGET</span>')
+        else:
+            chips.append('<span class="aasa-chip aasa-chip-warn">OVER BUDGET</span>')
+    st.markdown(" ".join(chips), unsafe_allow_html=True)
+
+
+def _render_directional_banner(result: dict):
+    query = result.get("query", {})
+    n = len(result["matched_cases"])
+    context = ""
+    if query.get("industry") and query.get("workflow"):
+        context = f"{n} real {query['industry']} {query['workflow']} deployments matched. "
+    st.markdown(
+        f'<div class="aasa-banner"><b>DIRECTIONAL ONLY</b> — {context}'
+        "Pricing is illustrative and compliance filtering is a shortlist, not "
+        "certification. Verify before you commit budget.</div>",
+        unsafe_allow_html=True,
+    )
+
+
+# --- Lovable-parity UI round: action row (guides 25 + 26 + Clear) ------------
+
+def _render_action_row(result: dict):
+    col1, col2, col3 = st.columns([2, 2, 1])
+    with col1:
+        if st.download_button(
+            "📄 Board one-pager (.md)",
+            blueprint_to_markdown(result),
+            file_name="aasa-cost-onepager.md",
+            mime="text/markdown",
+        ):
+            log_event("onepager_downloaded")
+    with col2:
+        with st.popover("⚙️ .env scaffold"):
+            scaffold_text = build_scaffold(result["recommended_stack"])
+            st.caption("Copy-paste starting point — variable names only, keys left blank.")
+            st.code(scaffold_text, language="bash")
+            if st.download_button(
+                "Download .env scaffold", scaffold_text,
+                file_name="aasa-scaffold.env", mime="text/plain",
+            ):
+                log_event("scaffold_downloaded")
+    with col3:
+        if st.button("Clear", key="clear_result"):
+            st.session_state.pop("result", None)
+            st.rerun()
 
 
 # Update E — fallback text for the grey caption when a tool has no monthly_eur
@@ -50,6 +121,44 @@ _STACK_FILTER_OPTIONS = {
     "Compute": "compute",
     "Free": "free",
 }
+
+
+# Lovable-parity UI round — hand-written one-line rationales for the tools that
+# most often reach Block A (mirrors the prototype's per-tool "why:" line, e.g.
+# "why: Regulated industries that already run on IBM and need audit trails.").
+# Anything not listed falls back to an evidence-count template, so this dict
+# never needs to be complete — only helpful. Keep each under ~90 chars.
+TOOL_RATIONALE = {
+    "azure-platform":   "Enterprise default where Microsoft is already the IT estate.",
+    "azure-openai":     "OpenAI models with Azure's enterprise governance and DPAs.",
+    "aws-platform":     "Broadest managed-service catalogue for teams already on AWS.",
+    "aws-bedrock":      "Multi-model API behind AWS security and compliance tooling.",
+    "google-cloud":     "Strong data/ML tooling for teams in the Google ecosystem.",
+    "vertex-ai":        "Managed Gemini + custom-model hosting with enterprise controls.",
+    "gemini":           "Fast, low-friction assistant adoption inside Google Workspace.",
+    "gemini-workspace": "Workspace-native assistant with enterprise data-handling terms.",
+    "gemini-api":       "Direct Gemini API access for custom builds on a budget.",
+    "ms-copilot":       "Assistant embedded in the Office apps staff already use daily.",
+    "ms365-suite":      "Productivity backbone AI features attach to with zero migration.",
+    "openai-api":       "De-facto standard general-purpose LLM API; largest ecosystem.",
+    "claude-api":       "Long-context, safety-focused API popular for text-heavy work.",
+    "ibm-watsonx":      "Regulated industries that already run on IBM and need audit trails.",
+    "nvidia":           "The compute layer under nearly every serious in-house AI build.",
+    "huggingface":      "Open-model hub for teams that want control without vendor lock-in.",
+    "langchain":        "Most common glue framework in real retrieval/agent deployments.",
+    "chroma":           "Lightweight local vector store — no infra, no data leaves the box.",
+    "llama":            "Open weights for teams that must self-host for privacy or cost.",
+    "salesforce-einstein": "CRM-native AI where Salesforce already owns the pipeline.",
+    "github-copilot":   "Fastest-payback seat licence for any team that writes code.",
+}
+
+
+def _why_for_tool(tool_id: str, evidence_count: int, total_cases: int) -> str:
+    rationale = TOOL_RATIONALE.get(tool_id)
+    if rationale:
+        return rationale
+    return (f"Used by {evidence_count} of {total_cases} comparable deployments "
+            "in your matched cases.")
 
 
 def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dict):
@@ -97,6 +206,12 @@ def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dic
         col1, col2 = st.columns([3, 1])
         with col1:
             st.markdown(f"**{rank}. {label}**  ·  `{pricing_model}`-priced")
+            # Lovable-parity UI round — per-tool "why:" rationale line.
+            st.markdown(
+                f'<span class="aasa-why">why:</span> '
+                f'{_why_for_tool(tool_id, evidence_count, total_cases)}',
+                unsafe_allow_html=True,
+            )
             st.progress(evidence_pct / 100, text=f"Seen in {evidence_count}/{total_cases} matched cases")
         with col2:
             st.caption(price_label)
@@ -134,7 +249,7 @@ def _render_cost_block(cost_forecast: dict):
 _CASE_COUNT_OPTIONS = {"4": 4, "8": 8, "All": None}
 
 
-def _render_case_references_block(matched_cases: list, ranked_tools: list):
+def _render_case_references_block(matched_cases: list, ranked_tools: list, query: dict):
     st.markdown("### 3️⃣ Real Case References")
     if not matched_cases:
         st.info("No comparable cases matched — this can happen with very narrow inputs.")
@@ -176,6 +291,23 @@ def _render_case_references_block(matched_cases: list, ranked_tools: list):
             if used_tools:
                 used_labels = ", ".join(PRICING.get(t, {}).get("label", t) for t in used_tools)
                 st.caption(f"Stack used: {used_labels}")
+            # Lovable-parity UI round — per-case "why:" line explaining what this
+            # case has in common with the query. Built only from facts we can
+            # verify (industry equality, stack overlap); the semantic-match
+            # fallback is honest about being a similarity match, not a claim.
+            why_bits = []
+            if industry and query.get("industry") and \
+                    industry.strip().lower() == query["industry"].strip().lower():
+                why_bits.append(f"same industry as yours ({industry})")
+            if used_tools:
+                why_bits.append("deployed tool(s) from your recommended stack")
+            if not why_bits:
+                workflow = query.get("workflow", "your workflow")
+                why_bits.append(f'closest semantic match to "{workflow}" deployments')
+            st.markdown(
+                f'<span class="aasa-why">why:</span> {" · ".join(why_bits)}',
+                unsafe_allow_html=True,
+            )
             if url:
                 st.markdown(f"[Source]({url})")
 

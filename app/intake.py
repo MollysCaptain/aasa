@@ -29,11 +29,19 @@ st.set_page_config(
 
 # --- Dark, "neo-industrial" styling ---
 # st.markdown with unsafe_allow_html=True lets us inject raw CSS.
+# Lovable-parity UI round: grid background, orange accent, and the shared
+# classes (.aasa-chip, .aasa-banner, .aasa-why, hero styles) that
+# app/dashboard.py's chip row / banner / "why:" lines rely on — keep this
+# block as the single home for all custom classes.
 DARK_CSS = """
 <style>
     .stApp {
         background-color: #0f1115;
         color: #e8e9ec;
+        background-image:
+            linear-gradient(rgba(43, 47, 58, 0.35) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(43, 47, 58, 0.35) 1px, transparent 1px);
+        background-size: 48px 48px;
     }
     h1, h2, h3 {
         font-family: 'Courier New', monospace;
@@ -50,12 +58,163 @@ DARK_CSS = """
         background-color: #1b1e26;
         border-color: #2b2f3a;
     }
+    /* --- top bar --- */
+    .aasa-brand {
+        font-family: 'Courier New', monospace;
+        color: #e8e9ec;
+        font-size: 1.05rem;
+        letter-spacing: 0.08em;
+    }
+    .aasa-brand .sub { color: #6b7480; font-size: 0.85rem; }
+    .aasa-badge {
+        float: right;
+        border: 1px solid #e0872f;
+        color: #e0872f;
+        padding: 3px 12px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+    }
+    /* --- hero --- */
+    .aasa-hero {
+        border: 1px solid #2b2f3a;
+        padding: 1.6em 1.8em;
+        margin: 0.8em 0 1.6em 0;
+        background-color: rgba(15, 17, 21, 0.85);
+    }
+    .aasa-eyebrow {
+        color: #e0872f;
+        font-family: 'Courier New', monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.18em;
+    }
+    .aasa-hero h1 {
+        font-size: 2.4rem;
+        line-height: 1.15;
+        margin: 0.35em 0 0.4em 0;
+        color: #f5f1ea;
+    }
+    .aasa-hero h1 .accent { color: #e0872f; }
+    .aasa-hero p { color: #9aa4b2; max-width: 46em; }
+    .aasa-stat-num {
+        font-family: 'Courier New', monospace;
+        font-size: 1.7rem;
+        color: #f5f1ea;
+        font-weight: bold;
+    }
+    .aasa-stat-label {
+        font-family: 'Courier New', monospace;
+        font-size: 0.68rem;
+        color: #6b7480;
+        letter-spacing: 0.1em;
+    }
+    .aasa-scope {
+        border-left: 2px solid #2b2f3a;
+        padding-left: 1em;
+        margin-top: 1.2em;
+        color: #6b7480;
+        font-size: 0.85rem;
+    }
+    .aasa-scope a { color: #e0872f; }
+    /* --- blueprint chips / banner / why lines (rendered by dashboard.py) --- */
+    .aasa-chip {
+        display: inline-block;
+        border: 1px solid #e0872f;
+        color: #e0872f;
+        padding: 2px 10px;
+        margin: 0 6px 6px 0;
+        font-family: 'Courier New', monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.06em;
+    }
+    .aasa-chip-ok   { border-color: #5fb39c; color: #5fb39c; }
+    .aasa-chip-warn { border-color: #d9534f; color: #d9534f; }
+    .aasa-banner {
+        border-left: 3px solid #e0872f;
+        background-color: #1b1e26;
+        padding: 0.6em 1em;
+        margin: 0.4em 0 1em 0;
+        color: #9aa4b2;
+        font-size: 0.9rem;
+    }
+    .aasa-banner b {
+        color: #e0872f;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 0.08em;
+    }
+    .aasa-why {
+        color: #e0872f;
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+    }
 </style>
 """
 st.markdown(DARK_CSS, unsafe_allow_html=True)
 
-st.title("🧭 AI-Assisted Stack Architect")
-st.caption("Five constraints in. A data-backed blueprint out.")
+
+# --- Hero stats, computed at load (not hardcoded) ---------------------------
+# The Lovable prototype's hero hardcodes its early numbers (197 cases / 24
+# tools / 21 industries, from the pre-pivot curated subset). Ours are computed
+# from the live knowledge base + pricing table so they can never drift from
+# reality: 3,023 cases / 41 priced tools / 24 industries as of this writing.
+@st.cache_data
+def _hero_stats() -> tuple[int, int, int]:
+    import csv as _csv
+    from app.logic.pricing import PRICING as _pricing
+    n_cases = 0
+    industries = set()
+    with open("data/use-cases.csv", newline="", encoding="utf-8") as f:
+        for row in _csv.DictReader(f):
+            n_cases += 1
+            industries.add(row["Use Case Industry"])
+    return n_cases, len(_pricing), len(industries)
+
+
+_n_cases, _n_tools, _n_industries = _hero_stats()
+
+# --- Top bar ---
+st.markdown(
+    '<div class="aasa-brand">⊞ <b>AASA</b> '
+    '<span class="sub">AI-Assisted Stack Architect</span>'
+    '<span class="aasa-badge">PROTOTYPE · DEMO DATA</span></div>',
+    unsafe_allow_html=True,
+)
+
+# --- Hero / intro ---
+st.markdown(
+    f"""
+    <div class="aasa-hero">
+        <div class="aasa-eyebrow">CAPSTONE MVP · GROUNDED IN {_n_cases:,} REAL AI DEPLOYMENTS</div>
+        <h1>Match your constraints to <span class="accent">what teams like yours
+        actually shipped.</span></h1>
+        <p>Give AASA five constraints. It retrieves comparable real-world AI
+        implementations, ranks the models, APIs and frameworks they used, and
+        estimates a monthly cost against your budget — with every recommendation
+        traceable to a real source.</p>
+        <table style="border: none; margin-top: 0.8em;"><tr>
+            <td style="border: none; padding-right: 2.5em;">
+                <div class="aasa-stat-num">{_n_cases:,}</div>
+                <div class="aasa-stat-label">CURATED REAL CASES</div></td>
+            <td style="border: none; padding-right: 2.5em;">
+                <div class="aasa-stat-num">{_n_tools}</div>
+                <div class="aasa-stat-label">TOOLS PRICED</div></td>
+            <td style="border: none; padding-right: 2.5em;">
+                <div class="aasa-stat-num">{_n_industries}</div>
+                <div class="aasa-stat-label">INDUSTRIES COVERED</div></td>
+            <td style="border: none;">
+                <div class="aasa-stat-num">~2 min</div>
+                <div class="aasa-stat-label">TO BLUEPRINT</div></td>
+        </tr></table>
+        <div class="aasa-scope">Honest scope: this is a 4-week student prototype.
+        Cases come from the open
+        <a href="https://github.com/abbasmahdi-ai/ai-use-cases-library"
+        target="_blank">AI Use-Cases Library</a> (MIT); pricing is a small
+        hand-built, illustrative table. No accounts, no data stored — the
+        numbers below are directional, not advice.</div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 # Near the top of intake.py, before the form:
 if "form_start_time" not in st.session_state:

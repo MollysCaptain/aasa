@@ -107,6 +107,15 @@ def run_pipeline(inputs: dict) -> dict:
         "tool_costs": tool_costs,
         "matched_cases": filtered_cases,
         "summary_text": summary["text"],
+        # Lovable-parity UI round — echo the query so the dashboard can render
+        # the status-chip row, the "DIRECTIONAL ONLY" banner, and the per-case
+        # "why:" lines without re-deriving what was asked. Display-only.
+        "query": {
+            "workflow": inputs["workflow"],
+            "industry": inputs["industry"],
+            "org_size": inputs["org_size"],
+            "privacy": inputs["privacy"],
+        },
         # Card 3.3 logs this to telemetry once tracker.py exists — see that card.
         "llm_metrics": {
             "duration_seconds": summary["duration_seconds"],
