@@ -15,7 +15,9 @@ from app.analytics.tracker import log_event
 
 def render_blueprint(result: dict):
     # B.5 (Build Guide 24) — optional project name replaces the generic title.
-    st.markdown(f"## 🧩 {result.get('project_name') or 'Your AI Stack Blueprint'}")
+    # Restyle round: emojis dropped from all blueprint headings (team decision,
+    # Lovable-parity) — the theme carries the visual identity now.
+    st.markdown(f"## {result.get('project_name') or 'Your AI Stack Blueprint'}")
 
     _render_status_chips(result)
     _render_directional_banner(result)
@@ -27,10 +29,10 @@ def render_blueprint(result: dict):
     _render_case_references_block(result["matched_cases"], result["recommended_stack"],
                                   result.get("query", {}))
     st.divider()
-    st.markdown("### 📝 Summary")
+    st.markdown("### Summary")
     st.write(result["summary_text"])
     st.divider()
-    st.markdown("### 📋 Export")
+    st.markdown("### Export")
     blueprint_text = blueprint_to_text(result)
     st.caption("Hover the code block below and click the copy icon in the top-right corner.")
     st.code(blueprint_text, language=None)
@@ -87,14 +89,14 @@ def _render_action_row(result: dict):
         render_save_button(result)
     with col1:
         if st.download_button(
-            "📄 Board one-pager (.md)",
+            "Board one-pager (.md)",
             blueprint_to_markdown(result),
             file_name="aasa-cost-onepager.md",
             mime="text/markdown",
         ):
             log_event("onepager_downloaded")
     with col2:
-        with st.popover("⚙️ .env scaffold"):
+        with st.popover(".env scaffold"):
             scaffold_text = build_scaffold(result["recommended_stack"])
             st.caption("Copy-paste starting point — variable names only, keys left blank.")
             st.code(scaffold_text, language="bash")
@@ -169,7 +171,7 @@ def _why_for_tool(tool_id: str, evidence_count: int, total_cases: int) -> str:
 
 
 def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dict):
-    st.markdown("### 1️⃣ Recommended AI Stack")
+    st.markdown("### 1 · Recommended AI Stack")
     if not ranked_tools:
         st.info("No tools cleared the privacy filter for this combination of inputs. "
                  "Try relaxing the privacy posture or broadening the workflow.")
@@ -225,7 +227,7 @@ def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dic
 
 
 def _render_cost_block(cost_forecast: dict):
-    st.markdown("### 2️⃣ Cost Forecast")
+    st.markdown("### 2 · Cost Forecast")
     st.caption(cost_forecast.get("disclaimer", ""))
 
     primary = cost_forecast.get("primary_api")
@@ -257,7 +259,7 @@ _CASE_COUNT_OPTIONS = {"4": 4, "8": 8, "All": None}
 
 
 def _render_case_references_block(matched_cases: list, ranked_tools: list, query: dict):
-    st.markdown("### 3️⃣ Real Case References")
+    st.markdown("### 3 · Real Case References")
     if not matched_cases:
         st.info("No comparable cases matched — this can happen with very narrow inputs.")
         return
@@ -327,7 +329,7 @@ def _render_methodology_block():
     (aasa-proto2.lovable.app) that was reviewed during Epic 1/2, but written
     with our own real pipeline facts and dataset numbers, not copied from theirs.
     """
-    st.markdown("### 🔍 How the recommendation is made")
+    st.markdown("### How the recommendation is made")
     st.caption(
         "No black box. The pipeline is deterministic filtering and evidence-ranking "
         "first — the LLM only ever writes the summary paragraph; it never invents "

@@ -45,16 +45,80 @@ DARK_CSS = """
             linear-gradient(90deg, rgba(43, 47, 58, 0.35) 1px, transparent 1px);
         background-size: 48px 48px;
     }
+    /* Headings: the bare h1-h3 rule alone loses to Streamlit's own theme
+       styles (that's why blueprint headings rendered sans-serif before the
+       restyle round) — the testid-scoped selectors + !important win. */
+    [data-testid="stMarkdownContainer"] h1,
+    [data-testid="stMarkdownContainer"] h2,
+    [data-testid="stMarkdownContainer"] h3,
     h1, h2, h3 {
-        font-family: 'Courier New', monospace;
+        font-family: 'Courier New', monospace !important;
+        color: #f5f1ea !important;
         letter-spacing: 0.02em;
     }
-    .stButton>button {
-        background-color: #3b82f6;
-        color: white;
-        border-radius: 6px;
-        border: none;
+    /* Buttons — Lovable style: dark fill, orange border/text, orange fill on
+       hover. Container-scoped on purpose so number-input +/- steppers are NOT
+       hit. data-testid selectors verified on Streamlit 1.59.2 — re-check
+       after any Streamlit upgrade. */
+    .stButton > button,
+    .stDownloadButton > button,
+    [data-testid="stFormSubmitButton"] button,
+    [data-testid="stPopover"] > div > button,
+    [data-testid="stFileUploader"] button {
+        background-color: transparent;
+        color: #e0872f;
+        border: 1px solid #e0872f;
+        border-radius: 2px;
         padding: 0.5em 1.5em;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 0.05em;
+    }
+    .stButton > button:hover,
+    .stDownloadButton > button:hover,
+    [data-testid="stFormSubmitButton"] button:hover,
+    [data-testid="stPopover"] > div > button:hover,
+    [data-testid="stFileUploader"] button:hover {
+        background-color: #e0872f;
+        color: #0f1115;
+        border-color: #e0872f;
+    }
+    /* Intake form reads as a panel, like the hero */
+    [data-testid="stForm"] {
+        border: 1px solid #2b2f3a;
+        background-color: rgba(15, 17, 21, 0.85);
+        padding: 1.6em 1.8em;
+        border-radius: 0;
+    }
+    /* Widget labels -> uppercase micro-labels, Lovable style */
+    [data-testid="stWidgetLabel"] p {
+        font-family: 'Courier New', monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.72rem;
+        color: #9aa4b2;
+    }
+    /* Block B metrics -> match the hero stat numbers */
+    [data-testid="stMetricValue"] {
+        font-family: 'Courier New', monospace;
+        color: #e0872f;
+    }
+    [data-testid="stMetricLabel"] p {
+        font-family: 'Courier New', monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.72rem;
+        color: #9aa4b2;
+    }
+    /* Inline code spans (the `compute`-priced tags) */
+    code {
+        color: #e0872f;
+        background-color: #1b1e26;
+    }
+    /* Dividers + alerts onto the panel palette */
+    hr { border-color: #2b2f3a; }
+    [data-testid="stAlert"] {
+        background-color: #1b1e26;
+        color: #9aa4b2;
     }
     div[data-baseweb="select"] > div {
         background-color: #1b1e26;

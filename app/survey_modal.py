@@ -14,14 +14,15 @@ from app.analytics.tracker import log_event
 
 
 def render_copy_confirmation():
-    if st.button("✅ I've copied my blueprint"):
+    # Restyle round: emojis dropped (team decision, Lovable-parity).
+    if st.button("I've copied my blueprint"):
         log_event("export_clicked")
         st.success("Noted — thanks!")
 
 
 def render_feedback_form():
     st.divider()
-    st.markdown("### 🙋 Feedback")
+    st.markdown("### Feedback")
 
     with st.form("trust_survey_form"):
         trust_score = st.slider(

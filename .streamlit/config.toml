@@ -1,0 +1,15 @@
+# Lovable-parity restyle round — native-widget theming.
+# This is the high-leverage half of the restyle: primaryColor kills the default
+# red radio dots / blue progress bars, and font = "monospace" puts the whole
+# app (widgets, labels, values, prose) in the Courier family to match the
+# hero. The CSS half lives in app/intake.py's DARK_CSS.
+# Team decision 2026-07: full monospace, accepting slightly lower prose
+# readability in exchange for Lovable-parity.
+
+[theme]
+base = "dark"
+primaryColor = "#e0872f"
+backgroundColor = "#0f1115"
+secondaryBackgroundColor = "#1b1e26"
+textColor = "#e8e9ec"
+font = "monospace"
