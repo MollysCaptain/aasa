@@ -14,11 +14,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import streamlit as st
 
 from app.data.options import ORG_SIZES, PRIVACY_POSTURES, INDUSTRIES, WORKFLOWS
+from app.logic.pricing import PRICING
 from app.validators import validate_intake
 from app.pipeline import run_pipeline
 from app.dashboard import render_blueprint
 from app.analytics.tracker import log_event
 from app.survey_modal import render_feedback_form
+from app.saved_blueprints import render_saved_panel
 
 # --- Page setup: must be the first Streamlit command in the script ---
 st.set_page_config(
@@ -151,6 +153,11 @@ DARK_CSS = """
 """
 st.markdown(DARK_CSS, unsafe_allow_html=True)
 
+# Icebox B.6 (Build Guide 27) — sidebar panel listing this session's saved
+# blueprints, with JSON export/import. Rendered on every rerun so loads work
+# from anywhere; the matching Save button lives in dashboard.py's action row.
+render_saved_panel()
+
 
 # --- Hero stats, computed at load (not hardcoded) ---------------------------
 # The Lovable prototype's hero hardcodes its early numbers (197 cases / 24
@@ -245,6 +252,21 @@ with st.form("intake_form"):
         min_value=0, step=50, value=800,
     )
 
+    # Icebox B.5 (Build Guide 24) — both optional; deliberately NOT validated
+    # in validate_intake, so leaving them empty changes nothing.
+    with st.expander("Optional: project details"):
+        project_name = st.text_input(
+            "Project name",
+            max_chars=60,
+            help="Shown on your blueprint and export — useful if you save or share it.",
+        )
+        exclude_tools = st.multiselect(
+            "Vendors to exclude",
+            options=sorted(PRICING.keys(), key=lambda k: PRICING[k]["label"]),
+            format_func=lambda k: PRICING[k]["label"],
+            help="Tools you can't or won't use. They'll be removed before ranking.",
+        )
+
     submitted = st.form_submit_button("Generate my blueprint")
 
 if submitted:
@@ -259,6 +281,9 @@ if submitted:
                 "workflow": workflow, "industry": industry,
                 "org_size": org_size_key, "privacy": privacy_key,
                 "budget": budget,
+                # B.5 — optional extras
+                "project_name": project_name.strip(),
+                "exclude_tools": exclude_tools,
             })
         elapsed_seconds = time.time() - st.session_state.form_start_time
         log_event("results_shown", elapsed_seconds=round(elapsed_seconds, 1))

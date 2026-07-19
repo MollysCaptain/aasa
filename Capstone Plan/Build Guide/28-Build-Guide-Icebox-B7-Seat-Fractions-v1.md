@@ -31,6 +31,14 @@ The flat 25-seat cap fixed the company-wide-seats absurdity, but it's wrong in b
 
 ## Step 1 — the research (do this FIRST, with Gabi)
 
+> **Status update (2026-07-19):** this step now has a concrete starting point —
+> **`31-Proposal-B7-Seat-Fractions-v1.md`**, a full 18-workflow fraction table
+> with per-row rationales, implied seat counts per org size, a sanity check
+> against the original Update D bug scenario (58 seats / €1,740/mo vs. the
+> stopgap's 25 / €750), five open questions, and an Ash+Gabi sign-off block.
+> Argue with that document in the team meeting; nothing ships until both
+> sign-offs tick. The draft table below is superseded by the proposal doc.
+
 Build an 18-row table (one per `WORKFLOWS` option in `app/data/options.py`, minus "Any workflow") of *what fraction of a company's headcount works in that function*. Anchor on public benchmarks where they exist (e.g. customer-support headcount ratios, IT-staff-per-employee ratios from industry surveys); where no benchmark exists, agree a judgment call and **write the rationale into the dict as a comment** — same convention as `GOVERNABLE_FOR_REGULATED`'s inline justifications in `filter.py`. Starting proposal to argue against, not to accept:
 
 ```python

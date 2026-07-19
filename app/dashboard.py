@@ -9,11 +9,13 @@ from app.logic.pricing import PRICING
 from app.logic.scaffold import build_scaffold
 from app.export import blueprint_to_text, blueprint_to_markdown
 from app.survey_modal import render_copy_confirmation
+from app.saved_blueprints import render_save_button
 from app.analytics.tracker import log_event
 
 
 def render_blueprint(result: dict):
-    st.markdown("## 🧩 Your AI Stack Blueprint")
+    # B.5 (Build Guide 24) — optional project name replaces the generic title.
+    st.markdown(f"## 🧩 {result.get('project_name') or 'Your AI Stack Blueprint'}")
 
     _render_status_chips(result)
     _render_directional_banner(result)
@@ -74,10 +76,15 @@ def _render_directional_banner(result: dict):
     )
 
 
-# --- Lovable-parity UI round: action row (guides 25 + 26 + Clear) ------------
+# --- Lovable-parity UI round: action row (guides 25 + 26 + 27 + Clear) -------
+# B.6 note: Clear pops "result" only — it deliberately does NOT touch
+# st.session_state.saved_blueprints (clearing the current view must never
+# delete saved work).
 
 def _render_action_row(result: dict):
-    col1, col2, col3 = st.columns([2, 2, 1])
+    col0, col1, col2, col3 = st.columns([2, 2, 2, 1])
+    with col0:
+        render_save_button(result)
     with col1:
         if st.download_button(
             "📄 Board one-pager (.md)",

@@ -6,6 +6,20 @@
 
 ---
 
+## ⚡ Implementation status — IMPLEMENTED (2026-07-19), live test pending
+
+Shipped on `Ash2` exactly as specced below, no deviations: expander widgets in
+`intake.py`'s form, `apply_vendor_exclusions()` in `filter.py` (after the privacy
+filter), `project_name`/`exclude_tools` threaded through `pipeline.py`,
+`project_name` echoed in `dashboard.py`'s heading, `export.py`'s text header, and
+(free win) the guide-26 board one-pager title. Schema doc updated.
+Unit-verified in the sandbox: no-op on empty exclusions, original case dicts
+untouched, stacking with the privacy filter, and the exclude-everything →
+empty-ranking edge (Block A's existing `st.info` guard covers it). Live checklist
+below still needs Ash's local run.
+
+---
+
 ## What it does
 
 1. **Project name** (optional free text): purely cosmetic — echoed in the blueprint title and export header so a saved/shared blueprint says whose it is. Pairs with B.6 (saved blueprints need names).
@@ -101,10 +115,10 @@ Also pass `project_name` through into the returned dict so dashboard/export can 
 
 ## Verification checklist
 
-- [ ] Submit with both fields empty → identical behaviour to today (regression check).
-- [ ] Exclude the current #1 tool → it vanishes from Block A, ranking re-orders, evidence bars still based on total matched cases.
-- [ ] Exclude a tool + Regulated posture together → both filters apply.
-- [ ] Project name appears in dashboard heading and first line of the copy-export text.
-- [ ] `python -m py_compile` on all touched files.
-- [ ] Update `PM & Ethics/Intake-Output-Schema-v1.md` — two new optional input keys, one new output key.
+- [ ] Submit with both fields empty → identical behaviour to today (regression check). *(live test — Ash)*
+- [ ] Exclude the current #1 tool → it vanishes from Block A, ranking re-orders, evidence bars still based on total matched cases. *(logic unit-tested; on-screen check live — Ash)*
+- [x] Exclude a tool + Regulated posture together → both filters apply. *(unit-tested, stacked order verified)*
+- [ ] Project name appears in dashboard heading and first line of the copy-export text. *(live test — Ash)*
+- [x] `python -m py_compile` on all touched files.
+- [x] Update `PM & Ethics/Intake-Output-Schema-v1.md` — two new optional input keys, one new output key.
 - [ ] Move card #44 on the kanban board once live-tested.

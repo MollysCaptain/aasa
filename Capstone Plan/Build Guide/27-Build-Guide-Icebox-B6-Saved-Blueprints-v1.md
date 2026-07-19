@@ -6,6 +6,22 @@
 
 ---
 
+## ⚡ Implementation status — IMPLEMENTED (2026-07-19), live test ESSENTIAL and pending
+
+Shipped on `Ash2` as Options A+B: new `app/saved_blueprints.py` (save popover,
+sidebar panel, JSON export, shape-validated import with friendly errors),
+`render_save_button()` wired into `dashboard.py`'s action row as its first
+column (`st.columns([2, 2, 2, 1])`, per this guide's updated integration
+note), `render_saved_panel()` called from `intake.py` right after the CSS
+injection. `blueprint_saved` telemetry wired. Save-name defaults to B.5's
+`project_name` when present.
+Sandbox verification was limited to `py_compile` + a JSON
+export/import-validation round-trip — **every behaviour in the checklist below
+is session-state mechanics that only a live browser run can prove.** Do not
+move card #45 on compile-success alone.
+
+---
+
 ## What it does
 
 Save the current blueprint under a name; a sidebar panel lists saved blueprints; clicking one re-renders it without re-running the pipeline. Export-all/import gives real cross-session persistence via a JSON file the *user* keeps — honest about the fact that we store nothing server-side ("No accounts, no data stored", per the prototype's own hero copy).
@@ -108,8 +124,8 @@ def render_saved_panel():
 
 ## Verification checklist
 
-- [ ] Save two blueprints from two different queries; both listed; loading each re-renders the right one instantly (no pipeline re-run — watch the spinner absence).
-- [ ] Export JSON → hard-refresh the page (state gone) → import the file → both blueprints restored.
-- [ ] Corrupt JSON import → friendly error, no crash.
-- [ ] Telemetry event fires on save.
-- [ ] `py_compile`; move card #45 once live-tested. Demo-day tip: pre-save 2–3 good blueprints at the start of the session.
+- [ ] Save two blueprints from two different queries; both listed; loading each re-renders the right one instantly (no pipeline re-run — watch the spinner absence). *(live — Ash)*
+- [ ] Export JSON → hard-refresh the page (state gone) → import the file → both blueprints restored. *(live — Ash; the serialise/validate logic itself is unit-tested)*
+- [ ] Corrupt JSON import → friendly error, no crash. *(validation logic unit-tested; on-screen error rendering live — Ash)*
+- [ ] Telemetry event fires on save. *(live — Ash)*
+- [x] `py_compile`. — [ ] Move card #45 once live-tested. Demo-day tip: pre-save 2–3 good blueprints at the start of the session.

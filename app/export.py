@@ -5,7 +5,11 @@ from app.logic.pricing import PRICING
 
 
 def blueprint_to_text(result: dict) -> str:
-    lines = ["=== AI-Assisted Stack Architect — Blueprint ===", ""]
+    # B.5 (Build Guide 24) — echo the optional project name in the header.
+    if result.get("project_name"):
+        lines = [f"=== AASA Blueprint — {result['project_name']} ===", ""]
+    else:
+        lines = ["=== AI-Assisted Stack Architect — Blueprint ===", ""]
 
     lines.append("RECOMMENDED STACK:")
     for rank, tool_id in enumerate(result["recommended_stack"], start=1):

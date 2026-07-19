@@ -2,7 +2,56 @@
 
 *Icebox card `stackpunk #41` · Priority: **Could Have** · Estimated effort: **~2.5–3 days** · Rank: **6 of 7***
 
-*Roadmap NEXT item. The data asset already exists — Gabi's `technology_landscape.csv` (2,017 rows: top-5 tools per Industry × OrgSize group, built from the real 2025 Stack Overflow Developer Survey via `scripts/extract_tech_landscape.py` on the `Gabi` branch — see `19-Gabi-Branch-Integration-Analysis-v1.md`). What does NOT exist yet is the taxonomy mapping between the survey's categories and ours. That mapping layer is most of the effort, and it's why this ranks 6 of 7 despite the data being "done".*
+*Roadmap NEXT item. ~~The data asset already exists — Gabi's `technology_landscape.csv`~~ **See the gate results below: this claim turned out to be stale — the asset is not in the repo on any branch.** What also does not exist yet is the taxonomy mapping between the survey's categories and ours.*
+
+---
+
+## 🚧 Feasibility gate — RESULTS (run 2026-07-19): **BLOCKED — do not build yet**
+
+The Step 2 gate was run ahead of any implementation. It could not pass, for a
+reason nobody expected: **the input data does not exist in the repo.**
+
+**What was checked, and found:**
+
+1. `data/technology_landscape.csv` — **absent from every branch** (`Ash`, `Ash2`,
+   `Gabi`, `main`, and all `origin/*` equivalents; verified with `git ls-tree -r`).
+   `scripts/extract_tech_landscape.py` is equally absent. The claims in
+   `07-Roadmap-v2.md` and this guide's own preamble (sourced from doc 19's
+   integration analysis) describe an asset that was presumably built on Gabi's
+   machine but **never committed or pushed**.
+2. `data/StackOverflow/results.csv` (the raw survey export the landscape file
+   would be regenerated from) is gitignored *by design* (third-party-data
+   pattern, same as `use-cases.csv`) — and is **not present in this working
+   copy either**. So the landscape file can't be rebuilt here.
+3. What DOES exist: `data/StackOverflow/schema.csv` (the survey's question
+   definitions) and `scripts/map_stackoverflow_orgsize.py` (Update C's org-size
+   band mapper, reusable as planned).
+
+**What the schema alone can tell us (conditional assessment):** the survey has
+the two join keys we need — QID25 (industry) and QID16 (org size) — and four
+technology-selection questions in the right space: QID36 (cloud platforms),
+QID43 (LLM models used for dev work), QID38 (AI-enabled dev environments), and
+the QID89/90 agent-framework questions. From those categories, roughly 10–15 of
+our 41 canonical tools could plausibly appear (the clouds, the LLM APIs, GitHub
+Copilot, LangChain-family frameworks, open-weight models). But the survey's
+lens is *developers*: our enterprise-assistant, seat-priced tools — M365
+Copilot, ms365-suite, Salesforce Einstein, Nuance Dragon, watsonx — are very
+unlikely to be answer options, and those are a large share of what Block A
+actually recommends. **Even in the best case the overlay would be partial.**
+
+**Verdict & required actions before this card can leave the icebox:**
+
+- [ ] Ask Gabi whether `technology_landscape.csv` / `extract_tech_landscape.py`
+      exist on her machine, and if so, commit them (or the script + a
+      `results.csv` acquisition note, keeping the gitignore pattern).
+- [ ] Only then re-run the Step 2 overlap count against the *actual* option
+      lists. The ~8-tool threshold below still stands.
+- [ ] If Gabi doesn't have it, rebuilding from a fresh survey download is a
+      new, unestimated task — at that point this card is realistically out of
+      sprint scope and should say so on the board.
+
+Until those boxes tick, **B.4 should not be attempted.** Everything below this
+line is the original guide, unchanged, for whenever the data materialises.
 
 ---
 
@@ -14,7 +63,7 @@ Adds population-level context under Block A: *"34% of similarly-sized Technology
 
 | File | Change |
 |---|---|
-| `data/technology_landscape.csv` | Pull from Gabi branch: `git checkout Gabi -- data/technology_landscape.csv` — **it is not on Ash2 today** (verified 2026-07) |
+| `data/technology_landscape.csv` | ~~Pull from Gabi branch~~ **Does not exist on any branch — see gate results above. Must come from Gabi directly.** |
 | `data/so_taxonomy_mapping.json` | **New** — hand-built mapping, survey categories → our categories (same pattern as `data/domain_mapping.json`, including a `_meta` block documenting judgment calls) |
 | `app/logic/overlay.py` | **New** — load CSV + mapping, `get_benchmark(industry, org_size, tool_ids)` |
 | `app/pipeline.py` | Call it, add `benchmarks` key to the returned dict |
