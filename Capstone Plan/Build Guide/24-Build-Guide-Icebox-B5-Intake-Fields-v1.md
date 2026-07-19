@@ -83,6 +83,14 @@ Also pass `project_name` through into the returned dict so dashboard/export can 
 
 - export.py header: `title = f"=== AASA Blueprint — {result['project_name']} ===" if result.get("project_name") else "=== AI-Assisted Stack Architect — Blueprint ==="`
 - dashboard.py: `st.markdown(f"## 🧩 {result.get('project_name') or 'Your AI Stack Blueprint'}")`
+- **Free win (post-Lovable-parity round):** `blueprint_to_markdown()` in export.py
+  (guide 26, already implemented) already reads `result.get("project_name")` for its
+  title — so the board one-pager picks the name up automatically once you add it to
+  the pipeline return dict. Nothing extra to do there.
+- **Note:** the pipeline return dict now also carries a display-only `"query"` echo
+  (added in the Lovable-parity round — see the schema doc). Keep `project_name` as
+  its own top-level key as specced here, NOT inside `query` — `query` is strictly
+  the 5 validated pipeline inputs.
 
 ## Ordering & gotchas
 

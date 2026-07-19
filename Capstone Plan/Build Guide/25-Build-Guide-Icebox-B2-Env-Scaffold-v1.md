@@ -6,6 +6,25 @@
 
 ---
 
+## ⚡ Implementation status — IMPLEMENTED (Lovable-parity UI round), live test pending
+
+Shipped on `Ash2` together with the Lovable-parity UI changes, with **one deviation
+from the spec below**: the scaffold does not live in an expander below the Export
+block. It lives in a **`st.popover("⚙️ .env scaffold")` inside the new action-button
+row** (`_render_action_row()` in `app/dashboard.py`, rendered right after the Export
+code block, next to the board-one-pager download and the Clear button) — matching
+the Lovable prototype's button-row layout, which didn't exist yet when this guide
+was written. Everything else landed as specced: `app/logic/scaffold.py` is verbatim
+Step 1, the popover contains the caption + `st.code` + `st.download_button` from
+Step 2, and the optional `log_event("scaffold_downloaded")` telemetry is wired.
+
+Unit-verified (sandbox): known tools get their snippets, unknown tools hit the
+model-typed fallback, no KeyError. **Still open — the live checklist below** (the
+sandbox can't run Streamlit): mixed-stack render, download, copy icon, then move
+card #39.
+
+---
+
 ## What it does
 
 Given the recommended stack, generate a copy-pasteable starter scaffold: a `.env` block with the right API-key variable names for token-billed tools, install/setup one-liners for OSS tools, and honest comment lines for seat-billed SaaS ("this is a subscription, not an API — nothing to configure here"). Rendered in an expander below the Export block, with copy (`st.code`) and download (`st.download_button`).
@@ -103,9 +122,9 @@ Optional: `log_event("scaffold_downloaded")` wired to the download button's retu
 
 ## Verification checklist
 
-- [ ] Run a query whose stack mixes token + seat + free tools → each gets the right snippet type.
-- [ ] A tool with no `SNIPPETS` entry falls back to the model-typed comment, never a KeyError.
-- [ ] Download produces a well-formed text file; copy icon works on the code block.
-- [ ] `py_compile` on both files; app boots.
-- [ ] Update `PM & Ethics/Intake-Output-Schema-v1.md` only if you add anything to the pipeline output (as specced, nothing changes there).
+- [ ] Run a query whose stack mixes token + seat + free tools → each gets the right snippet type. *(live test — Ash)*
+- [x] A tool with no `SNIPPETS` entry falls back to the model-typed comment, never a KeyError. *(unit-tested in sandbox)*
+- [ ] Download produces a well-formed text file; copy icon works on the code block. *(live test — Ash)*
+- [x] `py_compile` on both files. *(app boot still needs the live run)*
+- [x] Update `PM & Ethics/Intake-Output-Schema-v1.md` only if you add anything to the pipeline output — nothing scaffold-specific was added (the `query` key documented there came from the UI round, not this card).
 - [ ] Move card #39 on the board once live-tested.

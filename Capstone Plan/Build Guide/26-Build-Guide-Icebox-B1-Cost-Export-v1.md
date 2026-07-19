@@ -6,6 +6,30 @@
 
 ---
 
+## ⚡ Implementation status — MARKDOWN VERSION IMPLEMENTED (Lovable-parity UI round), PDF stretch open
+
+Shipped on `Ash2` together with the Lovable-parity UI changes:
+
+- `blueprint_to_markdown()` landed in `app/export.py` as specced in Step 1, plus
+  one extra guard the spec implied but didn't spell out: the budget lines only
+  render when **both** `budget` *and* `within_budget` are non-None.
+- **Deviation from Step 2**: the download button doesn't sit alone after the
+  Export `st.code(...)` — it's the first button in the new action row
+  (`_render_action_row()` in `app/dashboard.py`), labelled
+  "📄 Board one-pager (.md)", alongside the .env-scaffold popover (guide 25) and
+  a Clear button. `log_event("onepager_downloaded")` telemetry is wired.
+- `project_name` falls back to "AI stack proposal" — B.5 (guide 24) isn't built
+  yet, so every export currently uses the fallback title. Once B.5 lands, the
+  name flows in with no change needed here.
+- **Step 3 (PDF) not done** — still a stretch item; the Lovable "EXECUTIVE PDF"
+  button therefore has no counterpart yet, only the .md.
+
+Unit-verified (sandbox): within-budget ("to spare"), over-budget ("exceeds…⚠️"),
+and no-fixed-total ("usage-based") variants all render correctly. **Still open —
+the live checklist below**, especially the persona read-through, then move card #38.
+
+---
+
 ## What it does
 
 A downloadable one-pager, written in plain English, that a founder can forward to their board unedited: what we'd run, what it costs per month, whether it fits the stated budget, and what the caveats are. Markdown first (guaranteed, zero dependencies); PDF as a stretch step.
@@ -101,8 +125,8 @@ Only if the markdown lands with time to spare: `pip install fpdf2`, then a ~30-l
 
 ## Verification checklist
 
-- [ ] Over-budget query → ⚠️ line with correct delta; within-budget query → "to spare" line.
-- [ ] All-free/compute stack → no crash, fallback sentence renders.
-- [ ] Open the downloaded .md in a renderer — headings, bold, bullets all valid.
-- [ ] Read it once as the persona: would a non-technical CEO understand every sentence?
-- [ ] `py_compile`; move card #38 on the board once live-tested.
+- [x] Over-budget query → ⚠️ line with correct delta; within-budget query → "to spare" line. *(unit-tested in sandbox with both variants)*
+- [x] All-free/compute stack → no crash, fallback sentence renders. *(unit-tested via `total_monthly_eur=None`)*
+- [ ] Open the downloaded .md in a renderer — headings, bold, bullets all valid. *(live test — Ash)*
+- [ ] Read it once as the persona: would a non-technical CEO understand every sentence? *(judgment call — Ash)*
+- [x] `py_compile` passed. — [ ] Move card #38 on the board once live-tested.

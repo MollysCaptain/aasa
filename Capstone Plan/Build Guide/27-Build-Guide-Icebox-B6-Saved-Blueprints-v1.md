@@ -82,10 +82,21 @@ def render_saved_panel():
                    "export the JSON to keep them.")
 ```
 
-### 2. intake.py wiring
+### 2. intake.py / dashboard.py wiring
 
-- Top of the script (after `st.set_page_config`): `render_saved_panel()`.
-- In the results section (`if "result" in st.session_state:`), call `render_save_button(st.session_state.result)` right after `render_blueprint(...)`.
+- Top of intake.py (after `st.set_page_config`): `render_saved_panel()`.
+- **Updated integration point (post-Lovable-parity round):** `app/dashboard.py` now
+  has an action-button row — `_render_action_row(result)`, rendered right after the
+  Export code block, currently holding the board one-pager download (guide 26), the
+  .env-scaffold popover (guide 25), and a Clear button in a `st.columns([2, 2, 1])`
+  layout. The Save button belongs **in that row**, not floating after
+  `render_blueprint(...)` as originally written here: widen the layout to
+  `st.columns([2, 2, 2, 1])` and call `render_save_button(result)` in the new
+  column. That matches the Lovable prototype, where "★ Save blueprint" is the
+  first button of the same row.
+- Heads-up on the Clear button: it does `st.session_state.pop("result")` — it does
+  NOT touch `saved_blueprints`. That's correct behaviour (clearing the current view
+  shouldn't delete saved work), but worth stating in the demo script.
 
 ## Gotchas
 
