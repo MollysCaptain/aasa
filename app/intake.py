@@ -88,6 +88,27 @@ DARK_CSS = """
         color: #0f1115;
         border-color: #818cf8;
     }
+    /* Semantic button colors — Streamlit puts a .st-key-<key> class on any
+       keyed widget's container, so these target exactly one button each.
+       Same red/green as the OVER/WITHIN BUDGET chips, for consistency. */
+    .st-key-clear_result button {
+        color: #d9534f;
+        border-color: #d9534f;
+    }
+    .st-key-clear_result button:hover {
+        background-color: #d9534f;
+        color: #0f1115;
+        border-color: #d9534f;
+    }
+    .st-key-copy_confirm button {
+        color: #5fb39c;
+        border-color: #5fb39c;
+    }
+    .st-key-copy_confirm button:hover {
+        background-color: #5fb39c;
+        color: #0f1115;
+        border-color: #5fb39c;
+    }
     /* Intake form reads as a panel, like the hero */
     [data-testid="stForm"] {
         border: 1px solid #2b2f3a;
