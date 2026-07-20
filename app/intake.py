@@ -244,6 +244,11 @@ DARK_CSS = """
         font-family: 'JetBrains Mono', 'Courier New', monospace;
         letter-spacing: 0.08em;
     }
+    .aasa-stack-name {
+        color: #5fb39c;
+        font-weight: 700;
+        font-size: 1.05rem;
+    }
     .aasa-why {
         color: #818cf8;
         font-family: 'JetBrains Mono', 'Courier New', monospace;

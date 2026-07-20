@@ -216,7 +216,13 @@ def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dic
 
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.markdown(f"**{rank}. {label}**  ·  `{pricing_model}`-priced")
+            # Tool name in green (.aasa-stack-name, in intake.py's DARK_CSS);
+            # pricing-model tag stays as an indigo code span for contrast.
+            st.markdown(
+                f'<span class="aasa-stack-name">{rank}. {label}</span>'
+                f'  ·  <code>{pricing_model}</code>-priced',
+                unsafe_allow_html=True,
+            )
             # Lovable-parity UI round — per-tool "why:" rationale line.
             st.markdown(
                 f'<span class="aasa-why">why:</span> '
