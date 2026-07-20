@@ -84,7 +84,9 @@ def _render_directional_banner(result: dict):
 # delete saved work).
 
 def _render_action_row(result: dict):
-    col0, col1, col2, col3 = st.columns([2, 2, 2, 1])
+    # [3,3,3,2] + the CSS nowrap rule: the earlier [2,2,2,1] left the Clear
+    # column so narrow its label wrapped mid-word ("Clea / r").
+    col0, col1, col2, col3 = st.columns([3, 3, 3, 2])
     with col0:
         render_save_button(result)
     with col1:

@@ -75,8 +75,9 @@ DARK_CSS = """
         color: #818cf8;
         border: 1px solid #818cf8;
         border-radius: 2px;
-        padding: 0.5em 1.5em;
+        padding: 0.5em 1em;
         letter-spacing: 0.05em;
+        white-space: nowrap;   /* stop labels wrapping mid-word ("Clea/r") in narrow columns */
     }
     .stButton > button:hover,
     .stDownloadButton > button:hover,
