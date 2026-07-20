@@ -21,7 +21,11 @@ def render_save_button(result: dict):
     the Lovable prototype's '★ Save blueprint' placement."""
     default_name = result.get("project_name") or f"Blueprint {len(_store()) + 1}"
     with st.popover("★ Save blueprint"):
-        name = st.text_input("Name", value=default_name, key="save_bp_name")
+        name = st.text_input(
+            "Name", value=default_name, key="save_bp_name",
+            help="A label for your own reference. No need to enter personal "
+                 "or company-identifying information.",
+        )
         if st.button("Save", key="save_bp_go"):
             _store().append({
                 "name": name.strip() or default_name,

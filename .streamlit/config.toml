@@ -8,6 +8,13 @@
 # Accent decision v2: orange #e0872f -> light indigo #818cf8 (indigo-400);
 # classic indigo #4B0082 would be nearly invisible on this background.
 
+[server]
+# Serves ./static at the app/static/ URL path — used to self-host the
+# Inter / JetBrains Mono fonts (static/fonts/) so no user browser makes a
+# third-party Google Fonts request. Closes the IP-exposure caveat from the
+# Week 2 data-minimisation ethics checkpoint (Card P.4).
+enableStaticServing = true
+
 [theme]
 base = "dark"
 primaryColor = "#818cf8"

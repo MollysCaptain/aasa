@@ -37,12 +37,25 @@ st.set_page_config(
 # block as the single home for all custom classes.
 DARK_CSS = """
 <style>
-    /* Font decision v3 (2026-07): Inter for UI text, JetBrains Mono for the
-       monospace accents (stat numbers, chips, micro-labels). Loaded from
-       Google Fonts at runtime — every font-family below carries a system
-       fallback stack, so an offline demo degrades gracefully to system fonts
-       instead of breaking. @import must be the first rule in this block. */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+    /* Font decision v4 (2026-07): Inter for UI text, JetBrains Mono for the
+       monospace accents — now SELF-HOSTED from static/fonts/ instead of
+       Google Fonts, so no user's browser makes a third-party request (closes
+       the IP-exposure caveat from the Week 2 data-minimisation checkpoint).
+       Files are OFL-licensed, vendored via @fontsource. Served by Streamlit's
+       static file server (enableStaticServing in .streamlit/config.toml) at
+       the app/static/ URL path. Every font-family below still carries a system
+       fallback stack, so if static serving is ever off the app degrades
+       gracefully instead of breaking. */
+    @font-face { font-family: 'Inter'; font-weight: 400; font-display: swap;
+        src: url('app/static/fonts/inter-latin-400-normal.woff2') format('woff2'); }
+    @font-face { font-family: 'Inter'; font-weight: 600; font-display: swap;
+        src: url('app/static/fonts/inter-latin-600-normal.woff2') format('woff2'); }
+    @font-face { font-family: 'Inter'; font-weight: 700; font-display: swap;
+        src: url('app/static/fonts/inter-latin-700-normal.woff2') format('woff2'); }
+    @font-face { font-family: 'JetBrains Mono'; font-weight: 400; font-display: swap;
+        src: url('app/static/fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2'); }
+    @font-face { font-family: 'JetBrains Mono'; font-weight: 700; font-display: swap;
+        src: url('app/static/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
 
     .stApp {
         background-color: #0f1115;
@@ -363,7 +376,8 @@ with st.form("intake_form"):
         project_name = st.text_input(
             "Project name",
             max_chars=60,
-            help="Shown on your blueprint and export — useful if you save or share it.",
+            help="Shown on your blueprint and export — useful if you save or share it. "
+                 "No need to enter personal or company-identifying information.",
         )
         exclude_tools = st.multiselect(
             "Vendors to exclude",
