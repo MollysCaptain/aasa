@@ -90,24 +90,33 @@ DARK_CSS = """
     }
     /* Semantic button colors — Streamlit puts a .st-key-<key> class on any
        keyed widget's container, so these target exactly one button each.
-       Same red/green as the OVER/WITHIN BUDGET chips, for consistency. */
-    .st-key-clear_result button {
-        color: #d9534f;
-        border-color: #d9534f;
+       Same red/green as the OVER/WITHIN BUDGET chips, for consistency.
+       !important + explicit background: Streamlit's own focus/active styles
+       fill a clicked button with the theme primaryColor (indigo), which
+       otherwise wins over a border-only override. */
+    .st-key-clear_result button,
+    .st-key-clear_result button:focus,
+    .st-key-clear_result button:active {
+        background-color: transparent !important;
+        color: #d9534f !important;
+        border-color: #d9534f !important;
     }
     .st-key-clear_result button:hover {
-        background-color: #d9534f;
-        color: #0f1115;
-        border-color: #d9534f;
+        background-color: #d9534f !important;
+        color: #0f1115 !important;
+        border-color: #d9534f !important;
     }
-    .st-key-copy_confirm button {
-        color: #5fb39c;
-        border-color: #5fb39c;
+    .st-key-copy_confirm button,
+    .st-key-copy_confirm button:focus,
+    .st-key-copy_confirm button:active {
+        background-color: transparent !important;
+        color: #5fb39c !important;
+        border-color: #5fb39c !important;
     }
     .st-key-copy_confirm button:hover {
-        background-color: #5fb39c;
-        color: #0f1115;
-        border-color: #5fb39c;
+        background-color: #5fb39c !important;
+        color: #0f1115 !important;
+        border-color: #5fb39c !important;
     }
     /* Intake form reads as a panel, like the hero */
     [data-testid="stForm"] {
