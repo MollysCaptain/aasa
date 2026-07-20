@@ -45,14 +45,13 @@ DARK_CSS = """
             linear-gradient(90deg, rgba(43, 47, 58, 0.35) 1px, transparent 1px);
         background-size: 48px 48px;
     }
-    /* Headings: the bare h1-h3 rule alone loses to Streamlit's own theme
-       styles (that's why blueprint headings rendered sans-serif before the
-       restyle round) — the testid-scoped selectors + !important win. */
+    /* Headings: sans-serif (font decision v2 — the app's default sans, same
+       as the hero headline the team endorsed), cream, testid-scoped +
+       !important so Streamlit's own theme styles can't override the color. */
     [data-testid="stMarkdownContainer"] h1,
     [data-testid="stMarkdownContainer"] h2,
     [data-testid="stMarkdownContainer"] h3,
     h1, h2, h3 {
-        font-family: 'Courier New', monospace !important;
         color: #f5f1ea !important;
         letter-spacing: 0.02em;
     }
@@ -66,11 +65,10 @@ DARK_CSS = """
     [data-testid="stPopover"] > div > button,
     [data-testid="stFileUploader"] button {
         background-color: transparent;
-        color: #e0872f;
-        border: 1px solid #e0872f;
+        color: #818cf8;
+        border: 1px solid #818cf8;
         border-radius: 2px;
         padding: 0.5em 1.5em;
-        font-family: 'Courier New', monospace;
         letter-spacing: 0.05em;
     }
     .stButton > button:hover,
@@ -78,9 +76,9 @@ DARK_CSS = """
     [data-testid="stFormSubmitButton"] button:hover,
     [data-testid="stPopover"] > div > button:hover,
     [data-testid="stFileUploader"] button:hover {
-        background-color: #e0872f;
+        background-color: #818cf8;
         color: #0f1115;
-        border-color: #e0872f;
+        border-color: #818cf8;
     }
     /* Intake form reads as a panel, like the hero */
     [data-testid="stForm"] {
@@ -100,7 +98,7 @@ DARK_CSS = """
     /* Block B metrics -> match the hero stat numbers */
     [data-testid="stMetricValue"] {
         font-family: 'Courier New', monospace;
-        color: #e0872f;
+        color: #818cf8;
     }
     [data-testid="stMetricLabel"] p {
         font-family: 'Courier New', monospace;
@@ -111,7 +109,7 @@ DARK_CSS = """
     }
     /* Inline code spans (the `compute`-priced tags) */
     code {
-        color: #e0872f;
+        color: #818cf8;
         background-color: #1b1e26;
     }
     /* Dividers + alerts onto the panel palette */
@@ -134,8 +132,8 @@ DARK_CSS = """
     .aasa-brand .sub { color: #6b7480; font-size: 0.85rem; }
     .aasa-badge {
         float: right;
-        border: 1px solid #e0872f;
-        color: #e0872f;
+        border: 1px solid #818cf8;
+        color: #818cf8;
         padding: 3px 12px;
         font-family: 'Courier New', monospace;
         font-size: 0.72rem;
@@ -149,7 +147,7 @@ DARK_CSS = """
         background-color: rgba(15, 17, 21, 0.85);
     }
     .aasa-eyebrow {
-        color: #e0872f;
+        color: #818cf8;
         font-family: 'Courier New', monospace;
         font-size: 0.75rem;
         letter-spacing: 0.18em;
@@ -160,7 +158,7 @@ DARK_CSS = """
         margin: 0.35em 0 0.4em 0;
         color: #f5f1ea;
     }
-    .aasa-hero h1 .accent { color: #e0872f; }
+    .aasa-hero h1 .accent { color: #818cf8; }
     .aasa-hero p { color: #9aa4b2; max-width: 46em; }
     .aasa-stat-num {
         font-family: 'Courier New', monospace;
@@ -181,12 +179,12 @@ DARK_CSS = """
         color: #6b7480;
         font-size: 0.85rem;
     }
-    .aasa-scope a { color: #e0872f; }
+    .aasa-scope a { color: #818cf8; }
     /* --- blueprint chips / banner / why lines (rendered by dashboard.py) --- */
     .aasa-chip {
         display: inline-block;
-        border: 1px solid #e0872f;
-        color: #e0872f;
+        border: 1px solid #818cf8;
+        color: #818cf8;
         padding: 2px 10px;
         margin: 0 6px 6px 0;
         font-family: 'Courier New', monospace;
@@ -196,7 +194,7 @@ DARK_CSS = """
     .aasa-chip-ok   { border-color: #5fb39c; color: #5fb39c; }
     .aasa-chip-warn { border-color: #d9534f; color: #d9534f; }
     .aasa-banner {
-        border-left: 3px solid #e0872f;
+        border-left: 3px solid #818cf8;
         background-color: #1b1e26;
         padding: 0.6em 1em;
         margin: 0.4em 0 1em 0;
@@ -204,12 +202,12 @@ DARK_CSS = """
         font-size: 0.9rem;
     }
     .aasa-banner b {
-        color: #e0872f;
+        color: #818cf8;
         font-family: 'Courier New', monospace;
         letter-spacing: 0.08em;
     }
     .aasa-why {
-        color: #e0872f;
+        color: #818cf8;
         font-family: 'Courier New', monospace;
         font-size: 0.85rem;
     }
