@@ -23,6 +23,7 @@ MODEL = "openai/gpt-oss-20b"
 SYSTEM_PROMPT = """You are a plain-language technical writer. You will be given:
 - a ranked list of recommended AI tools (already decided — do not change the order or add tools)
 - a cost forecast (already calculated — do not recalculate or invent numbers)
+- a Budget line (already calculated — never do this math yourself)
 - a short list of real, matched case studies
 
 Write a 3-4 sentence summary in plain English for a non-technical founder.
@@ -30,23 +31,48 @@ Rules:
 - Mention the tools EXACTLY as named in the input. Never invent a tool that
   isn't in the provided list.
 - Never state a price that isn't in the provided cost forecast.
+- If the Budget line says the forecast EXCEEDS budget, state this plainly and
+  give the amount it's over by (both numbers are provided — never soften, hide,
+  or omit an over-budget result). You may suggest, only in general terms, that a
+  smaller pilot group or a lower-cost alternative could help bring it within
+  budget — do not invent a specific new tool or seat count to do this.
+- If the Budget line says the forecast FITS within budget, you may briefly note
+  that it fits — don't dwell on it.
+- If the Budget line says budget was not specified, don't mention budget at all.
 - Do not claim any compliance certification. If a privacy posture is "regulated",
   you may say the recommendation is "directionally suited to governable
   environments" — never "certified compliant".
 - Keep it concise: no bullet points, no headers, plain prose only.
 """
 
-# One worked example, to anchor the model's output format (few-shot).
+# Two worked examples, to anchor the model's output format (few-shot) — one where
+# the forecast fits the stated budget, one where it doesn't (Update D). Before this,
+# there was only the "fits" example, so the model had no anchor for how to phrase
+# an over-budget result honestly rather than describing it as if unremarkable.
 FEW_SHOT_EXAMPLE_USER = """Ranked tools: ['ms-copilot', 'azure-openai']
 Cost forecast: primary_api=€187.50/mo (Azure OpenAI), assistant=€900.00/mo (Microsoft 365 Copilot, 30 seats)
+Budget: €1500/mo — forecast (€1087.50/mo) fits within budget
 Matched cases: 2 regulated-industry deployments (Healthcare, Finance) using these tools
 Privacy posture: regulated"""
 
 FEW_SHOT_EXAMPLE_ASSISTANT = """Based on 2 comparable deployments in regulated industries, Microsoft 365 \
 Copilot paired with Azure OpenAI is a well-evidenced starting point for your workflow. Azure OpenAI is \
 estimated at around €187.50 per month for typical usage, while Microsoft 365 Copilot runs about €900 per \
-month across 30 seats. Both are directionally suited to governable environments, though you should confirm \
-compliance requirements with each vendor directly."""
+month across 30 seats, comfortably within your €1,500 monthly budget. Both are directionally suited to \
+governable environments, though you should confirm compliance requirements with each vendor directly."""
+
+FEW_SHOT_EXAMPLE_USER_2 = """Ranked tools: ['ibm-watsonx', 'vertex-ai']
+Cost forecast: primary_api=€312.50/mo (Google Vertex AI), assistant=€3500.00/mo (IBM watsonx, 25 seats)
+Budget: €1800/mo — forecast (€3812.50/mo) exceeds budget by €2012.50/mo
+Matched cases: 3 regulated-industry deployments (Energy & Utilities) using these tools
+Privacy posture: regulated"""
+
+FEW_SHOT_EXAMPLE_ASSISTANT_2 = """Based on 3 comparable deployments in regulated industries, IBM watsonx \
+paired with Google Vertex AI is a well-evidenced, governable starting point for your workflow, though the \
+estimated cost doesn't fit your stated budget. Google Vertex AI runs around €312.50 per month, while IBM \
+watsonx is estimated at about €3,500 per month across 25 seats, for a combined €3,812.50 per month — roughly \
+€2,012.50 over your €1,800 monthly budget. Both tools are directionally suited to governable environments, \
+but you may want to consider a smaller pilot group or a lower-cost alternative to bring this within budget."""
 
 
 def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: list,
@@ -57,9 +83,24 @@ def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: lis
     The extra fields feed Card 3.3's telemetry log once it exists; until then,
     just use result["text"] wherever you need the summary itself.
     """
+    # Update D: precompute the budget-fit sentence here, in code, rather than handing
+    # the LLM raw budget/total numbers and trusting it to do the subtraction — same
+    # "the LLM phrases facts, it doesn't calculate them" principle as cost_forecast.
+    total = cost_forecast.get("total_monthly_eur")
+    budget = cost_forecast.get("budget")
+    within_budget = cost_forecast.get("within_budget")
+    if budget is None or total is None or within_budget is None:
+        budget_line = "Budget: not specified"
+    elif within_budget:
+        budget_line = f"Budget: €{budget}/mo — forecast (€{total}/mo) fits within budget"
+    else:
+        over_by = round(total - budget, 2)
+        budget_line = f"Budget: €{budget}/mo — forecast (€{total}/mo) exceeds budget by €{over_by}/mo"
+
     user_content = (
         f"Ranked tools: {ranked_tools}\n"
         f"Cost forecast: {cost_forecast}\n"
+        f"{budget_line}\n"
         f"Matched cases: {len(matched_cases)} comparable deployments\n"
         f"Privacy posture: {privacy_key}"
     )
@@ -71,6 +112,8 @@ def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: lis
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": FEW_SHOT_EXAMPLE_USER},
             {"role": "assistant", "content": FEW_SHOT_EXAMPLE_ASSISTANT},
+            {"role": "user", "content": FEW_SHOT_EXAMPLE_USER_2},
+            {"role": "assistant", "content": FEW_SHOT_EXAMPLE_ASSISTANT_2},
             {"role": "user", "content": user_content},
         ],
         temperature=0,  # fully deterministic: this step phrases facts, it doesn't create

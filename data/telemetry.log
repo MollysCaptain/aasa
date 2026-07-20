@@ -29,3 +29,11 @@
 {"event": "results_shown", "timestamp": 1784215195.3405244, "elapsed_seconds": 711.5}
 {"event": "llm_summary_generated", "timestamp": 1784215195.3409858, "duration_seconds": 1.56, "prompt_tokens": 612, "completion_tokens": 588, "tokens_per_second": 376.9}
 {"event": "form_start", "timestamp": 1784229897.652045}
+{"event": "results_shown", "timestamp": 1784560066.6583493, "elapsed_seconds": 138.6}
+{"event": "llm_summary_generated", "timestamp": 1784560066.6584857, "duration_seconds": 1.41, "prompt_tokens": 622, "completion_tokens": 668, "tokens_per_second": 473.8}
+{"event": "form_start", "timestamp": 1784560105.2983885}
+{"event": "form_start", "timestamp": 1784560118.8663967}
+{"event": "form_start", "timestamp": 1784560157.5678117}
+{"event": "form_start", "timestamp": 1784560174.329022}
+{"event": "form_start", "timestamp": 1784560193.2567008}
+{"event": "form_start", "timestamp": 1784560232.6382782}

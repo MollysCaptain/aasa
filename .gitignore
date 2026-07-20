@@ -238,3 +238,5 @@ data/use-cases.csv
 # Our PM slides
 PM_slides/
 AASA_Week2_Stakeholder_Checkin.pptx
+data/telemetry.log
+.python-version

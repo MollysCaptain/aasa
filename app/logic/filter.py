@@ -64,6 +64,24 @@ def apply_privacy_filter(matched_cases: list[dict], privacy_key: str) -> list[di
     return filtered
 
 
+def apply_vendor_exclusions(matched_cases: list[dict], exclude_tools: list[str]) -> list[dict]:
+    """
+    Icebox B.5 (Build Guide 24) — strip user-excluded tools from each case's
+    canonical_tools, exactly like the privacy filter does. Cases stay in the
+    list (they're still evidence); only the excluded tool ids stop being
+    rankable. Runs AFTER apply_privacy_filter: the privacy filter is a hard
+    compliance rule that must always see the full case list; exclusions are a
+    user preference layered on top.
+    """
+    if not exclude_tools:
+        return matched_cases
+    excluded = set(exclude_tools)
+    return [
+        {**case, "canonical_tools": [t for t in case["canonical_tools"] if t not in excluded]}
+        for case in matched_cases
+    ]
+
+
 def rank_tools_by_frequency(filtered_cases: list[dict], top_n: int = 5) -> list[str]:
     """
     Counts how many matched (and filtered) cases mention each canonical tool,

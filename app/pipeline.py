@@ -8,8 +8,8 @@ Epic 2 is now wired in for real:
 """
 import chromadb
 from chromadb.utils import embedding_functions
-from app.logic.filter import apply_privacy_filter, rank_tools_by_frequency
-from app.logic.cost import estimate_cost
+from app.logic.filter import apply_privacy_filter, apply_vendor_exclusions, rank_tools_by_frequency
+from app.logic.cost import estimate_cost, estimate_all_tool_costs
 from app.logic.prompt import generate_summary
 from app.logic.pricing import PRICING
 
@@ -30,7 +30,9 @@ def _to_label(canonical_id: str) -> str:
 def run_pipeline(inputs: dict) -> dict:
     """
     inputs: {"workflow": str, "industry": str, "org_size": str,
-             "privacy": str, "budget": float}
+             "privacy": str, "budget": float,
+             # Icebox B.5 (Build Guide 24) — both optional:
+             "project_name": str, "exclude_tools": list[str]}
     returns: a dict the dashboard (Card 3.1) can render directly.
     """
     # Step 1: retrieve.
@@ -62,12 +64,23 @@ def run_pipeline(inputs: dict) -> dict:
             "outcomes": meta["outcomes"],   # NEW — bullet-pointed prose, ready for Epic 3 to render
         })
 
-    # Step 2: privacy filter + rank
+    # Step 2: privacy filter + user vendor exclusions (B.5) + rank.
+    # Order matters: privacy is a hard rule and sees everything; exclusions
+    # are a preference applied on top of the already-compliant list.
     filtered_cases = apply_privacy_filter(matched_cases, inputs["privacy"])
+    filtered_cases = apply_vendor_exclusions(filtered_cases, inputs.get("exclude_tools", []))
     ranked_tools = rank_tools_by_frequency(filtered_cases, top_n=5)
 
     # Step 3: cost
-    cost_forecast = estimate_cost(ranked_tools, inputs["org_size"])
+    # Update D: budget is now actually passed through — previously it was
+    # captured on the intake form and validated but never read again, so the
+    # forecast could come back many multiples over budget with no flag at all.
+    cost_forecast = estimate_cost(ranked_tools, inputs["org_size"], inputs["budget"])
+
+    # Update E (Card 3.1 UI): per-tool costs for every ranked tool, not just the
+    # winning primary_api/assistant pair — lets Block A show a price under each
+    # recommendation instead of just the pricing-model label.
+    tool_costs = estimate_all_tool_costs(ranked_tools, inputs["org_size"])
 
     # Step 4: summary.
     # Card 2.6 was tested by feeding generate_summary raw canonical ids
@@ -84,14 +97,33 @@ def run_pipeline(inputs: dict) -> dict:
         "assistant": {**cost_forecast["assistant"], "tool": _to_label(cost_forecast["assistant"]["tool"])}
                      if cost_forecast["assistant"] else None,
         "disclaimer": cost_forecast["disclaimer"],
+        # Update D — pass the budget-fit fields through too, so Card 2.6 can
+        # honestly flag an over-budget forecast instead of describing it neutrally.
+        "total_monthly_eur": cost_forecast["total_monthly_eur"],
+        "budget": cost_forecast["budget"],
+        "within_budget": cost_forecast["within_budget"],
+        "budget_delta_eur": cost_forecast["budget_delta_eur"],
     }
     summary = generate_summary(ranked_tool_labels, cost_forecast_for_prompt, filtered_cases, inputs["privacy"])
 
     return {
         "recommended_stack": ranked_tools,
         "cost_forecast": cost_forecast,
+        "tool_costs": tool_costs,
         "matched_cases": filtered_cases,
         "summary_text": summary["text"],
+        # Lovable-parity UI round — echo the query so the dashboard can render
+        # the status-chip row, the "DIRECTIONAL ONLY" banner, and the per-case
+        # "why:" lines without re-deriving what was asked. Display-only.
+        "query": {
+            "workflow": inputs["workflow"],
+            "industry": inputs["industry"],
+            "org_size": inputs["org_size"],
+            "privacy": inputs["privacy"],
+        },
+        # Icebox B.5 — kept top-level (NOT inside query: query is strictly the
+        # 5 validated pipeline inputs; this is a display-only cosmetic field).
+        "project_name": inputs.get("project_name", ""),
         # Card 3.3 logs this to telemetry once tracker.py exists — see that card.
         "llm_metrics": {
             "duration_seconds": summary["duration_seconds"],

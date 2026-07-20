@@ -1,0 +1,14 @@
+flowchart TD
+    A[User submits 5-field form] --> B[Validate inputs]
+    B --> C[Retrieve comparable cases<br/>from Chroma vector store]
+    C --> D{Privacy posture?}
+    D -->|standard| E[Keep all matched tools]
+    D -->|regulated| F[Strip non-governable tools]
+    E --> G[Rank tools by evidence frequency]
+    F --> G
+    G --> H[Estimate cost:<br/>1 primary API + 1 assistant<br/>seats capped at fixed ceiling]
+    H --> H2{Within stated budget?}
+    H2 -->|yes| I[LLM writes prose summary<br/>tools/prices already decided]
+    H2 -->|no| I
+    I --> J[Render 3-block blueprint<br/>honestly flags over-budget result]
+    J --> K[Export + trust survey]

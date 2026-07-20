@@ -1123,6 +1123,7 @@ print(json.dumps(result, indent=2))
 - [x] `generate_summary` stays prose-only and tool/price-accurate across the eval set (including edge cases), and returns a dict with timing/token fields, not a bare string.
 - [x] `run_pipeline` de-duplicates retrieval results by `case_id` before ranking, and now returns real data end-to-end, not placeholders, including an `llm_metrics` key.
 - [x] `run_pipeline` sends `generate_summary` label-ified tool names (via `_to_label`/`PRICING`), not raw canonical ids — `recommended_stack`/`cost_forecast` in the return value stay keyed by canonical id.
+- [x] **Update D** (budget-aware costing + Fixed Ceiling Stopgap, see `18-Build-Guide-Updates-Epic1-2-v1.md`): `estimate_cost` compares its total against the stated budget and reports `within_budget`/`budget_delta_eur` honestly, without dropping or swapping tools to force a fit; seat counts are capped by `SEAT_CEILING` regardless of org-size band. Live-verified in a running Streamlit session against the exact scenario that originally surfaced the bug — resulting numbers matched the unit-tested prediction.
 
 **Verified via full backend dry run** on two real profiles (Technology/standard/startup and Healthcare/regulated/smb): confirmed real Chroma retrieval, correct case_id de-duplication, the privacy filter correctly distinguishing `gemini` (stripped under "regulated") from governable ids, `assistant` correctly returning `null` when no seat-priced tool clears the filter, and the LLM summary using human-readable labels end to end.
 
