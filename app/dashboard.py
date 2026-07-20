@@ -91,7 +91,7 @@ def _render_action_row(result: dict):
         render_save_button(result)
     with col1:
         if st.download_button(
-            "Board one-pager (.md)",
+            "Download (.md)",
             blueprint_to_markdown(result),
             file_name="aasa-cost-onepager.md",
             mime="text/markdown",
