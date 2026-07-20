@@ -37,6 +37,13 @@ st.set_page_config(
 # block as the single home for all custom classes.
 DARK_CSS = """
 <style>
+    /* Font decision v3 (2026-07): Inter for UI text, JetBrains Mono for the
+       monospace accents (stat numbers, chips, micro-labels). Loaded from
+       Google Fonts at runtime — every font-family below carries a system
+       fallback stack, so an offline demo degrades gracefully to system fonts
+       instead of breaking. @import must be the first rule in this block. */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
     .stApp {
         background-color: #0f1115;
         color: #e8e9ec;
@@ -89,7 +96,7 @@ DARK_CSS = """
     }
     /* Widget labels -> uppercase micro-labels, Lovable style */
     [data-testid="stWidgetLabel"] p {
-        font-family: 'Courier New', monospace;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
         text-transform: uppercase;
         letter-spacing: 0.1em;
         font-size: 0.72rem;
@@ -97,11 +104,11 @@ DARK_CSS = """
     }
     /* Block B metrics -> match the hero stat numbers */
     [data-testid="stMetricValue"] {
-        font-family: 'Courier New', monospace;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
         color: #818cf8;
     }
     [data-testid="stMetricLabel"] p {
-        font-family: 'Courier New', monospace;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
         text-transform: uppercase;
         letter-spacing: 0.1em;
         font-size: 0.72rem;
@@ -124,7 +131,7 @@ DARK_CSS = """
     }
     /* --- top bar --- */
     .aasa-brand {
-        font-family: 'Courier New', monospace;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
         color: #e8e9ec;
         font-size: 1.05rem;
         letter-spacing: 0.08em;
@@ -135,7 +142,7 @@ DARK_CSS = """
         border: 1px solid #818cf8;
         color: #818cf8;
         padding: 3px 12px;
-        font-family: 'Courier New', monospace;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
         font-size: 0.72rem;
         letter-spacing: 0.12em;
     }
@@ -148,7 +155,7 @@ DARK_CSS = """
     }
     .aasa-eyebrow {
         color: #818cf8;
-        font-family: 'Courier New', monospace;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
         font-size: 0.75rem;
         letter-spacing: 0.18em;
     }
@@ -161,13 +168,13 @@ DARK_CSS = """
     .aasa-hero h1 .accent { color: #818cf8; }
     .aasa-hero p { color: #9aa4b2; max-width: 46em; }
     .aasa-stat-num {
-        font-family: 'Courier New', monospace;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
         font-size: 1.7rem;
         color: #f5f1ea;
         font-weight: bold;
     }
     .aasa-stat-label {
-        font-family: 'Courier New', monospace;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
         font-size: 0.68rem;
         color: #6b7480;
         letter-spacing: 0.1em;
@@ -187,7 +194,7 @@ DARK_CSS = """
         color: #818cf8;
         padding: 2px 10px;
         margin: 0 6px 6px 0;
-        font-family: 'Courier New', monospace;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
         font-size: 0.72rem;
         letter-spacing: 0.06em;
     }
@@ -203,12 +210,12 @@ DARK_CSS = """
     }
     .aasa-banner b {
         color: #818cf8;
-        font-family: 'Courier New', monospace;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
         letter-spacing: 0.08em;
     }
     .aasa-why {
         color: #818cf8;
-        font-family: 'Courier New', monospace;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
         font-size: 0.85rem;
     }
 </style>
