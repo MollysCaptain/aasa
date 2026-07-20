@@ -294,6 +294,15 @@ disclosed to users, not hidden.
 ### How to verify this card is done
 - The model card exists, is dated, and is linked somewhere visible in the actual product UI — not just filed away in a docs folder no user ever sees.
 
+> **Status (2026-07-20): DONE.** `docs/model-card.md` created (v1, dated),
+> filled with real figures computed from `data/use-cases.csv` — top-5 tools =
+> ~45% of mentions, top-3 industries = ~40% of rows, 88.7% coverage, 24
+> industries, no org-size field. Step 3 verified: `rank_tools_by_frequency()`
+> in `app/logic/filter.py` is a plain `Counter.most_common` with no manual
+> reordering. Surfaced in-product via an "ℹ️ About this data — bias & dataset
+> skew" expander in `_render_methodology_block()` (`app/dashboard.py`),
+> visible near the results, which references the full model card.
+
 ---
 
 ## Card P.9 — Full backend dry run
@@ -329,7 +338,7 @@ Before Week 3 puts a real UI in front of the backend, run the whole chain — no
 - [ ] Pipeline diagram (image + `.mmd` source) exists.
 - [ ] Concept-test notes exist for 2–3 sessions, with closing-question answers recorded.
 - [ ] At least 2 UI fixes trace back to a named concept-test finding.
-- [ ] Model card exists, dated, and linked in-product.
+- [x] Model card exists, dated, and linked in-product. *(docs/model-card.md + "About this data" expander)*
 - [ ] Full backend dry run completed on 3 profiles, with a dated defect list.
 
 Continue to `16-Build-Guide-PM-Ethics-Week3-v1.md` next.

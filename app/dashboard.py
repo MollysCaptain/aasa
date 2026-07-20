@@ -384,3 +384,23 @@ def _render_methodology_block():
             "data (Stack Overflow Developer Survey), not a per-case or per-company "
             "headcount lookup — see the Cost Forecast disclaimer for the same caveat."
         )
+
+    # Card P.8 — "About this data" bias/dataset-skew disclosure, surfaced
+    # in-product (not just filed in docs/model-card.md). Visibility is the point.
+    with st.expander("ℹ️ About this data — bias & dataset skew"):
+        st.markdown(
+            "AASA ranks tools by how often they appear in a library of **3,023 "
+            "real AI deployments** — so recommendations reflect *real-world "
+            "adoption*, not an even sample of every tool.\n\n"
+            "- The data **skews toward enterprise cloud & productivity AI**: the "
+            "top 5 tools (Azure, Gemini, Azure OpenAI, Google Cloud, AWS) make up "
+            "**~45% of all tool mentions**. Smaller or newer vendors are "
+            "systematically under-recommended even when well-suited.\n"
+            "- Cases span **24 industries**, but Technology, Financial Services & "
+            "Healthcare alone are **~40% of the data** — thinner industries have "
+            "less evidence behind them.\n"
+            "- There is **no organisation-size field** in the case data; Org Size "
+            "affects only the illustrative cost, never which cases match.\n\n"
+            "Full details, figures, and fairness notes are in the project's "
+            "**model card** (`docs/model-card.md`)."
+        )
