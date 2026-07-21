@@ -72,3 +72,13 @@
 {"event": "export_clicked", "timestamp": 1784562705.1326506}
 {"event": "survey_submitted", "timestamp": 1784562799.3671813, "trust_score": 2, "net_value": "No"}
 {"event": "export_clicked", "timestamp": 1784562810.6474295}
+{"event": "form_start", "timestamp": 1784584629.612237}
+{"event": "form_start", "timestamp": 1784623032.8022745}
+{"event": "form_start", "timestamp": 1784623213.0418682}
+{"event": "form_start", "timestamp": 1784623236.3176522}
+{"event": "results_shown", "timestamp": 1784624289.7345965, "elapsed_seconds": 1053.4}
+{"event": "llm_summary_generated", "timestamp": 1784624289.7347386, "duration_seconds": 3.29, "prompt_tokens": 1081, "completion_tokens": 2048, "tokens_per_second": 622.5}
+{"event": "results_shown", "timestamp": 1784624289.735272, "elapsed_seconds": 1053.4}
+{"event": "llm_summary_generated", "timestamp": 1784624289.7353475, "duration_seconds": 3.29, "prompt_tokens": 1081, "completion_tokens": 2048, "tokens_per_second": 622.5}
+{"event": "blueprint_saved", "timestamp": 1784624539.04806}
+{"event": "onepager_downloaded", "timestamp": 1784624546.8478372}
