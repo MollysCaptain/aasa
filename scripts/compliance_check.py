@@ -16,6 +16,15 @@ populated ./chroma_store, the all-MiniLM-L6-v2 model cached, GROQ_API_KEY set):
 
     python3 scripts/compliance_check.py
 """
+import sys
+from pathlib import Path
+
+# Running "python3 scripts/compliance_check.py" only puts scripts/ on
+# sys.path, not the repo root next to it — so the "app" package next door
+# can't be found. Add the repo root ourselves so this runs the same way
+# regardless of how/where it's invoked from.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from app.logic.filter import GOVERNABLE_FOR_REGULATED
 
 # Every regulated-posture profile actually run during P.9-P.11 (see
