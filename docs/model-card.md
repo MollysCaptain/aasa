@@ -18,34 +18,42 @@ source URL. Cases were aggregated from public vendor case-study libraries
 tool recommendations in evidence — **not** a statistically representative survey
 of "all AI adoption," and not compliance certification or financial advice.
 
-## Known limitations / bias (measured, not assumed)
+## Known limitations at this stage (measured, not assumed)
 
-- **Tool coverage skews to enterprise cloud & productivity AI.** The five most
-  frequent canonical tools account for **45% of all tool mentions**: Microsoft
-  Azure (580 cases), Google Gemini (406), Azure OpenAI (353), Google Cloud
-  (326), AWS (283). Agent-framework tooling (LangChain / CrewAI-style)
-  sometimes assumed to dominate "AI adoption" is comparatively rare here. AASA's
-  recommendations reflect this real-world adoption pattern, not an idealised or
-  evenly-weighted landscape.
+*These describe a 4-week MVP built on a fixed snapshot of the case library.
+Several ease as the dataset and pricing data grow — the roadmap plans a
+periodic pricing sync and autonomous case-library ingestion. They are the
+current shape of the evidence, not permanent properties of the approach.*
 
-- **Industry concentration.** Cases span **24 industries**, but the top three —
-  Technology (492), Financial Services (371), Healthcare (347) — make up **40%
-  of all rows**. Queries in thinner-represented industries have less evidence
-  behind them.
+- **At this stage, tool coverage skews to enterprise cloud & productivity AI.**
+  The five most frequent canonical tools account for **45% of all tool
+  mentions**: Microsoft Azure (580 cases), Google Gemini (406), Azure OpenAI
+  (353), Google Cloud (326), AWS (283). Agent-framework tooling (LangChain /
+  CrewAI-style) sometimes assumed to dominate "AI adoption" is comparatively
+  rare in this snapshot. AASA's recommendations reflect this real-world adoption
+  pattern, not an idealised or evenly-weighted landscape; as the library grows,
+  the balance shifts with it.
 
-- **Coverage is 88.7%, not 100%.** 2,682 of 3,023 rows resolved to at least one
-  canonical tool via the alias map; the remaining ~11% (and 257 unmatched raw
-  tool strings, logged in `data/unmatched_tools.log`) are tracked, not hidden,
-  but do not contribute to ranking.
+- **Industry concentration (current snapshot).** Cases span **24 industries**,
+  but the top three — Technology (492), Financial Services (371), Healthcare
+  (347) — make up **40% of all rows**. Queries in thinner-represented industries
+  currently have less evidence behind them.
+
+- **Coverage is 88.7% today, not 100%.** 2,682 of 3,023 rows resolved to at
+  least one canonical tool via the alias map; the remaining ~11% (and 257
+  unmatched raw tool strings, logged in `data/unmatched_tools.log`) are tracked,
+  not hidden, and are candidates for the alias map to absorb over time.
 
 - **No organisation-size field exists in the case data.** Recommendations are
   **not** filtered by company size. "Organisation Size" in the app is a
   separate, user-stated taxonomy used only for the illustrative cost estimate,
-  never for matching cases.
+  never for matching cases. (This is a property of the source data, not a
+  maturity gap — it changes only if a size-tagged dataset is added.)
 
 - **Ranking reflects adoption frequency in this dataset, not "best tool for
   every situation."** It is evidence of what comparable organisations have
-  used — not a guarantee of fit for your specific context.
+  used — not a guarantee of fit for your specific context. This is by design,
+  and stays true regardless of dataset size.
 
 ## Fairness consideration
 
