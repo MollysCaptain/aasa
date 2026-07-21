@@ -370,17 +370,43 @@ def _render_methodology_block():
         )
 
     with st.container(border=True):
-        st.markdown("**Known limitations (what this MVP does not do)**")
+        st.markdown("**Known limitations at this stage** (what a 4-week MVP does not do *yet*)")
+        st.caption(
+            "These are current constraints of an early prototype — several ease as "
+            "the case library and pricing data grow (see the roadmap)."
+        )
         st.markdown(
-            "- Pricing is manually curated and illustrative — it is not a live feed "
-            "and may be out of date. Always confirm on the vendor's own pricing page.\n"
-            "- Compliance filtering is *directional*. AASA does not certify HIPAA, "
-            "GDPR, or SOC 2 fitness — treat the \"regulated\" filter as a shortlist, "
-            "not a sign-off.\n"
-            "- The case library reflects real-world adoption patterns, which skew "
-            "toward large-scale enterprise deployments — narrower or newer use cases "
-            "may be underrepresented.\n"
-            "- Seat and usage assumptions are grounded in population-level survey "
-            "data (Stack Overflow Developer Survey), not a per-case or per-company "
-            "headcount lookup — see the Cost Forecast disclaimer for the same caveat."
+            "- **At this stage**, pricing is manually curated and illustrative — it is "
+            "not a live feed and may be out of date, so always confirm on the vendor's "
+            "own pricing page. A periodic pricing sync is planned.\n"
+            "- **In this version**, compliance filtering is a *directional* shortlist — "
+            "AASA does not certify HIPAA, GDPR, or SOC 2 fitness, so treat the "
+            "\"regulated\" filter as a starting point, not a sign-off.\n"
+            "- The case library **currently** reflects real-world adoption patterns, "
+            "which skew toward large-scale enterprise deployments. As the library grows, "
+            "coverage of narrower and newer use cases improves.\n"
+            "- Seat and usage assumptions are **currently** grounded in population-level "
+            "survey data (Stack Overflow Developer Survey), not a per-case or per-company "
+            "headcount lookup — a workflow-scoped refinement is already proposed. See the "
+            "Cost Forecast disclaimer for the same caveat."
+        )
+
+    # Card P.8 — "About this data" bias/dataset-skew disclosure, surfaced
+    # in-product (not just filed in docs/model-card.md). Visibility is the point.
+    with st.expander("ℹ️ About this data — bias & dataset skew"):
+        st.markdown(
+            "AASA ranks tools by how often they appear in a library of **3,023 "
+            "real AI deployments** — so recommendations reflect *real-world "
+            "adoption*, not an even sample of every tool.\n\n"
+            "- The data **skews toward enterprise cloud & productivity AI**: the "
+            "top 5 tools (Azure, Gemini, Azure OpenAI, Google Cloud, AWS) make up "
+            "**~45% of all tool mentions**. Smaller or newer vendors are "
+            "systematically under-recommended even when well-suited.\n"
+            "- Cases span **24 industries**, but Technology, Financial Services & "
+            "Healthcare alone are **~40% of the data** — thinner industries have "
+            "less evidence behind them.\n"
+            "- There is **no organisation-size field** in the case data; Org Size "
+            "affects only the illustrative cost, never which cases match.\n\n"
+            "Full details, figures, and fairness notes are in the project's "
+            "**model card** (`docs/model-card.md`)."
         )
