@@ -1,0 +1,2018 @@
+Industry,OrgSize,Category,Rank,Tool,Count,Pct,CategoryRespondents,GroupSize
+Banking/Financial Services,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),88,83.8,105,269
+Banking/Financial Services,"1,000 to 4,999 employees",AIModels,2,Anthropic: Claude Sonnet,45,42.9,105,269
+Banking/Financial Services,"1,000 to 4,999 employees",AIModels,3,Gemini (Flash general purpose models),42,40.0,105,269
+Banking/Financial Services,"1,000 to 4,999 employees",AIModels,4,openAI Reasoning models,32,30.5,105,269
+Banking/Financial Services,"1,000 to 4,999 employees",AIModels,5,Gemini (Pro Reasoning models),31,29.5,105,269
+Banking/Financial Services,"1,000 to 4,999 employees",Database,1,PostgreSQL,106,56.7,187,269
+Banking/Financial Services,"1,000 to 4,999 employees",Database,2,Microsoft SQL Server,91,48.7,187,269
+Banking/Financial Services,"1,000 to 4,999 employees",Database,3,Oracle,62,33.2,187,269
+Banking/Financial Services,"1,000 to 4,999 employees",Database,4,MySQL,59,31.6,187,269
+Banking/Financial Services,"1,000 to 4,999 employees",Database,5,SQLite,48,25.7,187,269
+Banking/Financial Services,"1,000 to 4,999 employees",Platform,1,Docker,123,67.6,182,269
+Banking/Financial Services,"1,000 to 4,999 employees",Platform,2,npm,99,54.4,182,269
+Banking/Financial Services,"1,000 to 4,999 employees",Platform,3,Amazon Web Services (AWS),77,42.3,182,269
+Banking/Financial Services,"1,000 to 4,999 employees",Platform,4,Microsoft Azure,75,41.2,182,269
+Banking/Financial Services,"1,000 to 4,999 employees",Platform,5,Kubernetes,73,40.1,182,269
+Banking/Financial Services,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),144,87.3,165,357
+Banking/Financial Services,"10,000 or more employees",AIModels,2,Anthropic: Claude Sonnet,62,37.6,165,357
+Banking/Financial Services,"10,000 or more employees",AIModels,3,Gemini (Flash general purpose models),45,27.3,165,357
+Banking/Financial Services,"10,000 or more employees",AIModels,4,openAI Reasoning models,41,24.8,165,357
+Banking/Financial Services,"10,000 or more employees",AIModels,5,openAI Image generating models,40,24.2,165,357
+Banking/Financial Services,"10,000 or more employees",Database,1,PostgreSQL,132,53.0,249,357
+Banking/Financial Services,"10,000 or more employees",Database,2,Microsoft SQL Server,79,31.7,249,357
+Banking/Financial Services,"10,000 or more employees",Database,3,SQLite,79,31.7,249,357
+Banking/Financial Services,"10,000 or more employees",Database,4,MySQL,74,29.7,249,357
+Banking/Financial Services,"10,000 or more employees",Database,5,Oracle,70,28.1,249,357
+Banking/Financial Services,"10,000 or more employees",Platform,1,Docker,174,69.9,249,357
+Banking/Financial Services,"10,000 or more employees",Platform,2,npm,137,55.0,249,357
+Banking/Financial Services,"10,000 or more employees",Platform,3,Amazon Web Services (AWS),116,46.6,249,357
+Banking/Financial Services,"10,000 or more employees",Platform,4,Kubernetes,113,45.4,249,357
+Banking/Financial Services,"10,000 or more employees",Platform,5,Pip,103,41.4,249,357
+Banking/Financial Services,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),64,81.0,79,192
+Banking/Financial Services,100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,36,45.6,79,192
+Banking/Financial Services,100 to 499 employees,AIModels,3,Gemini (Flash general purpose models),24,30.4,79,192
+Banking/Financial Services,100 to 499 employees,AIModels,4,openAI Reasoning models,24,30.4,79,192
+Banking/Financial Services,100 to 499 employees,AIModels,5,Gemini (Pro Reasoning models),18,22.8,79,192
+Banking/Financial Services,100 to 499 employees,Database,1,Microsoft SQL Server,78,52.7,148,192
+Banking/Financial Services,100 to 499 employees,Database,2,PostgreSQL,77,52.0,148,192
+Banking/Financial Services,100 to 499 employees,Database,3,MySQL,56,37.8,148,192
+Banking/Financial Services,100 to 499 employees,Database,4,SQLite,39,26.4,148,192
+Banking/Financial Services,100 to 499 employees,Database,5,Redis,35,23.6,148,192
+Banking/Financial Services,100 to 499 employees,Platform,1,Docker,84,63.2,133,192
+Banking/Financial Services,100 to 499 employees,Platform,2,npm,77,57.9,133,192
+Banking/Financial Services,100 to 499 employees,Platform,3,Amazon Web Services (AWS),56,42.1,133,192
+Banking/Financial Services,100 to 499 employees,Platform,4,Microsoft Azure,51,38.3,133,192
+Banking/Financial Services,100 to 499 employees,Platform,5,Kubernetes,43,32.3,133,192
+Banking/Financial Services,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),52,86.7,60,157
+Banking/Financial Services,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,33,55.0,60,157
+Banking/Financial Services,20 to 99 employees,AIModels,3,openAI Reasoning models,25,41.7,60,157
+Banking/Financial Services,20 to 99 employees,AIModels,4,Gemini (Flash general purpose models),21,35.0,60,157
+Banking/Financial Services,20 to 99 employees,AIModels,5,Gemini (Pro Reasoning models),17,28.3,60,157
+Banking/Financial Services,20 to 99 employees,Database,1,PostgreSQL,72,59.0,122,157
+Banking/Financial Services,20 to 99 employees,Database,2,MySQL,51,41.8,122,157
+Banking/Financial Services,20 to 99 employees,Database,3,Microsoft SQL Server,49,40.2,122,157
+Banking/Financial Services,20 to 99 employees,Database,4,Redis,41,33.6,122,157
+Banking/Financial Services,20 to 99 employees,Database,5,SQLite,40,32.8,122,157
+Banking/Financial Services,20 to 99 employees,Platform,1,Docker,77,70.0,110,157
+Banking/Financial Services,20 to 99 employees,Platform,2,npm,63,57.3,110,157
+Banking/Financial Services,20 to 99 employees,Platform,3,Amazon Web Services (AWS),44,40.0,110,157
+Banking/Financial Services,20 to 99 employees,Platform,4,Pip,41,37.3,110,157
+Banking/Financial Services,20 to 99 employees,Platform,5,Kubernetes,38,34.5,110,157
+Banking/Financial Services,"5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),41,80.4,51,100
+Banking/Financial Services,"5,000 to 9,999 employees",AIModels,2,Anthropic: Claude Sonnet,27,52.9,51,100
+Banking/Financial Services,"5,000 to 9,999 employees",AIModels,3,openAI Reasoning models,20,39.2,51,100
+Banking/Financial Services,"5,000 to 9,999 employees",AIModels,4,Gemini (Pro Reasoning models),14,27.5,51,100
+Banking/Financial Services,"5,000 to 9,999 employees",AIModels,5,Gemini (Flash general purpose models),12,23.5,51,100
+Banking/Financial Services,"5,000 to 9,999 employees",Database,1,PostgreSQL,38,55.1,69,100
+Banking/Financial Services,"5,000 to 9,999 employees",Database,2,Microsoft SQL Server,33,47.8,69,100
+Banking/Financial Services,"5,000 to 9,999 employees",Database,3,SQLite,17,24.6,69,100
+Banking/Financial Services,"5,000 to 9,999 employees",Database,4,Redis,16,23.2,69,100
+Banking/Financial Services,"5,000 to 9,999 employees",Database,5,Elasticsearch,15,21.7,69,100
+Banking/Financial Services,"5,000 to 9,999 employees",Platform,1,Docker,44,67.7,65,100
+Banking/Financial Services,"5,000 to 9,999 employees",Platform,2,Amazon Web Services (AWS),37,56.9,65,100
+Banking/Financial Services,"5,000 to 9,999 employees",Platform,3,npm,30,46.2,65,100
+Banking/Financial Services,"5,000 to 9,999 employees",Platform,4,Kubernetes,27,41.5,65,100
+Banking/Financial Services,"5,000 to 9,999 employees",Platform,5,Pip,27,41.5,65,100
+Banking/Financial Services,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),37,80.4,46,114
+Banking/Financial Services,500 to 999 employees,AIModels,2,Anthropic: Claude Sonnet,18,39.1,46,114
+Banking/Financial Services,500 to 999 employees,AIModels,3,openAI Image generating models,17,37.0,46,114
+Banking/Financial Services,500 to 999 employees,AIModels,4,openAI Reasoning models,15,32.6,46,114
+Banking/Financial Services,500 to 999 employees,AIModels,5,Gemini (Flash general purpose models),11,23.9,46,114
+Banking/Financial Services,500 to 999 employees,Database,1,PostgreSQL,50,56.8,88,114
+Banking/Financial Services,500 to 999 employees,Database,2,Microsoft SQL Server,34,38.6,88,114
+Banking/Financial Services,500 to 999 employees,Database,3,MySQL,25,28.4,88,114
+Banking/Financial Services,500 to 999 employees,Database,4,SQLite,25,28.4,88,114
+Banking/Financial Services,500 to 999 employees,Database,5,Oracle,24,27.3,88,114
+Banking/Financial Services,500 to 999 employees,Platform,1,Docker,57,75.0,76,114
+Banking/Financial Services,500 to 999 employees,Platform,2,Amazon Web Services (AWS),44,57.9,76,114
+Banking/Financial Services,500 to 999 employees,Platform,3,npm,34,44.7,76,114
+Banking/Financial Services,500 to 999 employees,Platform,4,Kubernetes,32,42.1,76,114
+Banking/Financial Services,500 to 999 employees,Platform,5,Pip,25,32.9,76,114
+Banking/Financial Services,I don’t know,AIModels,1,openAI GPT (chatbot models),9,90.0,10,26
+Banking/Financial Services,I don’t know,AIModels,2,Anthropic: Claude Sonnet,4,40.0,10,26
+Banking/Financial Services,I don’t know,AIModels,3,openAI Image generating models,4,40.0,10,26
+Banking/Financial Services,I don’t know,AIModels,4,openAI Reasoning models,4,40.0,10,26
+Banking/Financial Services,I don’t know,AIModels,5,Mistral AI models,3,30.0,10,26
+Banking/Financial Services,I don’t know,Database,1,Microsoft SQL Server,13,61.9,21,26
+Banking/Financial Services,I don’t know,Database,2,MySQL,12,57.1,21,26
+Banking/Financial Services,I don’t know,Database,3,PostgreSQL,10,47.6,21,26
+Banking/Financial Services,I don’t know,Database,4,MariaDB,6,28.6,21,26
+Banking/Financial Services,I don’t know,Database,5,Oracle,6,28.6,21,26
+Banking/Financial Services,I don’t know,Platform,1,Amazon Web Services (AWS),11,61.1,18,26
+Banking/Financial Services,I don’t know,Platform,2,Docker,8,44.4,18,26
+Banking/Financial Services,I don’t know,Platform,3,Kubernetes,8,44.4,18,26
+Banking/Financial Services,I don’t know,Platform,4,Maven (build tool),8,44.4,18,26
+Banking/Financial Services,I don’t know,Platform,5,npm,8,44.4,18,26
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),11,84.6,13,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Gemini (Flash general purpose models),6,46.2,13,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,openAI Reasoning models,4,30.8,13,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,Anthropic: Claude Sonnet,3,23.1,13,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,DeepSeek (R- Reasoning models),3,23.1,13,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,Microsoft SQL Server,11,45.8,24,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,MySQL,10,41.7,24,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,SQLite,8,33.3,24,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,4,Oracle,7,29.2,24,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,5,PostgreSQL,7,29.2,24,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,Amazon Web Services (AWS),14,66.7,21,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,Google Cloud,11,52.4,21,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,Cloudflare,6,28.6,21,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,4,Docker,6,28.6,21,35
+Banking/Financial Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,5,npm,6,28.6,21,35
+Banking/Financial Services,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),27,77.1,35,92
+Banking/Financial Services,Less than 20 employees,AIModels,2,openAI Reasoning models,14,40.0,35,92
+Banking/Financial Services,Less than 20 employees,AIModels,3,Gemini (Flash general purpose models),12,34.3,35,92
+Banking/Financial Services,Less than 20 employees,AIModels,4,Anthropic: Claude Sonnet,11,31.4,35,92
+Banking/Financial Services,Less than 20 employees,AIModels,5,DeepSeek (R- Reasoning models),8,22.9,35,92
+Banking/Financial Services,Less than 20 employees,Database,1,PostgreSQL,40,54.1,74,92
+Banking/Financial Services,Less than 20 employees,Database,2,MySQL,36,48.6,74,92
+Banking/Financial Services,Less than 20 employees,Database,3,Microsoft SQL Server,27,36.5,74,92
+Banking/Financial Services,Less than 20 employees,Database,4,SQLite,25,33.8,74,92
+Banking/Financial Services,Less than 20 employees,Database,5,Redis,20,27.0,74,92
+Banking/Financial Services,Less than 20 employees,Platform,1,Docker,40,72.7,55,92
+Banking/Financial Services,Less than 20 employees,Platform,2,npm,26,47.3,55,92
+Banking/Financial Services,Less than 20 employees,Platform,3,Pip,23,41.8,55,92
+Banking/Financial Services,Less than 20 employees,Platform,4,Amazon Web Services (AWS),20,36.4,55,92
+Banking/Financial Services,Less than 20 employees,Platform,5,Kubernetes,20,36.4,55,92
+Computer Systems Design and Services,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),22,71.0,31,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",AIModels,2,Gemini (Flash general purpose models),17,54.8,31,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",AIModels,3,openAI Reasoning models,15,48.4,31,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",AIModels,4,Anthropic: Claude Sonnet,14,45.2,31,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",AIModels,5,Gemini (Pro Reasoning models),14,45.2,31,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",Database,1,PostgreSQL,26,61.9,42,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",Database,2,SQLite,17,40.5,42,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",Database,3,Redis,12,28.6,42,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",Database,4,MariaDB,11,26.2,42,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",Database,5,MySQL,11,26.2,42,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",Platform,1,Docker,35,74.5,47,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",Platform,2,Pip,26,55.3,47,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",Platform,3,npm,21,44.7,47,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",Platform,4,Kubernetes,20,42.6,47,71
+Computer Systems Design and Services,"1,000 to 4,999 employees",Platform,5,Amazon Web Services (AWS),19,40.4,47,71
+Computer Systems Design and Services,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),41,75.9,54,157
+Computer Systems Design and Services,"10,000 or more employees",AIModels,2,Gemini (Flash general purpose models),26,48.1,54,157
+Computer Systems Design and Services,"10,000 or more employees",AIModels,3,openAI Reasoning models,26,48.1,54,157
+Computer Systems Design and Services,"10,000 or more employees",AIModels,4,Anthropic: Claude Sonnet,22,40.7,54,157
+Computer Systems Design and Services,"10,000 or more employees",AIModels,5,Gemini (Pro Reasoning models),22,40.7,54,157
+Computer Systems Design and Services,"10,000 or more employees",Database,1,PostgreSQL,43,52.4,82,157
+Computer Systems Design and Services,"10,000 or more employees",Database,2,SQLite,37,45.1,82,157
+Computer Systems Design and Services,"10,000 or more employees",Database,3,MySQL,29,35.4,82,157
+Computer Systems Design and Services,"10,000 or more employees",Database,4,MongoDB,21,25.6,82,157
+Computer Systems Design and Services,"10,000 or more employees",Database,5,Microsoft SQL Server,19,23.2,82,157
+Computer Systems Design and Services,"10,000 or more employees",Platform,1,Docker,69,72.6,95,157
+Computer Systems Design and Services,"10,000 or more employees",Platform,2,Pip,54,56.8,95,157
+Computer Systems Design and Services,"10,000 or more employees",Platform,3,Make,43,45.3,95,157
+Computer Systems Design and Services,"10,000 or more employees",Platform,4,npm,35,36.8,95,157
+Computer Systems Design and Services,"10,000 or more employees",Platform,5,Amazon Web Services (AWS),34,35.8,95,157
+Computer Systems Design and Services,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),38,76.0,50,134
+Computer Systems Design and Services,100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,25,50.0,50,134
+Computer Systems Design and Services,100 to 499 employees,AIModels,3,Gemini (Flash general purpose models),15,30.0,50,134
+Computer Systems Design and Services,100 to 499 employees,AIModels,4,Gemini (Pro Reasoning models),14,28.0,50,134
+Computer Systems Design and Services,100 to 499 employees,AIModels,5,openAI Reasoning models,14,28.0,50,134
+Computer Systems Design and Services,100 to 499 employees,Database,1,PostgreSQL,56,70.9,79,134
+Computer Systems Design and Services,100 to 499 employees,Database,2,MySQL,34,43.0,79,134
+Computer Systems Design and Services,100 to 499 employees,Database,3,SQLite,33,41.8,79,134
+Computer Systems Design and Services,100 to 499 employees,Database,4,Redis,22,27.8,79,134
+Computer Systems Design and Services,100 to 499 employees,Database,5,MariaDB,21,26.6,79,134
+Computer Systems Design and Services,100 to 499 employees,Platform,1,Docker,64,70.3,91,134
+Computer Systems Design and Services,100 to 499 employees,Platform,2,Pip,50,54.9,91,134
+Computer Systems Design and Services,100 to 499 employees,Platform,3,Amazon Web Services (AWS),41,45.1,91,134
+Computer Systems Design and Services,100 to 499 employees,Platform,4,npm,40,44.0,91,134
+Computer Systems Design and Services,100 to 499 employees,Platform,5,Make,32,35.2,91,134
+Computer Systems Design and Services,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),43,76.8,56,127
+Computer Systems Design and Services,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,25,44.6,56,127
+Computer Systems Design and Services,20 to 99 employees,AIModels,3,openAI Reasoning models,23,41.1,56,127
+Computer Systems Design and Services,20 to 99 employees,AIModels,4,Gemini (Flash general purpose models),19,33.9,56,127
+Computer Systems Design and Services,20 to 99 employees,AIModels,5,Meta Llama (all models),14,25.0,56,127
+Computer Systems Design and Services,20 to 99 employees,Database,1,PostgreSQL,55,61.8,89,127
+Computer Systems Design and Services,20 to 99 employees,Database,2,MySQL,35,39.3,89,127
+Computer Systems Design and Services,20 to 99 employees,Database,3,Microsoft SQL Server,34,38.2,89,127
+Computer Systems Design and Services,20 to 99 employees,Database,4,SQLite,33,37.1,89,127
+Computer Systems Design and Services,20 to 99 employees,Database,5,Redis,26,29.2,89,127
+Computer Systems Design and Services,20 to 99 employees,Platform,1,Docker,78,85.7,91,127
+Computer Systems Design and Services,20 to 99 employees,Platform,2,npm,50,54.9,91,127
+Computer Systems Design and Services,20 to 99 employees,Platform,3,Amazon Web Services (AWS),44,48.4,91,127
+Computer Systems Design and Services,20 to 99 employees,Platform,4,Pip,42,46.2,91,127
+Computer Systems Design and Services,20 to 99 employees,Platform,5,Microsoft Azure,31,34.1,91,127
+Computer Systems Design and Services,"5,000 to 9,999 employees",AIModels,1,Anthropic: Claude Sonnet,8,66.7,12,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",AIModels,2,openAI GPT (chatbot models),7,58.3,12,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",AIModels,3,openAI Reasoning models,5,41.7,12,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",AIModels,4,Gemini (Pro Reasoning models),4,33.3,12,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",AIModels,5,Gemini (Flash general purpose models),3,25.0,12,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",Database,1,PostgreSQL,11,57.9,19,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",Database,2,SQLite,10,52.6,19,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",Database,3,MariaDB,7,36.8,19,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",Database,4,MySQL,7,36.8,19,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",Database,5,Databricks SQL,4,21.1,19,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",Platform,1,Docker,15,75.0,20,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",Platform,2,Pip,13,65.0,20,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",Platform,3,Amazon Web Services (AWS),11,55.0,20,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",Platform,4,Homebrew,10,50.0,20,34
+Computer Systems Design and Services,"5,000 to 9,999 employees",Platform,5,Kubernetes,6,30.0,20,34
+Computer Systems Design and Services,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),12,80.0,15,43
+Computer Systems Design and Services,500 to 999 employees,AIModels,2,Anthropic: Claude Sonnet,11,73.3,15,43
+Computer Systems Design and Services,500 to 999 employees,AIModels,3,Gemini (Flash general purpose models),11,73.3,15,43
+Computer Systems Design and Services,500 to 999 employees,AIModels,4,Gemini (Pro Reasoning models),7,46.7,15,43
+Computer Systems Design and Services,500 to 999 employees,AIModels,5,openAI Reasoning models,7,46.7,15,43
+Computer Systems Design and Services,500 to 999 employees,Database,1,MySQL,16,59.3,27,43
+Computer Systems Design and Services,500 to 999 employees,Database,2,PostgreSQL,15,55.6,27,43
+Computer Systems Design and Services,500 to 999 employees,Database,3,SQLite,14,51.9,27,43
+Computer Systems Design and Services,500 to 999 employees,Database,4,Redis,11,40.7,27,43
+Computer Systems Design and Services,500 to 999 employees,Database,5,Microsoft SQL Server,9,33.3,27,43
+Computer Systems Design and Services,500 to 999 employees,Platform,1,Docker,20,76.9,26,43
+Computer Systems Design and Services,500 to 999 employees,Platform,2,Amazon Web Services (AWS),17,65.4,26,43
+Computer Systems Design and Services,500 to 999 employees,Platform,3,Pip,15,57.7,26,43
+Computer Systems Design and Services,500 to 999 employees,Platform,4,Microsoft Azure,12,46.2,26,43
+Computer Systems Design and Services,500 to 999 employees,Platform,5,npm,12,46.2,26,43
+Computer Systems Design and Services,I don’t know,AIModels,1,openAI GPT (chatbot models),6,85.7,7,22
+Computer Systems Design and Services,I don’t know,AIModels,2,DeepSeek (R- Reasoning models),4,57.1,7,22
+Computer Systems Design and Services,I don’t know,AIModels,3,Gemini (Flash general purpose models),4,57.1,7,22
+Computer Systems Design and Services,I don’t know,AIModels,4,Gemini (Pro Reasoning models),4,57.1,7,22
+Computer Systems Design and Services,I don’t know,AIModels,5,Anthropic: Claude Sonnet,3,42.9,7,22
+Computer Systems Design and Services,I don’t know,Database,1,PostgreSQL,7,53.8,13,22
+Computer Systems Design and Services,I don’t know,Database,2,SQLite,6,46.2,13,22
+Computer Systems Design and Services,I don’t know,Database,3,MariaDB,3,23.1,13,22
+Computer Systems Design and Services,I don’t know,Database,4,Microsoft SQL Server,3,23.1,13,22
+Computer Systems Design and Services,I don’t know,Database,5,MySQL,3,23.1,13,22
+Computer Systems Design and Services,I don’t know,Platform,1,Docker,8,80.0,10,22
+Computer Systems Design and Services,I don’t know,Platform,2,Pip,7,70.0,10,22
+Computer Systems Design and Services,I don’t know,Platform,3,Amazon Web Services (AWS),5,50.0,10,22
+Computer Systems Design and Services,I don’t know,Platform,4,Kubernetes,4,40.0,10,22
+Computer Systems Design and Services,I don’t know,Platform,5,Make,4,40.0,10,22
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),16,80.0,20,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Gemini (Flash general purpose models),11,55.0,20,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,openAI Reasoning models,10,50.0,20,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,DeepSeek (V- General purpose models),8,40.0,20,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,Anthropic: Claude Sonnet,7,35.0,20,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,MySQL,19,50.0,38,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,Microsoft SQL Server,18,47.4,38,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,PostgreSQL,17,44.7,38,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,4,SQLite,15,39.5,38,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,5,Microsoft Access,14,36.8,38,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,npm,17,43.6,39,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,Docker,16,41.0,39,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,Pip,14,35.9,39,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,4,Google Cloud,12,30.8,39,65
+Computer Systems Design and Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,5,Microsoft Azure,10,25.6,39,65
+Computer Systems Design and Services,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),52,81.2,64,134
+Computer Systems Design and Services,Less than 20 employees,AIModels,2,Anthropic: Claude Sonnet,23,35.9,64,134
+Computer Systems Design and Services,Less than 20 employees,AIModels,3,Gemini (Flash general purpose models),23,35.9,64,134
+Computer Systems Design and Services,Less than 20 employees,AIModels,4,openAI Reasoning models,23,35.9,64,134
+Computer Systems Design and Services,Less than 20 employees,AIModels,5,DeepSeek (R- Reasoning models),22,34.4,64,134
+Computer Systems Design and Services,Less than 20 employees,Database,1,PostgreSQL,44,53.0,83,134
+Computer Systems Design and Services,Less than 20 employees,Database,2,MySQL,36,43.4,83,134
+Computer Systems Design and Services,Less than 20 employees,Database,3,SQLite,34,41.0,83,134
+Computer Systems Design and Services,Less than 20 employees,Database,4,MariaDB,33,39.8,83,134
+Computer Systems Design and Services,Less than 20 employees,Database,5,Microsoft SQL Server,30,36.1,83,134
+Computer Systems Design and Services,Less than 20 employees,Platform,1,Docker,66,75.9,87,134
+Computer Systems Design and Services,Less than 20 employees,Platform,2,npm,47,54.0,87,134
+Computer Systems Design and Services,Less than 20 employees,Platform,3,Pip,45,51.7,87,134
+Computer Systems Design and Services,Less than 20 employees,Platform,4,Amazon Web Services (AWS),37,42.5,87,134
+Computer Systems Design and Services,Less than 20 employees,Platform,5,Make,32,36.8,87,134
+Energy,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),28,77.8,36,111
+Energy,"1,000 to 4,999 employees",AIModels,2,Anthropic: Claude Sonnet,18,50.0,36,111
+Energy,"1,000 to 4,999 employees",AIModels,3,Gemini (Pro Reasoning models),13,36.1,36,111
+Energy,"1,000 to 4,999 employees",AIModels,4,openAI Reasoning models,13,36.1,36,111
+Energy,"1,000 to 4,999 employees",AIModels,5,Gemini (Flash general purpose models),12,33.3,36,111
+Energy,"1,000 to 4,999 employees",Database,1,PostgreSQL,35,50.0,70,111
+Energy,"1,000 to 4,999 employees",Database,2,Microsoft SQL Server,27,38.6,70,111
+Energy,"1,000 to 4,999 employees",Database,3,SQLite,24,34.3,70,111
+Energy,"1,000 to 4,999 employees",Database,4,Oracle,20,28.6,70,111
+Energy,"1,000 to 4,999 employees",Database,5,MySQL,16,22.9,70,111
+Energy,"1,000 to 4,999 employees",Platform,1,Docker,47,71.2,66,111
+Energy,"1,000 to 4,999 employees",Platform,2,npm,32,48.5,66,111
+Energy,"1,000 to 4,999 employees",Platform,3,Microsoft Azure,27,40.9,66,111
+Energy,"1,000 to 4,999 employees",Platform,4,Amazon Web Services (AWS),24,36.4,66,111
+Energy,"1,000 to 4,999 employees",Platform,5,Pip,23,34.8,66,111
+Energy,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),33,75.0,44,96
+Energy,"10,000 or more employees",AIModels,2,Anthropic: Claude Sonnet,21,47.7,44,96
+Energy,"10,000 or more employees",AIModels,3,Gemini (Flash general purpose models),14,31.8,44,96
+Energy,"10,000 or more employees",AIModels,4,openAI Reasoning models,14,31.8,44,96
+Energy,"10,000 or more employees",AIModels,5,Gemini (Pro Reasoning models),12,27.3,44,96
+Energy,"10,000 or more employees",Database,1,PostgreSQL,36,51.4,70,96
+Energy,"10,000 or more employees",Database,2,Microsoft SQL Server,30,42.9,70,96
+Energy,"10,000 or more employees",Database,3,SQLite,23,32.9,70,96
+Energy,"10,000 or more employees",Database,4,MySQL,19,27.1,70,96
+Energy,"10,000 or more employees",Database,5,Redis,17,24.3,70,96
+Energy,"10,000 or more employees",Platform,1,Docker,49,72.1,68,96
+Energy,"10,000 or more employees",Platform,2,Pip,41,60.3,68,96
+Energy,"10,000 or more employees",Platform,3,npm,36,52.9,68,96
+Energy,"10,000 or more employees",Platform,4,Amazon Web Services (AWS),33,48.5,68,96
+Energy,"10,000 or more employees",Platform,5,Microsoft Azure,32,47.1,68,96
+Energy,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),39,92.9,42,121
+Energy,100 to 499 employees,AIModels,2,openAI Reasoning models,20,47.6,42,121
+Energy,100 to 499 employees,AIModels,3,Anthropic: Claude Sonnet,18,42.9,42,121
+Energy,100 to 499 employees,AIModels,4,Gemini (Flash general purpose models),15,35.7,42,121
+Energy,100 to 499 employees,AIModels,5,Gemini (Pro Reasoning models),14,33.3,42,121
+Energy,100 to 499 employees,Database,1,PostgreSQL,45,57.0,79,121
+Energy,100 to 499 employees,Database,2,Microsoft SQL Server,35,44.3,79,121
+Energy,100 to 499 employees,Database,3,SQLite,24,30.4,79,121
+Energy,100 to 499 employees,Database,4,MySQL,22,27.8,79,121
+Energy,100 to 499 employees,Database,5,Redis,16,20.3,79,121
+Energy,100 to 499 employees,Platform,1,Docker,51,67.1,76,121
+Energy,100 to 499 employees,Platform,2,npm,37,48.7,76,121
+Energy,100 to 499 employees,Platform,3,Amazon Web Services (AWS),35,46.1,76,121
+Energy,100 to 499 employees,Platform,4,Pip,32,42.1,76,121
+Energy,100 to 499 employees,Platform,5,Microsoft Azure,26,34.2,76,121
+Energy,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),51,76.1,67,142
+Energy,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,29,43.3,67,142
+Energy,20 to 99 employees,AIModels,3,openAI Reasoning models,21,31.3,67,142
+Energy,20 to 99 employees,AIModels,4,DeepSeek (R- Reasoning models),18,26.9,67,142
+Energy,20 to 99 employees,AIModels,5,Gemini (Flash general purpose models),17,25.4,67,142
+Energy,20 to 99 employees,Database,1,PostgreSQL,71,69.6,102,142
+Energy,20 to 99 employees,Database,2,MySQL,42,41.2,102,142
+Energy,20 to 99 employees,Database,3,SQLite,35,34.3,102,142
+Energy,20 to 99 employees,Database,4,Redis,24,23.5,102,142
+Energy,20 to 99 employees,Database,5,Microsoft SQL Server,23,22.5,102,142
+Energy,20 to 99 employees,Platform,1,Docker,71,75.5,94,142
+Energy,20 to 99 employees,Platform,2,Amazon Web Services (AWS),54,57.4,94,142
+Energy,20 to 99 employees,Platform,3,npm,52,55.3,94,142
+Energy,20 to 99 employees,Platform,4,Pip,42,44.7,94,142
+Energy,20 to 99 employees,Platform,5,Kubernetes,29,30.9,94,142
+Energy,"5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),13,92.9,14,44
+Energy,"5,000 to 9,999 employees",AIModels,2,Anthropic: Claude Sonnet,8,57.1,14,44
+Energy,"5,000 to 9,999 employees",AIModels,3,Gemini (Pro Reasoning models),5,35.7,14,44
+Energy,"5,000 to 9,999 employees",AIModels,4,Gemini (Flash general purpose models),4,28.6,14,44
+Energy,"5,000 to 9,999 employees",AIModels,5,openAI Image generating models,4,28.6,14,44
+Energy,"5,000 to 9,999 employees",Database,1,PostgreSQL,22,73.3,30,44
+Energy,"5,000 to 9,999 employees",Database,2,Microsoft SQL Server,17,56.7,30,44
+Energy,"5,000 to 9,999 employees",Database,3,SQLite,15,50.0,30,44
+Energy,"5,000 to 9,999 employees",Database,4,MySQL,12,40.0,30,44
+Energy,"5,000 to 9,999 employees",Database,5,Oracle,8,26.7,30,44
+Energy,"5,000 to 9,999 employees",Platform,1,Docker,16,69.6,23,44
+Energy,"5,000 to 9,999 employees",Platform,2,Microsoft Azure,14,60.9,23,44
+Energy,"5,000 to 9,999 employees",Platform,3,Pip,13,56.5,23,44
+Energy,"5,000 to 9,999 employees",Platform,4,npm,12,52.2,23,44
+Energy,"5,000 to 9,999 employees",Platform,5,Amazon Web Services (AWS),11,47.8,23,44
+Energy,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),11,61.1,18,41
+Energy,500 to 999 employees,AIModels,2,Anthropic: Claude Sonnet,7,38.9,18,41
+Energy,500 to 999 employees,AIModels,3,Gemini (Flash general purpose models),7,38.9,18,41
+Energy,500 to 999 employees,AIModels,4,openAI Reasoning models,4,22.2,18,41
+Energy,500 to 999 employees,AIModels,5,Meta Llama (all models),3,16.7,18,41
+Energy,500 to 999 employees,Database,1,PostgreSQL,13,52.0,25,41
+Energy,500 to 999 employees,Database,2,Microsoft SQL Server,11,44.0,25,41
+Energy,500 to 999 employees,Database,3,MySQL,10,40.0,25,41
+Energy,500 to 999 employees,Database,4,MongoDB,7,28.0,25,41
+Energy,500 to 999 employees,Database,5,SQLite,7,28.0,25,41
+Energy,500 to 999 employees,Platform,1,Docker,20,74.1,27,41
+Energy,500 to 999 employees,Platform,2,Pip,17,63.0,27,41
+Energy,500 to 999 employees,Platform,3,npm,16,59.3,27,41
+Energy,500 to 999 employees,Platform,4,Microsoft Azure,12,44.4,27,41
+Energy,500 to 999 employees,Platform,5,Amazon Web Services (AWS),9,33.3,27,41
+Energy,I don’t know,AIModels,1,openAI GPT (chatbot models),2,66.7,3,19
+Energy,I don’t know,AIModels,2,Anthropic: Claude Sonnet,1,33.3,3,19
+Energy,I don’t know,AIModels,3,DeepSeek (V- General purpose models),1,33.3,3,19
+Energy,I don’t know,AIModels,4,Gemini (Flash general purpose models),1,33.3,3,19
+Energy,I don’t know,AIModels,5,Gemini (Pro Reasoning models),1,33.3,3,19
+Energy,I don’t know,Database,1,PostgreSQL,6,60.0,10,19
+Energy,I don’t know,Database,2,Elasticsearch,5,50.0,10,19
+Energy,I don’t know,Database,3,Microsoft SQL Server,4,40.0,10,19
+Energy,I don’t know,Database,4,MongoDB,3,30.0,10,19
+Energy,I don’t know,Database,5,MySQL,3,30.0,10,19
+Energy,I don’t know,Platform,1,Docker,7,63.6,11,19
+Energy,I don’t know,Platform,2,Maven (build tool),5,45.5,11,19
+Energy,I don’t know,Platform,3,Pip,5,45.5,11,19
+Energy,I don’t know,Platform,4,npm,5,45.5,11,19
+Energy,I don’t know,Platform,5,Amazon Web Services (AWS),4,36.4,11,19
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),4,80.0,5,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Anthropic: Claude Sonnet,2,40.0,5,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,openAI Image generating models,2,40.0,5,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,DeepSeek (R- Reasoning models),1,20.0,5,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,DeepSeek (V- General purpose models),1,20.0,5,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,PostgreSQL,5,55.6,9,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,SQLite,4,44.4,9,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,MySQL,3,33.3,9,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",Database,4,Microsoft SQL Server,2,22.2,9,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",Database,5,Elasticsearch,1,11.1,9,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,Docker,5,71.4,7,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,Amazon Web Services (AWS),4,57.1,7,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,Pip,4,57.1,7,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",Platform,4,APT,3,42.9,7,18
+Energy,"Just me - I am a freelancer, sole proprietor, etc.",Platform,5,Digital Ocean,3,42.9,7,18
+Energy,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),29,65.9,44,86
+Energy,Less than 20 employees,AIModels,2,Anthropic: Claude Sonnet,24,54.5,44,86
+Energy,Less than 20 employees,AIModels,3,Gemini (Flash general purpose models),14,31.8,44,86
+Energy,Less than 20 employees,AIModels,4,openAI Reasoning models,11,25.0,44,86
+Energy,Less than 20 employees,AIModels,5,Meta Llama (all models),9,20.5,44,86
+Energy,Less than 20 employees,Database,1,PostgreSQL,41,68.3,60,86
+Energy,Less than 20 employees,Database,2,SQLite,24,40.0,60,86
+Energy,Less than 20 employees,Database,3,MySQL,23,38.3,60,86
+Energy,Less than 20 employees,Database,4,MariaDB,16,26.7,60,86
+Energy,Less than 20 employees,Database,5,Microsoft SQL Server,14,23.3,60,86
+Energy,Less than 20 employees,Platform,1,Docker,42,75.0,56,86
+Energy,Less than 20 employees,Platform,2,Pip,30,53.6,56,86
+Energy,Less than 20 employees,Platform,3,Amazon Web Services (AWS),29,51.8,56,86
+Energy,Less than 20 employees,Platform,4,npm,28,50.0,56,86
+Energy,Less than 20 employees,Platform,5,Microsoft Azure,19,33.9,56,86
+Fintech,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),72,77.4,93,200
+Fintech,"1,000 to 4,999 employees",AIModels,2,Anthropic: Claude Sonnet,53,57.0,93,200
+Fintech,"1,000 to 4,999 employees",AIModels,3,openAI Reasoning models,35,37.6,93,200
+Fintech,"1,000 to 4,999 employees",AIModels,4,Gemini (Pro Reasoning models),32,34.4,93,200
+Fintech,"1,000 to 4,999 employees",AIModels,5,Gemini (Flash general purpose models),30,32.3,93,200
+Fintech,"1,000 to 4,999 employees",Database,1,PostgreSQL,86,58.1,148,200
+Fintech,"1,000 to 4,999 employees",Database,2,Redis,56,37.8,148,200
+Fintech,"1,000 to 4,999 employees",Database,3,MySQL,51,34.5,148,200
+Fintech,"1,000 to 4,999 employees",Database,4,Microsoft SQL Server,46,31.1,148,200
+Fintech,"1,000 to 4,999 employees",Database,5,Elasticsearch,37,25.0,148,200
+Fintech,"1,000 to 4,999 employees",Platform,1,Docker,109,72.7,150,200
+Fintech,"1,000 to 4,999 employees",Platform,2,Amazon Web Services (AWS),89,59.3,150,200
+Fintech,"1,000 to 4,999 employees",Platform,3,npm,84,56.0,150,200
+Fintech,"1,000 to 4,999 employees",Platform,4,Kubernetes,75,50.0,150,200
+Fintech,"1,000 to 4,999 employees",Platform,5,Terraform,56,37.3,150,200
+Fintech,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),80,84.2,95,213
+Fintech,"10,000 or more employees",AIModels,2,Anthropic: Claude Sonnet,40,42.1,95,213
+Fintech,"10,000 or more employees",AIModels,3,Gemini (Flash general purpose models),38,40.0,95,213
+Fintech,"10,000 or more employees",AIModels,4,openAI Reasoning models,34,35.8,95,213
+Fintech,"10,000 or more employees",AIModels,5,Gemini (Pro Reasoning models),27,28.4,95,213
+Fintech,"10,000 or more employees",Database,1,PostgreSQL,72,46.5,155,213
+Fintech,"10,000 or more employees",Database,2,Redis,52,33.5,155,213
+Fintech,"10,000 or more employees",Database,3,MySQL,51,32.9,155,213
+Fintech,"10,000 or more employees",Database,4,SQLite,48,31.0,155,213
+Fintech,"10,000 or more employees",Database,5,Oracle,38,24.5,155,213
+Fintech,"10,000 or more employees",Platform,1,Docker,103,69.6,148,213
+Fintech,"10,000 or more employees",Platform,2,Amazon Web Services (AWS),78,52.7,148,213
+Fintech,"10,000 or more employees",Platform,3,npm,73,49.3,148,213
+Fintech,"10,000 or more employees",Platform,4,Pip,71,48.0,148,213
+Fintech,"10,000 or more employees",Platform,5,Kubernetes,65,43.9,148,213
+Fintech,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),134,83.2,161,366
+Fintech,100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,75,46.6,161,366
+Fintech,100 to 499 employees,AIModels,3,openAI Reasoning models,60,37.3,161,366
+Fintech,100 to 499 employees,AIModels,4,Gemini (Flash general purpose models),57,35.4,161,366
+Fintech,100 to 499 employees,AIModels,5,openAI Image generating models,37,23.0,161,366
+Fintech,100 to 499 employees,Database,1,PostgreSQL,202,71.4,283,366
+Fintech,100 to 499 employees,Database,2,Redis,117,41.3,283,366
+Fintech,100 to 499 employees,Database,3,MySQL,93,32.9,283,366
+Fintech,100 to 499 employees,Database,4,Microsoft SQL Server,85,30.0,283,366
+Fintech,100 to 499 employees,Database,5,SQLite,82,29.0,283,366
+Fintech,100 to 499 employees,Platform,1,Docker,221,81.5,271,366
+Fintech,100 to 499 employees,Platform,2,Amazon Web Services (AWS),164,60.5,271,366
+Fintech,100 to 499 employees,Platform,3,npm,158,58.3,271,366
+Fintech,100 to 499 employees,Platform,4,Kubernetes,122,45.0,271,366
+Fintech,100 to 499 employees,Platform,5,Pip,96,35.4,271,366
+Fintech,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),129,89.6,144,303
+Fintech,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,73,50.7,144,303
+Fintech,20 to 99 employees,AIModels,3,openAI Reasoning models,57,39.6,144,303
+Fintech,20 to 99 employees,AIModels,4,Gemini (Flash general purpose models),50,34.7,144,303
+Fintech,20 to 99 employees,AIModels,5,Gemini (Pro Reasoning models),45,31.2,144,303
+Fintech,20 to 99 employees,Database,1,PostgreSQL,156,70.0,223,303
+Fintech,20 to 99 employees,Database,2,Redis,82,36.8,223,303
+Fintech,20 to 99 employees,Database,3,MySQL,74,33.2,223,303
+Fintech,20 to 99 employees,Database,4,SQLite,63,28.3,223,303
+Fintech,20 to 99 employees,Database,5,Microsoft SQL Server,58,26.0,223,303
+Fintech,20 to 99 employees,Platform,1,Docker,157,76.2,206,303
+Fintech,20 to 99 employees,Platform,2,npm,131,63.6,206,303
+Fintech,20 to 99 employees,Platform,3,Amazon Web Services (AWS),122,59.2,206,303
+Fintech,20 to 99 employees,Platform,4,Pip,66,32.0,206,303
+Fintech,20 to 99 employees,Platform,5,Kubernetes,65,31.6,206,303
+Fintech,"5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),22,91.7,24,58
+Fintech,"5,000 to 9,999 employees",AIModels,2,Anthropic: Claude Sonnet,12,50.0,24,58
+Fintech,"5,000 to 9,999 employees",AIModels,3,Gemini (Flash general purpose models),10,41.7,24,58
+Fintech,"5,000 to 9,999 employees",AIModels,4,Gemini (Pro Reasoning models),7,29.2,24,58
+Fintech,"5,000 to 9,999 employees",AIModels,5,openAI Image generating models,7,29.2,24,58
+Fintech,"5,000 to 9,999 employees",Database,1,PostgreSQL,23,53.5,43,58
+Fintech,"5,000 to 9,999 employees",Database,2,SQLite,15,34.9,43,58
+Fintech,"5,000 to 9,999 employees",Database,3,Redis,14,32.6,43,58
+Fintech,"5,000 to 9,999 employees",Database,4,Microsoft SQL Server,9,20.9,43,58
+Fintech,"5,000 to 9,999 employees",Database,5,MySQL,9,20.9,43,58
+Fintech,"5,000 to 9,999 employees",Platform,1,Docker,25,75.8,33,58
+Fintech,"5,000 to 9,999 employees",Platform,2,npm,21,63.6,33,58
+Fintech,"5,000 to 9,999 employees",Platform,3,Amazon Web Services (AWS),18,54.5,33,58
+Fintech,"5,000 to 9,999 employees",Platform,4,Homebrew,17,51.5,33,58
+Fintech,"5,000 to 9,999 employees",Platform,5,Kubernetes,15,45.5,33,58
+Fintech,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),48,77.4,62,115
+Fintech,500 to 999 employees,AIModels,2,Gemini (Flash general purpose models),22,35.5,62,115
+Fintech,500 to 999 employees,AIModels,3,openAI Reasoning models,22,35.5,62,115
+Fintech,500 to 999 employees,AIModels,4,Anthropic: Claude Sonnet,20,32.3,62,115
+Fintech,500 to 999 employees,AIModels,5,openAI Image generating models,18,29.0,62,115
+Fintech,500 to 999 employees,Database,1,PostgreSQL,56,68.3,82,115
+Fintech,500 to 999 employees,Database,2,Redis,32,39.0,82,115
+Fintech,500 to 999 employees,Database,3,Microsoft SQL Server,31,37.8,82,115
+Fintech,500 to 999 employees,Database,4,MySQL,31,37.8,82,115
+Fintech,500 to 999 employees,Database,5,SQLite,25,30.5,82,115
+Fintech,500 to 999 employees,Platform,1,Docker,62,78.5,79,115
+Fintech,500 to 999 employees,Platform,2,Amazon Web Services (AWS),47,59.5,79,115
+Fintech,500 to 999 employees,Platform,3,npm,40,50.6,79,115
+Fintech,500 to 999 employees,Platform,4,Kubernetes,37,46.8,79,115
+Fintech,500 to 999 employees,Platform,5,Homebrew,32,40.5,79,115
+Fintech,I don’t know,AIModels,1,openAI GPT (chatbot models),5,83.3,6,21
+Fintech,I don’t know,AIModels,2,Anthropic: Claude Sonnet,4,66.7,6,21
+Fintech,I don’t know,AIModels,3,Gemini (Pro Reasoning models),4,66.7,6,21
+Fintech,I don’t know,AIModels,4,openAI Reasoning models,4,66.7,6,21
+Fintech,I don’t know,AIModels,5,DeepSeek (R- Reasoning models),3,50.0,6,21
+Fintech,I don’t know,Database,1,MySQL,5,38.5,13,21
+Fintech,I don’t know,Database,2,SQLite,5,38.5,13,21
+Fintech,I don’t know,Database,3,Dynamodb,3,23.1,13,21
+Fintech,I don’t know,Database,4,MariaDB,3,23.1,13,21
+Fintech,I don’t know,Database,5,Oracle,3,23.1,13,21
+Fintech,I don’t know,Platform,1,Docker,8,100.0,8,21
+Fintech,I don’t know,Platform,2,npm,6,75.0,8,21
+Fintech,I don’t know,Platform,3,Google Cloud,4,50.0,8,21
+Fintech,I don’t know,Platform,4,Podman,3,37.5,8,21
+Fintech,I don’t know,Platform,5,Vite,3,37.5,8,21
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),10,71.4,14,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Anthropic: Claude Sonnet,5,35.7,14,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,Gemini (Flash general purpose models),5,35.7,14,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,openAI Image generating models,5,35.7,14,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,Gemini (Pro Reasoning models),4,28.6,14,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,PostgreSQL,12,57.1,21,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,Microsoft SQL Server,10,47.6,21,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,MongoDB,9,42.9,21,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",Database,4,MySQL,9,42.9,21,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",Database,5,SQLite,8,38.1,21,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,Docker,11,61.1,18,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,Amazon Web Services (AWS),10,55.6,18,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,npm,10,55.6,18,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",Platform,4,Vite,8,44.4,18,35
+Fintech,"Just me - I am a freelancer, sole proprietor, etc.",Platform,5,Pip,7,38.9,18,35
+Fintech,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),92,76.0,121,243
+Fintech,Less than 20 employees,AIModels,2,Anthropic: Claude Sonnet,74,61.2,121,243
+Fintech,Less than 20 employees,AIModels,3,openAI Reasoning models,51,42.1,121,243
+Fintech,Less than 20 employees,AIModels,4,Gemini (Flash general purpose models),47,38.8,121,243
+Fintech,Less than 20 employees,AIModels,5,DeepSeek (R- Reasoning models),36,29.8,121,243
+Fintech,Less than 20 employees,Database,1,PostgreSQL,128,69.6,184,243
+Fintech,Less than 20 employees,Database,2,Redis,78,42.4,184,243
+Fintech,Less than 20 employees,Database,3,MySQL,69,37.5,184,243
+Fintech,Less than 20 employees,Database,4,SQLite,57,31.0,184,243
+Fintech,Less than 20 employees,Database,5,MongoDB,50,27.2,184,243
+Fintech,Less than 20 employees,Platform,1,Docker,132,80.0,165,243
+Fintech,Less than 20 employees,Platform,2,npm,108,65.5,165,243
+Fintech,Less than 20 employees,Platform,3,Amazon Web Services (AWS),105,63.6,165,243
+Fintech,Less than 20 employees,Platform,4,Pip,68,41.2,165,243
+Fintech,Less than 20 employees,Platform,5,Homebrew,63,38.2,165,243
+Government,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),61,71.8,85,226
+Government,"1,000 to 4,999 employees",AIModels,2,Anthropic: Claude Sonnet,33,38.8,85,226
+Government,"1,000 to 4,999 employees",AIModels,3,openAI Reasoning models,28,32.9,85,226
+Government,"1,000 to 4,999 employees",AIModels,4,Gemini (Flash general purpose models),25,29.4,85,226
+Government,"1,000 to 4,999 employees",AIModels,5,openAI Image generating models,23,27.1,85,226
+Government,"1,000 to 4,999 employees",Database,1,PostgreSQL,102,57.3,178,226
+Government,"1,000 to 4,999 employees",Database,2,Microsoft SQL Server,84,47.2,178,226
+Government,"1,000 to 4,999 employees",Database,3,SQLite,61,34.3,178,226
+Government,"1,000 to 4,999 employees",Database,4,MySQL,58,32.6,178,226
+Government,"1,000 to 4,999 employees",Database,5,Oracle,46,25.8,178,226
+Government,"1,000 to 4,999 employees",Platform,1,Docker,110,71.4,154,226
+Government,"1,000 to 4,999 employees",Platform,2,npm,90,58.4,154,226
+Government,"1,000 to 4,999 employees",Platform,3,Pip,73,47.4,154,226
+Government,"1,000 to 4,999 employees",Platform,4,Kubernetes,48,31.2,154,226
+Government,"1,000 to 4,999 employees",Platform,5,Amazon Web Services (AWS),47,30.5,154,226
+Government,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),68,81.9,83,229
+Government,"10,000 or more employees",AIModels,2,Anthropic: Claude Sonnet,33,39.8,83,229
+Government,"10,000 or more employees",AIModels,3,Gemini (Flash general purpose models),30,36.1,83,229
+Government,"10,000 or more employees",AIModels,4,Meta Llama (all models),22,26.5,83,229
+Government,"10,000 or more employees",AIModels,5,openAI Image generating models,21,25.3,83,229
+Government,"10,000 or more employees",Database,1,PostgreSQL,85,55.6,153,229
+Government,"10,000 or more employees",Database,2,SQLite,67,43.8,153,229
+Government,"10,000 or more employees",Database,3,Microsoft SQL Server,62,40.5,153,229
+Government,"10,000 or more employees",Database,4,MySQL,59,38.6,153,229
+Government,"10,000 or more employees",Database,5,MariaDB,43,28.1,153,229
+Government,"10,000 or more employees",Platform,1,Docker,104,74.3,140,229
+Government,"10,000 or more employees",Platform,2,Pip,69,49.3,140,229
+Government,"10,000 or more employees",Platform,3,npm,69,49.3,140,229
+Government,"10,000 or more employees",Platform,4,Amazon Web Services (AWS),64,45.7,140,229
+Government,"10,000 or more employees",Platform,5,Kubernetes,53,37.9,140,229
+Government,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),61,81.3,75,185
+Government,100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,27,36.0,75,185
+Government,100 to 499 employees,AIModels,3,openAI Reasoning models,25,33.3,75,185
+Government,100 to 499 employees,AIModels,4,Gemini (Flash general purpose models),23,30.7,75,185
+Government,100 to 499 employees,AIModels,5,openAI Image generating models,15,20.0,75,185
+Government,100 to 499 employees,Database,1,PostgreSQL,67,48.9,137,185
+Government,100 to 499 employees,Database,2,Microsoft SQL Server,59,43.1,137,185
+Government,100 to 499 employees,Database,3,MySQL,56,40.9,137,185
+Government,100 to 499 employees,Database,4,SQLite,43,31.4,137,185
+Government,100 to 499 employees,Database,5,MariaDB,37,27.0,137,185
+Government,100 to 499 employees,Platform,1,Docker,80,68.4,117,185
+Government,100 to 499 employees,Platform,2,npm,68,58.1,117,185
+Government,100 to 499 employees,Platform,3,Pip,50,42.7,117,185
+Government,100 to 499 employees,Platform,4,Amazon Web Services (AWS),35,29.9,117,185
+Government,100 to 499 employees,Platform,5,NuGet,28,23.9,117,185
+Government,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),46,82.1,56,144
+Government,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,28,50.0,56,144
+Government,20 to 99 employees,AIModels,3,Gemini (Flash general purpose models),27,48.2,56,144
+Government,20 to 99 employees,AIModels,4,openAI Reasoning models,21,37.5,56,144
+Government,20 to 99 employees,AIModels,5,openAI Image generating models,15,26.8,56,144
+Government,20 to 99 employees,Database,1,PostgreSQL,68,64.8,105,144
+Government,20 to 99 employees,Database,2,Microsoft SQL Server,41,39.0,105,144
+Government,20 to 99 employees,Database,3,MySQL,39,37.1,105,144
+Government,20 to 99 employees,Database,4,SQLite,35,33.3,105,144
+Government,20 to 99 employees,Database,5,Redis,31,29.5,105,144
+Government,20 to 99 employees,Platform,1,Docker,75,75.8,99,144
+Government,20 to 99 employees,Platform,2,npm,61,61.6,99,144
+Government,20 to 99 employees,Platform,3,Pip,44,44.4,99,144
+Government,20 to 99 employees,Platform,4,Amazon Web Services (AWS),37,37.4,99,144
+Government,20 to 99 employees,Platform,5,Microsoft Azure,30,30.3,99,144
+Government,"5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),22,84.6,26,96
+Government,"5,000 to 9,999 employees",AIModels,2,Anthropic: Claude Sonnet,9,34.6,26,96
+Government,"5,000 to 9,999 employees",AIModels,3,Gemini (Pro Reasoning models),7,26.9,26,96
+Government,"5,000 to 9,999 employees",AIModels,4,openAI Reasoning models,7,26.9,26,96
+Government,"5,000 to 9,999 employees",AIModels,5,DeepSeek (R- Reasoning models),6,23.1,26,96
+Government,"5,000 to 9,999 employees",Database,1,PostgreSQL,37,51.4,72,96
+Government,"5,000 to 9,999 employees",Database,2,Microsoft SQL Server,29,40.3,72,96
+Government,"5,000 to 9,999 employees",Database,3,Oracle,22,30.6,72,96
+Government,"5,000 to 9,999 employees",Database,4,SQLite,22,30.6,72,96
+Government,"5,000 to 9,999 employees",Database,5,MySQL,20,27.8,72,96
+Government,"5,000 to 9,999 employees",Platform,1,Docker,44,74.6,59,96
+Government,"5,000 to 9,999 employees",Platform,2,npm,29,49.2,59,96
+Government,"5,000 to 9,999 employees",Platform,3,Pip,22,37.3,59,96
+Government,"5,000 to 9,999 employees",Platform,4,Amazon Web Services (AWS),20,33.9,59,96
+Government,"5,000 to 9,999 employees",Platform,5,Microsoft Azure,20,33.9,59,96
+Government,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),29,72.5,40,106
+Government,500 to 999 employees,AIModels,2,Gemini (Flash general purpose models),14,35.0,40,106
+Government,500 to 999 employees,AIModels,3,Anthropic: Claude Sonnet,12,30.0,40,106
+Government,500 to 999 employees,AIModels,4,openAI Image generating models,9,22.5,40,106
+Government,500 to 999 employees,AIModels,5,openAI Reasoning models,9,22.5,40,106
+Government,500 to 999 employees,Database,1,Microsoft SQL Server,38,53.5,71,106
+Government,500 to 999 employees,Database,2,PostgreSQL,35,49.3,71,106
+Government,500 to 999 employees,Database,3,MySQL,29,40.8,71,106
+Government,500 to 999 employees,Database,4,SQLite,26,36.6,71,106
+Government,500 to 999 employees,Database,5,Oracle,20,28.2,71,106
+Government,500 to 999 employees,Platform,1,Docker,38,61.3,62,106
+Government,500 to 999 employees,Platform,2,npm,28,45.2,62,106
+Government,500 to 999 employees,Platform,3,Pip,26,41.9,62,106
+Government,500 to 999 employees,Platform,4,Amazon Web Services (AWS),25,40.3,62,106
+Government,500 to 999 employees,Platform,5,Microsoft Azure,20,32.3,62,106
+Government,I don’t know,AIModels,1,openAI GPT (chatbot models),12,70.6,17,58
+Government,I don’t know,AIModels,2,Anthropic: Claude Sonnet,6,35.3,17,58
+Government,I don’t know,AIModels,3,Gemini (Flash general purpose models),5,29.4,17,58
+Government,I don’t know,AIModels,4,Meta Llama (all models),5,29.4,17,58
+Government,I don’t know,AIModels,5,openAI Reasoning models,5,29.4,17,58
+Government,I don’t know,Database,1,PostgreSQL,21,51.2,41,58
+Government,I don’t know,Database,2,SQLite,16,39.0,41,58
+Government,I don’t know,Database,3,Microsoft SQL Server,15,36.6,41,58
+Government,I don’t know,Database,4,Oracle,14,34.1,41,58
+Government,I don’t know,Database,5,MySQL,12,29.3,41,58
+Government,I don’t know,Platform,1,Docker,24,66.7,36,58
+Government,I don’t know,Platform,2,Pip,20,55.6,36,58
+Government,I don’t know,Platform,3,npm,19,52.8,36,58
+Government,I don’t know,Platform,4,Make,11,30.6,36,58
+Government,I don’t know,Platform,5,Microsoft Azure,9,25.0,36,58
+Government,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),8,80.0,10,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Gemini (Flash general purpose models),6,60.0,10,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,Anthropic: Claude Sonnet,4,40.0,10,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,X Grok models,4,40.0,10,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,DeepSeek (V- General purpose models),3,30.0,10,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,MySQL,9,45.0,20,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,MariaDB,8,40.0,20,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,MongoDB,8,40.0,20,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",Database,4,PostgreSQL,8,40.0,20,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",Database,5,SQLite,8,40.0,20,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,Docker,8,50.0,16,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,Composer,7,43.8,16,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,Pip,7,43.8,16,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",Platform,4,npm,7,43.8,16,26
+Government,"Just me - I am a freelancer, sole proprietor, etc.",Platform,5,Amazon Web Services (AWS),6,37.5,16,26
+Government,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),19,67.9,28,62
+Government,Less than 20 employees,AIModels,2,Anthropic: Claude Sonnet,9,32.1,28,62
+Government,Less than 20 employees,AIModels,3,openAI Image generating models,9,32.1,28,62
+Government,Less than 20 employees,AIModels,4,openAI Reasoning models,7,25.0,28,62
+Government,Less than 20 employees,AIModels,5,DeepSeek (R- Reasoning models),6,21.4,28,62
+Government,Less than 20 employees,Database,1,MySQL,21,47.7,44,62
+Government,Less than 20 employees,Database,2,PostgreSQL,19,43.2,44,62
+Government,Less than 20 employees,Database,3,SQLite,17,38.6,44,62
+Government,Less than 20 employees,Database,4,MariaDB,14,31.8,44,62
+Government,Less than 20 employees,Database,5,MongoDB,14,31.8,44,62
+Government,Less than 20 employees,Platform,1,Docker,21,75.0,28,62
+Government,Less than 20 employees,Platform,2,npm,15,53.6,28,62
+Government,Less than 20 employees,Platform,3,Pip,12,42.9,28,62
+Government,Less than 20 employees,Platform,4,Amazon Web Services (AWS),9,32.1,28,62
+Government,Less than 20 employees,Platform,5,Homebrew,9,32.1,28,62
+Healthcare,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),55,88.7,62,154
+Healthcare,"1,000 to 4,999 employees",AIModels,2,Anthropic: Claude Sonnet,29,46.8,62,154
+Healthcare,"1,000 to 4,999 employees",AIModels,3,openAI Reasoning models,20,32.3,62,154
+Healthcare,"1,000 to 4,999 employees",AIModels,4,Gemini (Pro Reasoning models),16,25.8,62,154
+Healthcare,"1,000 to 4,999 employees",AIModels,5,openAI Image generating models,16,25.8,62,154
+Healthcare,"1,000 to 4,999 employees",Database,1,Microsoft SQL Server,63,56.2,112,154
+Healthcare,"1,000 to 4,999 employees",Database,2,PostgreSQL,59,52.7,112,154
+Healthcare,"1,000 to 4,999 employees",Database,3,MySQL,43,38.4,112,154
+Healthcare,"1,000 to 4,999 employees",Database,4,SQLite,34,30.4,112,154
+Healthcare,"1,000 to 4,999 employees",Database,5,MariaDB,23,20.5,112,154
+Healthcare,"1,000 to 4,999 employees",Platform,1,Docker,69,70.4,98,154
+Healthcare,"1,000 to 4,999 employees",Platform,2,npm,51,52.0,98,154
+Healthcare,"1,000 to 4,999 employees",Platform,3,Amazon Web Services (AWS),42,42.9,98,154
+Healthcare,"1,000 to 4,999 employees",Platform,4,Microsoft Azure,41,41.8,98,154
+Healthcare,"1,000 to 4,999 employees",Platform,5,Pip,36,36.7,98,154
+Healthcare,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),77,84.6,91,236
+Healthcare,"10,000 or more employees",AIModels,2,Anthropic: Claude Sonnet,33,36.3,91,236
+Healthcare,"10,000 or more employees",AIModels,3,Gemini (Flash general purpose models),33,36.3,91,236
+Healthcare,"10,000 or more employees",AIModels,4,openAI Reasoning models,33,36.3,91,236
+Healthcare,"10,000 or more employees",AIModels,5,openAI Image generating models,31,34.1,91,236
+Healthcare,"10,000 or more employees",Database,1,Microsoft SQL Server,84,50.0,168,236
+Healthcare,"10,000 or more employees",Database,2,PostgreSQL,84,50.0,168,236
+Healthcare,"10,000 or more employees",Database,3,SQLite,59,35.1,168,236
+Healthcare,"10,000 or more employees",Database,4,MySQL,53,31.5,168,236
+Healthcare,"10,000 or more employees",Database,5,Oracle,31,18.5,168,236
+Healthcare,"10,000 or more employees",Platform,1,Docker,113,66.1,171,236
+Healthcare,"10,000 or more employees",Platform,2,Pip,78,45.6,171,236
+Healthcare,"10,000 or more employees",Platform,3,npm,77,45.0,171,236
+Healthcare,"10,000 or more employees",Platform,4,Microsoft Azure,71,41.5,171,236
+Healthcare,"10,000 or more employees",Platform,5,Amazon Web Services (AWS),64,37.4,171,236
+Healthcare,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),94,86.2,109,255
+Healthcare,100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,46,42.2,109,255
+Healthcare,100 to 499 employees,AIModels,3,Gemini (Flash general purpose models),32,29.4,109,255
+Healthcare,100 to 499 employees,AIModels,4,openAI Reasoning models,32,29.4,109,255
+Healthcare,100 to 499 employees,AIModels,5,DeepSeek (R- Reasoning models),22,20.2,109,255
+Healthcare,100 to 499 employees,Database,1,PostgreSQL,108,56.5,191,255
+Healthcare,100 to 499 employees,Database,2,MySQL,77,40.3,191,255
+Healthcare,100 to 499 employees,Database,3,SQLite,74,38.7,191,255
+Healthcare,100 to 499 employees,Database,4,Microsoft SQL Server,73,38.2,191,255
+Healthcare,100 to 499 employees,Database,5,Redis,54,28.3,191,255
+Healthcare,100 to 499 employees,Platform,1,Docker,135,73.4,184,255
+Healthcare,100 to 499 employees,Platform,2,npm,106,57.6,184,255
+Healthcare,100 to 499 employees,Platform,3,Amazon Web Services (AWS),93,50.5,184,255
+Healthcare,100 to 499 employees,Platform,4,Pip,81,44.0,184,255
+Healthcare,100 to 499 employees,Platform,5,Microsoft Azure,66,35.9,184,255
+Healthcare,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),95,87.2,109,244
+Healthcare,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,55,50.5,109,244
+Healthcare,20 to 99 employees,AIModels,3,Gemini (Flash general purpose models),41,37.6,109,244
+Healthcare,20 to 99 employees,AIModels,4,openAI Reasoning models,36,33.0,109,244
+Healthcare,20 to 99 employees,AIModels,5,openAI Image generating models,32,29.4,109,244
+Healthcare,20 to 99 employees,Database,1,PostgreSQL,101,57.4,176,244
+Healthcare,20 to 99 employees,Database,2,SQLite,65,36.9,176,244
+Healthcare,20 to 99 employees,Database,3,Redis,63,35.8,176,244
+Healthcare,20 to 99 employees,Database,4,Microsoft SQL Server,54,30.7,176,244
+Healthcare,20 to 99 employees,Database,5,MySQL,52,29.5,176,244
+Healthcare,20 to 99 employees,Platform,1,Docker,127,80.9,157,244
+Healthcare,20 to 99 employees,Platform,2,npm,103,65.6,157,244
+Healthcare,20 to 99 employees,Platform,3,Amazon Web Services (AWS),85,54.1,157,244
+Healthcare,20 to 99 employees,Platform,4,Pip,70,44.6,157,244
+Healthcare,20 to 99 employees,Platform,5,Homebrew,54,34.4,157,244
+Healthcare,"5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),29,87.9,33,71
+Healthcare,"5,000 to 9,999 employees",AIModels,2,Gemini (Flash general purpose models),16,48.5,33,71
+Healthcare,"5,000 to 9,999 employees",AIModels,3,openAI Reasoning models,11,33.3,33,71
+Healthcare,"5,000 to 9,999 employees",AIModels,4,DeepSeek (R- Reasoning models),9,27.3,33,71
+Healthcare,"5,000 to 9,999 employees",AIModels,5,Anthropic: Claude Sonnet,8,24.2,33,71
+Healthcare,"5,000 to 9,999 employees",Database,1,PostgreSQL,32,62.7,51,71
+Healthcare,"5,000 to 9,999 employees",Database,2,Microsoft SQL Server,20,39.2,51,71
+Healthcare,"5,000 to 9,999 employees",Database,3,SQLite,18,35.3,51,71
+Healthcare,"5,000 to 9,999 employees",Database,4,MySQL,17,33.3,51,71
+Healthcare,"5,000 to 9,999 employees",Database,5,Elasticsearch,12,23.5,51,71
+Healthcare,"5,000 to 9,999 employees",Platform,1,Docker,34,77.3,44,71
+Healthcare,"5,000 to 9,999 employees",Platform,2,Pip,23,52.3,44,71
+Healthcare,"5,000 to 9,999 employees",Platform,3,npm,23,52.3,44,71
+Healthcare,"5,000 to 9,999 employees",Platform,4,Microsoft Azure,22,50.0,44,71
+Healthcare,"5,000 to 9,999 employees",Platform,5,Amazon Web Services (AWS),20,45.5,44,71
+Healthcare,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),35,87.5,40,102
+Healthcare,500 to 999 employees,AIModels,2,openAI Reasoning models,14,35.0,40,102
+Healthcare,500 to 999 employees,AIModels,3,Anthropic: Claude Sonnet,13,32.5,40,102
+Healthcare,500 to 999 employees,AIModels,4,Gemini (Flash general purpose models),13,32.5,40,102
+Healthcare,500 to 999 employees,AIModels,5,Gemini (Pro Reasoning models),11,27.5,40,102
+Healthcare,500 to 999 employees,Database,1,PostgreSQL,39,56.5,69,102
+Healthcare,500 to 999 employees,Database,2,Microsoft SQL Server,26,37.7,69,102
+Healthcare,500 to 999 employees,Database,3,SQLite,22,31.9,69,102
+Healthcare,500 to 999 employees,Database,4,MySQL,21,30.4,69,102
+Healthcare,500 to 999 employees,Database,5,Redis,17,24.6,69,102
+Healthcare,500 to 999 employees,Platform,1,Docker,58,79.5,73,102
+Healthcare,500 to 999 employees,Platform,2,npm,35,47.9,73,102
+Healthcare,500 to 999 employees,Platform,3,Pip,32,43.8,73,102
+Healthcare,500 to 999 employees,Platform,4,Amazon Web Services (AWS),29,39.7,73,102
+Healthcare,500 to 999 employees,Platform,5,Microsoft Azure,27,37.0,73,102
+Healthcare,I don’t know,AIModels,1,openAI GPT (chatbot models),7,87.5,8,37
+Healthcare,I don’t know,AIModels,2,Anthropic: Claude Sonnet,6,75.0,8,37
+Healthcare,I don’t know,AIModels,3,Gemini (Flash general purpose models),5,62.5,8,37
+Healthcare,I don’t know,AIModels,4,Gemini (Pro Reasoning models),2,25.0,8,37
+Healthcare,I don’t know,AIModels,5,openAI Image generating models,2,25.0,8,37
+Healthcare,I don’t know,Database,1,MySQL,8,61.5,13,37
+Healthcare,I don’t know,Database,2,PostgreSQL,6,46.2,13,37
+Healthcare,I don’t know,Database,3,SQLite,6,46.2,13,37
+Healthcare,I don’t know,Database,4,MariaDB,4,30.8,13,37
+Healthcare,I don’t know,Database,5,MongoDB,4,30.8,13,37
+Healthcare,I don’t know,Platform,1,Docker,10,62.5,16,37
+Healthcare,I don’t know,Platform,2,npm,9,56.2,16,37
+Healthcare,I don’t know,Platform,3,Amazon Web Services (AWS),8,50.0,16,37
+Healthcare,I don’t know,Platform,4,Microsoft Azure,5,31.2,16,37
+Healthcare,I don’t know,Platform,5,Pip,4,25.0,16,37
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),11,91.7,12,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Gemini (Flash general purpose models),7,58.3,12,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,Anthropic: Claude Sonnet,5,41.7,12,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,DeepSeek (R- Reasoning models),4,33.3,12,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,openAI Image generating models,4,33.3,12,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,PostgreSQL,11,57.9,19,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,Microsoft SQL Server,9,47.4,19,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,SQLite,8,42.1,19,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",Database,4,MySQL,7,36.8,19,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",Database,5,MariaDB,4,21.1,19,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,Docker,7,50.0,14,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,Google Cloud,6,42.9,14,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,Pip,6,42.9,14,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",Platform,4,npm,5,35.7,14,34
+Healthcare,"Just me - I am a freelancer, sole proprietor, etc.",Platform,5,APT,4,28.6,14,34
+Healthcare,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),90,87.4,103,183
+Healthcare,Less than 20 employees,AIModels,2,openAI Reasoning models,45,43.7,103,183
+Healthcare,Less than 20 employees,AIModels,3,Anthropic: Claude Sonnet,40,38.8,103,183
+Healthcare,Less than 20 employees,AIModels,4,Gemini (Flash general purpose models),31,30.1,103,183
+Healthcare,Less than 20 employees,AIModels,5,openAI Image generating models,31,30.1,103,183
+Healthcare,Less than 20 employees,Database,1,PostgreSQL,83,58.9,141,183
+Healthcare,Less than 20 employees,Database,2,SQLite,57,40.4,141,183
+Healthcare,Less than 20 employees,Database,3,MySQL,51,36.2,141,183
+Healthcare,Less than 20 employees,Database,4,Redis,37,26.2,141,183
+Healthcare,Less than 20 employees,Database,5,Microsoft SQL Server,33,23.4,141,183
+Healthcare,Less than 20 employees,Platform,1,Docker,98,77.2,127,183
+Healthcare,Less than 20 employees,Platform,2,npm,81,63.8,127,183
+Healthcare,Less than 20 employees,Platform,3,Pip,63,49.6,127,183
+Healthcare,Less than 20 employees,Platform,4,Amazon Web Services (AWS),57,44.9,127,183
+Healthcare,Less than 20 employees,Platform,5,Vite,45,35.4,127,183
+Higher Education,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),90,89.1,101,262
+Higher Education,"1,000 to 4,999 employees",AIModels,2,openAI Reasoning models,40,39.6,101,262
+Higher Education,"1,000 to 4,999 employees",AIModels,3,Anthropic: Claude Sonnet,34,33.7,101,262
+Higher Education,"1,000 to 4,999 employees",AIModels,4,Gemini (Flash general purpose models),28,27.7,101,262
+Higher Education,"1,000 to 4,999 employees",AIModels,5,openAI Image generating models,27,26.7,101,262
+Higher Education,"1,000 to 4,999 employees",Database,1,PostgreSQL,80,51.0,157,262
+Higher Education,"1,000 to 4,999 employees",Database,2,MySQL,73,46.5,157,262
+Higher Education,"1,000 to 4,999 employees",Database,3,SQLite,71,45.2,157,262
+Higher Education,"1,000 to 4,999 employees",Database,4,MariaDB,57,36.3,157,262
+Higher Education,"1,000 to 4,999 employees",Database,5,Microsoft SQL Server,45,28.7,157,262
+Higher Education,"1,000 to 4,999 employees",Platform,1,Docker,116,73.0,159,262
+Higher Education,"1,000 to 4,999 employees",Platform,2,Pip,91,57.2,159,262
+Higher Education,"1,000 to 4,999 employees",Platform,3,npm,75,47.2,159,262
+Higher Education,"1,000 to 4,999 employees",Platform,4,Make,53,33.3,159,262
+Higher Education,"1,000 to 4,999 employees",Platform,5,Homebrew,48,30.2,159,262
+Higher Education,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),31,79.5,39,116
+Higher Education,"10,000 or more employees",AIModels,2,Anthropic: Claude Sonnet,17,43.6,39,116
+Higher Education,"10,000 or more employees",AIModels,3,openAI Reasoning models,12,30.8,39,116
+Higher Education,"10,000 or more employees",AIModels,4,Gemini (Flash general purpose models),11,28.2,39,116
+Higher Education,"10,000 or more employees",AIModels,5,openAI Image generating models,10,25.6,39,116
+Higher Education,"10,000 or more employees",Database,1,MySQL,36,55.4,65,116
+Higher Education,"10,000 or more employees",Database,2,PostgreSQL,31,47.7,65,116
+Higher Education,"10,000 or more employees",Database,3,SQLite,27,41.5,65,116
+Higher Education,"10,000 or more employees",Database,4,MariaDB,25,38.5,65,116
+Higher Education,"10,000 or more employees",Database,5,Microsoft SQL Server,20,30.8,65,116
+Higher Education,"10,000 or more employees",Platform,1,Docker,43,58.9,73,116
+Higher Education,"10,000 or more employees",Platform,2,Pip,43,58.9,73,116
+Higher Education,"10,000 or more employees",Platform,3,Make,29,39.7,73,116
+Higher Education,"10,000 or more employees",Platform,4,npm,27,37.0,73,116
+Higher Education,"10,000 or more employees",Platform,5,APT,23,31.5,73,116
+Higher Education,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),58,90.6,64,144
+Higher Education,100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,29,45.3,64,144
+Higher Education,100 to 499 employees,AIModels,3,Gemini (Flash general purpose models),28,43.8,64,144
+Higher Education,100 to 499 employees,AIModels,4,openAI Reasoning models,27,42.2,64,144
+Higher Education,100 to 499 employees,AIModels,5,Gemini (Pro Reasoning models),17,26.6,64,144
+Higher Education,100 to 499 employees,Database,1,SQLite,50,58.8,85,144
+Higher Education,100 to 499 employees,Database,2,MySQL,47,55.3,85,144
+Higher Education,100 to 499 employees,Database,3,MariaDB,38,44.7,85,144
+Higher Education,100 to 499 employees,Database,4,PostgreSQL,38,44.7,85,144
+Higher Education,100 to 499 employees,Database,5,MongoDB,24,28.2,85,144
+Higher Education,100 to 499 employees,Platform,1,Docker,63,73.3,86,144
+Higher Education,100 to 499 employees,Platform,2,Pip,48,55.8,86,144
+Higher Education,100 to 499 employees,Platform,3,npm,48,55.8,86,144
+Higher Education,100 to 499 employees,Platform,4,APT,27,31.4,86,144
+Higher Education,100 to 499 employees,Platform,5,Amazon Web Services (AWS),26,30.2,86,144
+Higher Education,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),51,86.4,59,129
+Higher Education,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,23,39.0,59,129
+Higher Education,20 to 99 employees,AIModels,3,openAI Reasoning models,22,37.3,59,129
+Higher Education,20 to 99 employees,AIModels,4,Gemini (Flash general purpose models),18,30.5,59,129
+Higher Education,20 to 99 employees,AIModels,5,Gemini (Pro Reasoning models),17,28.8,59,129
+Higher Education,20 to 99 employees,Database,1,PostgreSQL,48,54.5,88,129
+Higher Education,20 to 99 employees,Database,2,MySQL,41,46.6,88,129
+Higher Education,20 to 99 employees,Database,3,SQLite,37,42.0,88,129
+Higher Education,20 to 99 employees,Database,4,MariaDB,24,27.3,88,129
+Higher Education,20 to 99 employees,Database,5,Microsoft SQL Server,19,21.6,88,129
+Higher Education,20 to 99 employees,Platform,1,Docker,56,72.7,77,129
+Higher Education,20 to 99 employees,Platform,2,Pip,41,53.2,77,129
+Higher Education,20 to 99 employees,Platform,3,npm,41,53.2,77,129
+Higher Education,20 to 99 employees,Platform,4,Amazon Web Services (AWS),26,33.8,77,129
+Higher Education,20 to 99 employees,Platform,5,Google Cloud,16,20.8,77,129
+Higher Education,"5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),62,87.3,71,147
+Higher Education,"5,000 to 9,999 employees",AIModels,2,Anthropic: Claude Sonnet,28,39.4,71,147
+Higher Education,"5,000 to 9,999 employees",AIModels,3,openAI Image generating models,23,32.4,71,147
+Higher Education,"5,000 to 9,999 employees",AIModels,4,DeepSeek (R- Reasoning models),19,26.8,71,147
+Higher Education,"5,000 to 9,999 employees",AIModels,5,Gemini (Flash general purpose models),19,26.8,71,147
+Higher Education,"5,000 to 9,999 employees",Database,1,PostgreSQL,46,52.9,87,147
+Higher Education,"5,000 to 9,999 employees",Database,2,SQLite,38,43.7,87,147
+Higher Education,"5,000 to 9,999 employees",Database,3,MySQL,36,41.4,87,147
+Higher Education,"5,000 to 9,999 employees",Database,4,MariaDB,29,33.3,87,147
+Higher Education,"5,000 to 9,999 employees",Database,5,Microsoft SQL Server,17,19.5,87,147
+Higher Education,"5,000 to 9,999 employees",Platform,1,Docker,64,71.1,90,147
+Higher Education,"5,000 to 9,999 employees",Platform,2,Pip,51,56.7,90,147
+Higher Education,"5,000 to 9,999 employees",Platform,3,npm,40,44.4,90,147
+Higher Education,"5,000 to 9,999 employees",Platform,4,Make,31,34.4,90,147
+Higher Education,"5,000 to 9,999 employees",Platform,5,Homebrew,30,33.3,90,147
+Higher Education,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),29,85.3,34,76
+Higher Education,500 to 999 employees,AIModels,2,Anthropic: Claude Sonnet,11,32.4,34,76
+Higher Education,500 to 999 employees,AIModels,3,Gemini (Flash general purpose models),10,29.4,34,76
+Higher Education,500 to 999 employees,AIModels,4,openAI Image generating models,10,29.4,34,76
+Higher Education,500 to 999 employees,AIModels,5,openAI Reasoning models,10,29.4,34,76
+Higher Education,500 to 999 employees,Database,1,SQLite,26,48.1,54,76
+Higher Education,500 to 999 employees,Database,2,MySQL,24,44.4,54,76
+Higher Education,500 to 999 employees,Database,3,PostgreSQL,22,40.7,54,76
+Higher Education,500 to 999 employees,Database,4,MariaDB,19,35.2,54,76
+Higher Education,500 to 999 employees,Database,5,Microsoft SQL Server,19,35.2,54,76
+Higher Education,500 to 999 employees,Platform,1,Docker,32,65.3,49,76
+Higher Education,500 to 999 employees,Platform,2,npm,23,46.9,49,76
+Higher Education,500 to 999 employees,Platform,3,Pip,21,42.9,49,76
+Higher Education,500 to 999 employees,Platform,4,Microsoft Azure,13,26.5,49,76
+Higher Education,500 to 999 employees,Platform,5,Amazon Web Services (AWS),12,24.5,49,76
+Higher Education,I don’t know,AIModels,1,openAI GPT (chatbot models),27,96.4,28,86
+Higher Education,I don’t know,AIModels,2,openAI Reasoning models,10,35.7,28,86
+Higher Education,I don’t know,AIModels,3,openAI Image generating models,9,32.1,28,86
+Higher Education,I don’t know,AIModels,4,Gemini (Flash general purpose models),7,25.0,28,86
+Higher Education,I don’t know,AIModels,5,DeepSeek (R- Reasoning models),5,17.9,28,86
+Higher Education,I don’t know,Database,1,SQLite,17,56.7,30,86
+Higher Education,I don’t know,Database,2,PostgreSQL,13,43.3,30,86
+Higher Education,I don’t know,Database,3,MariaDB,12,40.0,30,86
+Higher Education,I don’t know,Database,4,MySQL,12,40.0,30,86
+Higher Education,I don’t know,Database,5,MongoDB,8,26.7,30,86
+Higher Education,I don’t know,Platform,1,Pip,31,79.5,39,86
+Higher Education,I don’t know,Platform,2,Docker,25,64.1,39,86
+Higher Education,I don’t know,Platform,3,Make,23,59.0,39,86
+Higher Education,I don’t know,Platform,4,APT,16,41.0,39,86
+Higher Education,I don’t know,Platform,5,npm,14,35.9,39,86
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),11,91.7,12,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Anthropic: Claude Sonnet,4,33.3,12,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,Gemini (Flash general purpose models),4,33.3,12,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,DeepSeek (R- Reasoning models),3,25.0,12,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,DeepSeek (V- General purpose models),3,25.0,12,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,MySQL,14,66.7,21,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,MariaDB,12,57.1,21,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,SQLite,11,52.4,21,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",Database,4,PostgreSQL,10,47.6,21,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",Database,5,Microsoft SQL Server,7,33.3,21,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,Pip,9,69.2,13,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,npm,8,61.5,13,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,Docker,6,46.2,13,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",Platform,4,Amazon Web Services (AWS),5,38.5,13,41
+Higher Education,"Just me - I am a freelancer, sole proprietor, etc.",Platform,5,Cargo,4,30.8,13,41
+Higher Education,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),36,78.3,46,114
+Higher Education,Less than 20 employees,AIModels,2,Anthropic: Claude Sonnet,24,52.2,46,114
+Higher Education,Less than 20 employees,AIModels,3,Gemini (Flash general purpose models),24,52.2,46,114
+Higher Education,Less than 20 employees,AIModels,4,openAI Reasoning models,18,39.1,46,114
+Higher Education,Less than 20 employees,AIModels,5,openAI Image generating models,14,30.4,46,114
+Higher Education,Less than 20 employees,Database,1,MySQL,35,50.7,69,114
+Higher Education,Less than 20 employees,Database,2,PostgreSQL,35,50.7,69,114
+Higher Education,Less than 20 employees,Database,3,SQLite,32,46.4,69,114
+Higher Education,Less than 20 employees,Database,4,MariaDB,21,30.4,69,114
+Higher Education,Less than 20 employees,Database,5,MongoDB,16,23.2,69,114
+Higher Education,Less than 20 employees,Platform,1,Docker,33,57.9,57,114
+Higher Education,Less than 20 employees,Platform,2,Pip,33,57.9,57,114
+Higher Education,Less than 20 employees,Platform,3,npm,30,52.6,57,114
+Higher Education,Less than 20 employees,Platform,4,Amazon Web Services (AWS),16,28.1,57,114
+Higher Education,Less than 20 employees,Platform,5,Homebrew,16,28.1,57,114
+Insurance,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),27,93.1,29,67
+Insurance,"1,000 to 4,999 employees",AIModels,2,Anthropic: Claude Sonnet,16,55.2,29,67
+Insurance,"1,000 to 4,999 employees",AIModels,3,Gemini (Flash general purpose models),11,37.9,29,67
+Insurance,"1,000 to 4,999 employees",AIModels,4,openAI Reasoning models,11,37.9,29,67
+Insurance,"1,000 to 4,999 employees",AIModels,5,openAI Image generating models,10,34.5,29,67
+Insurance,"1,000 to 4,999 employees",Database,1,Microsoft SQL Server,29,55.8,52,67
+Insurance,"1,000 to 4,999 employees",Database,2,PostgreSQL,27,51.9,52,67
+Insurance,"1,000 to 4,999 employees",Database,3,MySQL,18,34.6,52,67
+Insurance,"1,000 to 4,999 employees",Database,4,MongoDB,12,23.1,52,67
+Insurance,"1,000 to 4,999 employees",Database,5,Oracle,12,23.1,52,67
+Insurance,"1,000 to 4,999 employees",Platform,1,Docker,39,79.6,49,67
+Insurance,"1,000 to 4,999 employees",Platform,2,npm,31,63.3,49,67
+Insurance,"1,000 to 4,999 employees",Platform,3,Kubernetes,24,49.0,49,67
+Insurance,"1,000 to 4,999 employees",Platform,4,Microsoft Azure,24,49.0,49,67
+Insurance,"1,000 to 4,999 employees",Platform,5,Maven (build tool),18,36.7,49,67
+Insurance,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),33,86.8,38,79
+Insurance,"10,000 or more employees",AIModels,2,Gemini (Flash general purpose models),12,31.6,38,79
+Insurance,"10,000 or more employees",AIModels,3,Anthropic: Claude Sonnet,10,26.3,38,79
+Insurance,"10,000 or more employees",AIModels,4,openAI Image generating models,10,26.3,38,79
+Insurance,"10,000 or more employees",AIModels,5,openAI Reasoning models,10,26.3,38,79
+Insurance,"10,000 or more employees",Database,1,PostgreSQL,35,55.6,63,79
+Insurance,"10,000 or more employees",Database,2,Microsoft SQL Server,23,36.5,63,79
+Insurance,"10,000 or more employees",Database,3,Oracle,20,31.7,63,79
+Insurance,"10,000 or more employees",Database,4,SQLite,20,31.7,63,79
+Insurance,"10,000 or more employees",Database,5,MySQL,15,23.8,63,79
+Insurance,"10,000 or more employees",Platform,1,Docker,42,67.7,62,79
+Insurance,"10,000 or more employees",Platform,2,npm,41,66.1,62,79
+Insurance,"10,000 or more employees",Platform,3,Microsoft Azure,34,54.8,62,79
+Insurance,"10,000 or more employees",Platform,4,Amazon Web Services (AWS),30,48.4,62,79
+Insurance,"10,000 or more employees",Platform,5,Pip,28,45.2,62,79
+Insurance,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),30,88.2,34,83
+Insurance,100 to 499 employees,AIModels,2,openAI Reasoning models,11,32.4,34,83
+Insurance,100 to 499 employees,AIModels,3,openAI Image generating models,7,20.6,34,83
+Insurance,100 to 499 employees,AIModels,4,Anthropic: Claude Sonnet,6,17.6,34,83
+Insurance,100 to 499 employees,AIModels,5,DeepSeek (R- Reasoning models),6,17.6,34,83
+Insurance,100 to 499 employees,Database,1,Microsoft SQL Server,40,54.8,73,83
+Insurance,100 to 499 employees,Database,2,PostgreSQL,35,47.9,73,83
+Insurance,100 to 499 employees,Database,3,MySQL,25,34.2,73,83
+Insurance,100 to 499 employees,Database,4,SQLite,22,30.1,73,83
+Insurance,100 to 499 employees,Database,5,Redis,16,21.9,73,83
+Insurance,100 to 499 employees,Platform,1,Docker,45,69.2,65,83
+Insurance,100 to 499 employees,Platform,2,npm,33,50.8,65,83
+Insurance,100 to 499 employees,Platform,3,Microsoft Azure,31,47.7,65,83
+Insurance,100 to 499 employees,Platform,4,Amazon Web Services (AWS),29,44.6,65,83
+Insurance,100 to 499 employees,Platform,5,Kubernetes,22,33.8,65,83
+Insurance,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),23,92.0,25,54
+Insurance,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,12,48.0,25,54
+Insurance,20 to 99 employees,AIModels,3,Gemini (Flash general purpose models),11,44.0,25,54
+Insurance,20 to 99 employees,AIModels,4,openAI Reasoning models,10,40.0,25,54
+Insurance,20 to 99 employees,AIModels,5,Gemini (Pro Reasoning models),9,36.0,25,54
+Insurance,20 to 99 employees,Database,1,Microsoft SQL Server,21,52.5,40,54
+Insurance,20 to 99 employees,Database,2,PostgreSQL,21,52.5,40,54
+Insurance,20 to 99 employees,Database,3,SQLite,12,30.0,40,54
+Insurance,20 to 99 employees,Database,4,MySQL,10,25.0,40,54
+Insurance,20 to 99 employees,Database,5,Redis,9,22.5,40,54
+Insurance,20 to 99 employees,Platform,1,Docker,27,81.8,33,54
+Insurance,20 to 99 employees,Platform,2,npm,17,51.5,33,54
+Insurance,20 to 99 employees,Platform,3,Microsoft Azure,14,42.4,33,54
+Insurance,20 to 99 employees,Platform,4,Pip,12,36.4,33,54
+Insurance,20 to 99 employees,Platform,5,Amazon Web Services (AWS),11,33.3,33,54
+Insurance,"5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),11,68.8,16,36
+Insurance,"5,000 to 9,999 employees",AIModels,2,Anthropic: Claude Sonnet,7,43.8,16,36
+Insurance,"5,000 to 9,999 employees",AIModels,3,Gemini (Flash general purpose models),5,31.2,16,36
+Insurance,"5,000 to 9,999 employees",AIModels,4,openAI Reasoning models,5,31.2,16,36
+Insurance,"5,000 to 9,999 employees",AIModels,5,DeepSeek (R- Reasoning models),3,18.8,16,36
+Insurance,"5,000 to 9,999 employees",Database,1,PostgreSQL,16,48.5,33,36
+Insurance,"5,000 to 9,999 employees",Database,2,Microsoft SQL Server,12,36.4,33,36
+Insurance,"5,000 to 9,999 employees",Database,3,SQLite,10,30.3,33,36
+Insurance,"5,000 to 9,999 employees",Database,4,MySQL,9,27.3,33,36
+Insurance,"5,000 to 9,999 employees",Database,5,Redis,7,21.2,33,36
+Insurance,"5,000 to 9,999 employees",Platform,1,Docker,18,64.3,28,36
+Insurance,"5,000 to 9,999 employees",Platform,2,Amazon Web Services (AWS),16,57.1,28,36
+Insurance,"5,000 to 9,999 employees",Platform,3,npm,14,50.0,28,36
+Insurance,"5,000 to 9,999 employees",Platform,4,Homebrew,10,35.7,28,36
+Insurance,"5,000 to 9,999 employees",Platform,5,Pip,10,35.7,28,36
+Insurance,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),17,70.8,24,54
+Insurance,500 to 999 employees,AIModels,2,Anthropic: Claude Sonnet,9,37.5,24,54
+Insurance,500 to 999 employees,AIModels,3,Gemini (Flash general purpose models),9,37.5,24,54
+Insurance,500 to 999 employees,AIModels,4,Gemini (Pro Reasoning models),9,37.5,24,54
+Insurance,500 to 999 employees,AIModels,5,openAI Reasoning models,9,37.5,24,54
+Insurance,500 to 999 employees,Database,1,PostgreSQL,24,52.2,46,54
+Insurance,500 to 999 employees,Database,2,Microsoft SQL Server,15,32.6,46,54
+Insurance,500 to 999 employees,Database,3,MySQL,14,30.4,46,54
+Insurance,500 to 999 employees,Database,4,Oracle,14,30.4,46,54
+Insurance,500 to 999 employees,Database,5,Redis,13,28.3,46,54
+Insurance,500 to 999 employees,Platform,1,Docker,30,73.2,41,54
+Insurance,500 to 999 employees,Platform,2,npm,23,56.1,41,54
+Insurance,500 to 999 employees,Platform,3,Amazon Web Services (AWS),22,53.7,41,54
+Insurance,500 to 999 employees,Platform,4,Microsoft Azure,17,41.5,41,54
+Insurance,500 to 999 employees,Platform,5,Pip,15,36.6,41,54
+Insurance,I don’t know,AIModels,1,openAI GPT (chatbot models),3,100.0,3,9
+Insurance,I don’t know,AIModels,2,Anthropic: Claude Sonnet,1,33.3,3,9
+Insurance,I don’t know,AIModels,3,DeepSeek (R- Reasoning models),1,33.3,3,9
+Insurance,I don’t know,AIModels,4,Gemini (Flash general purpose models),1,33.3,3,9
+Insurance,I don’t know,AIModels,5,Meta Llama (all models),1,33.3,3,9
+Insurance,I don’t know,Database,1,PostgreSQL,4,66.7,6,9
+Insurance,I don’t know,Database,2,Elasticsearch,3,50.0,6,9
+Insurance,I don’t know,Database,3,Redis,3,50.0,6,9
+Insurance,I don’t know,Database,4,SQLite,3,50.0,6,9
+Insurance,I don’t know,Database,5,MariaDB,2,33.3,6,9
+Insurance,I don’t know,Platform,1,Amazon Web Services (AWS),6,85.7,7,9
+Insurance,I don’t know,Platform,2,Docker,5,71.4,7,9
+Insurance,I don’t know,Platform,3,Vite,4,57.1,7,9
+Insurance,I don’t know,Platform,4,Chocolatey,3,42.9,7,9
+Insurance,I don’t know,Platform,5,Webpack,3,42.9,7,9
+Insurance,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,Alibaba Cloud Qwen models,1,100.0,1,3
+Insurance,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,Microsoft SQL Server,2,66.7,3,3
+Insurance,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,BigQuery,1,33.3,3,3
+Insurance,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,Cosmos DB,1,33.3,3,3
+Insurance,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,Microsoft Azure,2,66.7,3,3
+Insurance,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,Ansible,1,33.3,3,3
+Insurance,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,NuGet,1,33.3,3,3
+Insurance,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),13,100.0,13,24
+Insurance,Less than 20 employees,AIModels,2,Anthropic: Claude Sonnet,7,53.8,13,24
+Insurance,Less than 20 employees,AIModels,3,Gemini (Pro Reasoning models),7,53.8,13,24
+Insurance,Less than 20 employees,AIModels,4,Gemini (Flash general purpose models),5,38.5,13,24
+Insurance,Less than 20 employees,AIModels,5,openAI Reasoning models,5,38.5,13,24
+Insurance,Less than 20 employees,Database,1,PostgreSQL,12,57.1,21,24
+Insurance,Less than 20 employees,Database,2,Microsoft SQL Server,8,38.1,21,24
+Insurance,Less than 20 employees,Database,3,MySQL,8,38.1,21,24
+Insurance,Less than 20 employees,Database,4,SQLite,6,28.6,21,24
+Insurance,Less than 20 employees,Database,5,Redis,5,23.8,21,24
+Insurance,Less than 20 employees,Platform,1,npm,11,64.7,17,24
+Insurance,Less than 20 employees,Platform,2,Docker,10,58.8,17,24
+Insurance,Less than 20 employees,Platform,3,Amazon Web Services (AWS),7,41.2,17,24
+Insurance,Less than 20 employees,Platform,4,Yarn,6,35.3,17,24
+Insurance,Less than 20 employees,Platform,5,Homebrew,5,29.4,17,24
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),62,70.5,88,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",AIModels,2,Anthropic: Claude Sonnet,38,43.2,88,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",AIModels,3,Gemini (Flash general purpose models),36,40.9,88,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",AIModels,4,openAI Image generating models,23,26.1,88,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",AIModels,5,Gemini (Pro Reasoning models),22,25.0,88,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",Database,1,PostgreSQL,84,57.9,145,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",Database,2,MySQL,78,53.8,145,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",Database,3,Redis,62,42.8,145,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",Database,4,MariaDB,52,35.9,145,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",Database,5,SQLite,48,33.1,145,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",Platform,1,Docker,117,79.1,148,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",Platform,2,Kubernetes,83,56.1,148,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",Platform,3,npm,77,52.0,148,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",Platform,4,Pip,63,42.6,148,195
+"Internet, Telecomm or Information Services","1,000 to 4,999 employees",Platform,5,Amazon Web Services (AWS),59,39.9,148,195
+"Internet, Telecomm or Information Services","10,000 or more employees",AIModels,1,openAI GPT (chatbot models),112,77.8,144,315
+"Internet, Telecomm or Information Services","10,000 or more employees",AIModels,2,Gemini (Flash general purpose models),63,43.8,144,315
+"Internet, Telecomm or Information Services","10,000 or more employees",AIModels,3,Anthropic: Claude Sonnet,49,34.0,144,315
+"Internet, Telecomm or Information Services","10,000 or more employees",AIModels,4,Gemini (Pro Reasoning models),43,29.9,144,315
+"Internet, Telecomm or Information Services","10,000 or more employees",AIModels,5,Meta Llama (all models),35,24.3,144,315
+"Internet, Telecomm or Information Services","10,000 or more employees",Database,1,PostgreSQL,93,48.7,191,315
+"Internet, Telecomm or Information Services","10,000 or more employees",Database,2,MySQL,77,40.3,191,315
+"Internet, Telecomm or Information Services","10,000 or more employees",Database,3,SQLite,67,35.1,191,315
+"Internet, Telecomm or Information Services","10,000 or more employees",Database,4,Redis,63,33.0,191,315
+"Internet, Telecomm or Information Services","10,000 or more employees",Database,5,MongoDB,45,23.6,191,315
+"Internet, Telecomm or Information Services","10,000 or more employees",Platform,1,Docker,161,74.2,217,315
+"Internet, Telecomm or Information Services","10,000 or more employees",Platform,2,Pip,113,52.1,217,315
+"Internet, Telecomm or Information Services","10,000 or more employees",Platform,3,Kubernetes,111,51.2,217,315
+"Internet, Telecomm or Information Services","10,000 or more employees",Platform,4,npm,94,43.3,217,315
+"Internet, Telecomm or Information Services","10,000 or more employees",Platform,5,Amazon Web Services (AWS),82,37.8,217,315
+"Internet, Telecomm or Information Services",100 to 499 employees,AIModels,1,openAI GPT (chatbot models),91,75.8,120,273
+"Internet, Telecomm or Information Services",100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,56,46.7,120,273
+"Internet, Telecomm or Information Services",100 to 499 employees,AIModels,3,Gemini (Flash general purpose models),50,41.7,120,273
+"Internet, Telecomm or Information Services",100 to 499 employees,AIModels,4,openAI Reasoning models,41,34.2,120,273
+"Internet, Telecomm or Information Services",100 to 499 employees,AIModels,5,Gemini (Pro Reasoning models),35,29.2,120,273
+"Internet, Telecomm or Information Services",100 to 499 employees,Database,1,PostgreSQL,127,62.0,205,273
+"Internet, Telecomm or Information Services",100 to 499 employees,Database,2,MySQL,84,41.0,205,273
+"Internet, Telecomm or Information Services",100 to 499 employees,Database,3,SQLite,74,36.1,205,273
+"Internet, Telecomm or Information Services",100 to 499 employees,Database,4,Redis,70,34.1,205,273
+"Internet, Telecomm or Information Services",100 to 499 employees,Database,5,MariaDB,55,26.8,205,273
+"Internet, Telecomm or Information Services",100 to 499 employees,Platform,1,Docker,154,80.2,192,273
+"Internet, Telecomm or Information Services",100 to 499 employees,Platform,2,npm,101,52.6,192,273
+"Internet, Telecomm or Information Services",100 to 499 employees,Platform,3,Kubernetes,91,47.4,192,273
+"Internet, Telecomm or Information Services",100 to 499 employees,Platform,4,Pip,88,45.8,192,273
+"Internet, Telecomm or Information Services",100 to 499 employees,Platform,5,Amazon Web Services (AWS),86,44.8,192,273
+"Internet, Telecomm or Information Services",20 to 99 employees,AIModels,1,openAI GPT (chatbot models),96,88.1,109,246
+"Internet, Telecomm or Information Services",20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,45,41.3,109,246
+"Internet, Telecomm or Information Services",20 to 99 employees,AIModels,3,openAI Reasoning models,40,36.7,109,246
+"Internet, Telecomm or Information Services",20 to 99 employees,AIModels,4,Gemini (Flash general purpose models),37,33.9,109,246
+"Internet, Telecomm or Information Services",20 to 99 employees,AIModels,5,DeepSeek (R- Reasoning models),33,30.3,109,246
+"Internet, Telecomm or Information Services",20 to 99 employees,Database,1,PostgreSQL,99,58.6,169,246
+"Internet, Telecomm or Information Services",20 to 99 employees,Database,2,MySQL,88,52.1,169,246
+"Internet, Telecomm or Information Services",20 to 99 employees,Database,3,MariaDB,77,45.6,169,246
+"Internet, Telecomm or Information Services",20 to 99 employees,Database,4,SQLite,70,41.4,169,246
+"Internet, Telecomm or Information Services",20 to 99 employees,Database,5,Redis,67,39.6,169,246
+"Internet, Telecomm or Information Services",20 to 99 employees,Platform,1,Docker,126,75.0,168,246
+"Internet, Telecomm or Information Services",20 to 99 employees,Platform,2,npm,88,52.4,168,246
+"Internet, Telecomm or Information Services",20 to 99 employees,Platform,3,Pip,77,45.8,168,246
+"Internet, Telecomm or Information Services",20 to 99 employees,Platform,4,Amazon Web Services (AWS),67,39.9,168,246
+"Internet, Telecomm or Information Services",20 to 99 employees,Platform,5,Make,54,32.1,168,246
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),30,85.7,35,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",AIModels,2,Anthropic: Claude Sonnet,14,40.0,35,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",AIModels,3,openAI Reasoning models,13,37.1,35,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",AIModels,4,Gemini (Flash general purpose models),9,25.7,35,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",AIModels,5,Meta Llama (all models),9,25.7,35,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",Database,1,PostgreSQL,33,60.0,55,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",Database,2,MySQL,23,41.8,55,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",Database,3,Redis,22,40.0,55,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",Database,4,SQLite,20,36.4,55,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",Database,5,Elasticsearch,15,27.3,55,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",Platform,1,Docker,42,71.2,59,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",Platform,2,Amazon Web Services (AWS),33,55.9,59,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",Platform,3,Pip,33,55.9,59,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",Platform,4,npm,30,50.8,59,82
+"Internet, Telecomm or Information Services","5,000 to 9,999 employees",Platform,5,Kubernetes,24,40.7,59,82
+"Internet, Telecomm or Information Services",500 to 999 employees,AIModels,1,openAI GPT (chatbot models),46,92.0,50,112
+"Internet, Telecomm or Information Services",500 to 999 employees,AIModels,2,Anthropic: Claude Sonnet,32,64.0,50,112
+"Internet, Telecomm or Information Services",500 to 999 employees,AIModels,3,openAI Reasoning models,20,40.0,50,112
+"Internet, Telecomm or Information Services",500 to 999 employees,AIModels,4,DeepSeek (R- Reasoning models),19,38.0,50,112
+"Internet, Telecomm or Information Services",500 to 999 employees,AIModels,5,Gemini (Flash general purpose models),16,32.0,50,112
+"Internet, Telecomm or Information Services",500 to 999 employees,Database,1,PostgreSQL,61,78.2,78,112
+"Internet, Telecomm or Information Services",500 to 999 employees,Database,2,MySQL,37,47.4,78,112
+"Internet, Telecomm or Information Services",500 to 999 employees,Database,3,SQLite,30,38.5,78,112
+"Internet, Telecomm or Information Services",500 to 999 employees,Database,4,Elasticsearch,28,35.9,78,112
+"Internet, Telecomm or Information Services",500 to 999 employees,Database,5,Redis,28,35.9,78,112
+"Internet, Telecomm or Information Services",500 to 999 employees,Platform,1,Docker,66,82.5,80,112
+"Internet, Telecomm or Information Services",500 to 999 employees,Platform,2,npm,43,53.8,80,112
+"Internet, Telecomm or Information Services",500 to 999 employees,Platform,3,Amazon Web Services (AWS),40,50.0,80,112
+"Internet, Telecomm or Information Services",500 to 999 employees,Platform,4,Kubernetes,38,47.5,80,112
+"Internet, Telecomm or Information Services",500 to 999 employees,Platform,5,Pip,34,42.5,80,112
+"Internet, Telecomm or Information Services",I don’t know,AIModels,1,openAI GPT (chatbot models),7,63.6,11,32
+"Internet, Telecomm or Information Services",I don’t know,AIModels,2,Anthropic: Claude Sonnet,4,36.4,11,32
+"Internet, Telecomm or Information Services",I don’t know,AIModels,3,Gemini (Flash general purpose models),4,36.4,11,32
+"Internet, Telecomm or Information Services",I don’t know,AIModels,4,Meta Llama (all models),3,27.3,11,32
+"Internet, Telecomm or Information Services",I don’t know,AIModels,5,openAI Reasoning models,3,27.3,11,32
+"Internet, Telecomm or Information Services",I don’t know,Database,1,MySQL,9,47.4,19,32
+"Internet, Telecomm or Information Services",I don’t know,Database,2,PostgreSQL,9,47.4,19,32
+"Internet, Telecomm or Information Services",I don’t know,Database,3,MariaDB,8,42.1,19,32
+"Internet, Telecomm or Information Services",I don’t know,Database,4,MongoDB,6,31.6,19,32
+"Internet, Telecomm or Information Services",I don’t know,Database,5,SQLite,6,31.6,19,32
+"Internet, Telecomm or Information Services",I don’t know,Platform,1,Docker,15,78.9,19,32
+"Internet, Telecomm or Information Services",I don’t know,Platform,2,npm,8,42.1,19,32
+"Internet, Telecomm or Information Services",I don’t know,Platform,3,Kubernetes,7,36.8,19,32
+"Internet, Telecomm or Information Services",I don’t know,Platform,4,Cargo,6,31.6,19,32
+"Internet, Telecomm or Information Services",I don’t know,Platform,5,Google Cloud,6,31.6,19,32
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),25,92.6,27,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Gemini (Flash general purpose models),16,59.3,27,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,Anthropic: Claude Sonnet,13,48.1,27,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,openAI Reasoning models,13,48.1,27,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,openAI Image generating models,12,44.4,27,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",Database,1,MySQL,30,71.4,42,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",Database,2,SQLite,26,61.9,42,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",Database,3,PostgreSQL,20,47.6,42,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",Database,4,MariaDB,17,40.5,42,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",Database,5,Microsoft SQL Server,17,40.5,42,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",Platform,1,npm,23,59.0,39,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",Platform,2,Amazon Web Services (AWS),21,53.8,39,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",Platform,3,Cloudflare,19,48.7,39,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",Platform,4,Google Cloud,19,48.7,39,73
+"Internet, Telecomm or Information Services","Just me - I am a freelancer, sole proprietor, etc.",Platform,5,Docker,16,41.0,39,73
+"Internet, Telecomm or Information Services",Less than 20 employees,AIModels,1,openAI GPT (chatbot models),78,89.7,87,204
+"Internet, Telecomm or Information Services",Less than 20 employees,AIModels,2,Anthropic: Claude Sonnet,44,50.6,87,204
+"Internet, Telecomm or Information Services",Less than 20 employees,AIModels,3,openAI Reasoning models,34,39.1,87,204
+"Internet, Telecomm or Information Services",Less than 20 employees,AIModels,4,Gemini (Flash general purpose models),33,37.9,87,204
+"Internet, Telecomm or Information Services",Less than 20 employees,AIModels,5,openAI Image generating models,24,27.6,87,204
+"Internet, Telecomm or Information Services",Less than 20 employees,Database,1,PostgreSQL,92,60.5,152,204
+"Internet, Telecomm or Information Services",Less than 20 employees,Database,2,MySQL,83,54.6,152,204
+"Internet, Telecomm or Information Services",Less than 20 employees,Database,3,SQLite,79,52.0,152,204
+"Internet, Telecomm or Information Services",Less than 20 employees,Database,4,MariaDB,69,45.4,152,204
+"Internet, Telecomm or Information Services",Less than 20 employees,Database,5,Redis,54,35.5,152,204
+"Internet, Telecomm or Information Services",Less than 20 employees,Platform,1,Docker,104,73.8,141,204
+"Internet, Telecomm or Information Services",Less than 20 employees,Platform,2,npm,92,65.2,141,204
+"Internet, Telecomm or Information Services",Less than 20 employees,Platform,3,Pip,66,46.8,141,204
+"Internet, Telecomm or Information Services",Less than 20 employees,Platform,4,Amazon Web Services (AWS),57,40.4,141,204
+"Internet, Telecomm or Information Services",Less than 20 employees,Platform,5,Cloudflare,47,33.3,141,204
+Manufacturing,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),47,79.7,59,162
+Manufacturing,"1,000 to 4,999 employees",AIModels,2,Anthropic: Claude Sonnet,16,27.1,59,162
+Manufacturing,"1,000 to 4,999 employees",AIModels,3,openAI Reasoning models,15,25.4,59,162
+Manufacturing,"1,000 to 4,999 employees",AIModels,4,Gemini (Flash general purpose models),12,20.3,59,162
+Manufacturing,"1,000 to 4,999 employees",AIModels,5,Gemini (Pro Reasoning models),10,16.9,59,162
+Manufacturing,"1,000 to 4,999 employees",Database,1,Microsoft SQL Server,75,69.4,108,162
+Manufacturing,"1,000 to 4,999 employees",Database,2,PostgreSQL,47,43.5,108,162
+Manufacturing,"1,000 to 4,999 employees",Database,3,SQLite,44,40.7,108,162
+Manufacturing,"1,000 to 4,999 employees",Database,4,MySQL,39,36.1,108,162
+Manufacturing,"1,000 to 4,999 employees",Database,5,MariaDB,21,19.4,108,162
+Manufacturing,"1,000 to 4,999 employees",Platform,1,Docker,69,69.0,100,162
+Manufacturing,"1,000 to 4,999 employees",Platform,2,npm,45,45.0,100,162
+Manufacturing,"1,000 to 4,999 employees",Platform,3,Microsoft Azure,43,43.0,100,162
+Manufacturing,"1,000 to 4,999 employees",Platform,4,Pip,42,42.0,100,162
+Manufacturing,"1,000 to 4,999 employees",Platform,5,NuGet,41,41.0,100,162
+Manufacturing,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),106,86.9,122,270
+Manufacturing,"10,000 or more employees",AIModels,2,Anthropic: Claude Sonnet,42,34.4,122,270
+Manufacturing,"10,000 or more employees",AIModels,3,Gemini (Flash general purpose models),37,30.3,122,270
+Manufacturing,"10,000 or more employees",AIModels,4,openAI Image generating models,31,25.4,122,270
+Manufacturing,"10,000 or more employees",AIModels,5,openAI Reasoning models,30,24.6,122,270
+Manufacturing,"10,000 or more employees",Database,1,Microsoft SQL Server,95,56.2,169,270
+Manufacturing,"10,000 or more employees",Database,2,PostgreSQL,77,45.6,169,270
+Manufacturing,"10,000 or more employees",Database,3,SQLite,62,36.7,169,270
+Manufacturing,"10,000 or more employees",Database,4,MySQL,52,30.8,169,270
+Manufacturing,"10,000 or more employees",Database,5,Oracle,35,20.7,169,270
+Manufacturing,"10,000 or more employees",Platform,1,Docker,124,70.1,177,270
+Manufacturing,"10,000 or more employees",Platform,2,Microsoft Azure,91,51.4,177,270
+Manufacturing,"10,000 or more employees",Platform,3,Pip,84,47.5,177,270
+Manufacturing,"10,000 or more employees",Platform,4,npm,83,46.9,177,270
+Manufacturing,"10,000 or more employees",Platform,5,Amazon Web Services (AWS),56,31.6,177,270
+Manufacturing,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),79,84.9,93,257
+Manufacturing,100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,30,32.3,93,257
+Manufacturing,100 to 499 employees,AIModels,3,Gemini (Flash general purpose models),30,32.3,93,257
+Manufacturing,100 to 499 employees,AIModels,4,openAI Reasoning models,25,26.9,93,257
+Manufacturing,100 to 499 employees,AIModels,5,openAI Image generating models,23,24.7,93,257
+Manufacturing,100 to 499 employees,Database,1,Microsoft SQL Server,99,56.9,174,257
+Manufacturing,100 to 499 employees,Database,2,PostgreSQL,80,46.0,174,257
+Manufacturing,100 to 499 employees,Database,3,SQLite,70,40.2,174,257
+Manufacturing,100 to 499 employees,Database,4,MySQL,69,39.7,174,257
+Manufacturing,100 to 499 employees,Database,5,MariaDB,43,24.7,174,257
+Manufacturing,100 to 499 employees,Platform,1,Docker,97,62.2,156,257
+Manufacturing,100 to 499 employees,Platform,2,npm,83,53.2,156,257
+Manufacturing,100 to 499 employees,Platform,3,Pip,60,38.5,156,257
+Manufacturing,100 to 499 employees,Platform,4,Microsoft Azure,52,33.3,156,257
+Manufacturing,100 to 499 employees,Platform,5,NuGet,46,29.5,156,257
+Manufacturing,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),49,80.3,61,193
+Manufacturing,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,22,36.1,61,193
+Manufacturing,20 to 99 employees,AIModels,3,openAI Reasoning models,22,36.1,61,193
+Manufacturing,20 to 99 employees,AIModels,4,Gemini (Flash general purpose models),21,34.4,61,193
+Manufacturing,20 to 99 employees,AIModels,5,openAI Image generating models,20,32.8,61,193
+Manufacturing,20 to 99 employees,Database,1,Microsoft SQL Server,59,49.6,119,193
+Manufacturing,20 to 99 employees,Database,2,PostgreSQL,59,49.6,119,193
+Manufacturing,20 to 99 employees,Database,3,SQLite,49,41.2,119,193
+Manufacturing,20 to 99 employees,Database,4,MySQL,48,40.3,119,193
+Manufacturing,20 to 99 employees,Database,5,MariaDB,32,26.9,119,193
+Manufacturing,20 to 99 employees,Platform,1,Docker,70,67.3,104,193
+Manufacturing,20 to 99 employees,Platform,2,Pip,47,45.2,104,193
+Manufacturing,20 to 99 employees,Platform,3,npm,47,45.2,104,193
+Manufacturing,20 to 99 employees,Platform,4,Microsoft Azure,31,29.8,104,193
+Manufacturing,20 to 99 employees,Platform,5,NuGet,30,28.8,104,193
+Manufacturing,"5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),22,75.9,29,64
+Manufacturing,"5,000 to 9,999 employees",AIModels,2,Anthropic: Claude Sonnet,10,34.5,29,64
+Manufacturing,"5,000 to 9,999 employees",AIModels,3,Gemini (Flash general purpose models),8,27.6,29,64
+Manufacturing,"5,000 to 9,999 employees",AIModels,4,Gemini (Pro Reasoning models),8,27.6,29,64
+Manufacturing,"5,000 to 9,999 employees",AIModels,5,openAI Image generating models,7,24.1,29,64
+Manufacturing,"5,000 to 9,999 employees",Database,1,Microsoft SQL Server,21,48.8,43,64
+Manufacturing,"5,000 to 9,999 employees",Database,2,MySQL,20,46.5,43,64
+Manufacturing,"5,000 to 9,999 employees",Database,3,SQLite,18,41.9,43,64
+Manufacturing,"5,000 to 9,999 employees",Database,4,PostgreSQL,17,39.5,43,64
+Manufacturing,"5,000 to 9,999 employees",Database,5,MariaDB,9,20.9,43,64
+Manufacturing,"5,000 to 9,999 employees",Platform,1,Docker,27,69.2,39,64
+Manufacturing,"5,000 to 9,999 employees",Platform,2,npm,23,59.0,39,64
+Manufacturing,"5,000 to 9,999 employees",Platform,3,Microsoft Azure,18,46.2,39,64
+Manufacturing,"5,000 to 9,999 employees",Platform,4,Pip,17,43.6,39,64
+Manufacturing,"5,000 to 9,999 employees",Platform,5,NuGet,16,41.0,39,64
+Manufacturing,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),26,83.9,31,105
+Manufacturing,500 to 999 employees,AIModels,2,openAI Image generating models,11,35.5,31,105
+Manufacturing,500 to 999 employees,AIModels,3,Anthropic: Claude Sonnet,9,29.0,31,105
+Manufacturing,500 to 999 employees,AIModels,4,DeepSeek (R- Reasoning models),9,29.0,31,105
+Manufacturing,500 to 999 employees,AIModels,5,openAI Reasoning models,9,29.0,31,105
+Manufacturing,500 to 999 employees,Database,1,Microsoft SQL Server,50,63.3,79,105
+Manufacturing,500 to 999 employees,Database,2,SQLite,36,45.6,79,105
+Manufacturing,500 to 999 employees,Database,3,MySQL,32,40.5,79,105
+Manufacturing,500 to 999 employees,Database,4,PostgreSQL,27,34.2,79,105
+Manufacturing,500 to 999 employees,Database,5,MongoDB,16,20.3,79,105
+Manufacturing,500 to 999 employees,Platform,1,Docker,45,76.3,59,105
+Manufacturing,500 to 999 employees,Platform,2,npm,36,61.0,59,105
+Manufacturing,500 to 999 employees,Platform,3,Microsoft Azure,30,50.8,59,105
+Manufacturing,500 to 999 employees,Platform,4,NuGet,29,49.2,59,105
+Manufacturing,500 to 999 employees,Platform,5,Pip,22,37.3,59,105
+Manufacturing,I don’t know,AIModels,1,openAI GPT (chatbot models),4,66.7,6,26
+Manufacturing,I don’t know,AIModels,2,openAI Reasoning models,3,50.0,6,26
+Manufacturing,I don’t know,AIModels,3,Anthropic: Claude Sonnet,2,33.3,6,26
+Manufacturing,I don’t know,AIModels,4,Gemini (Pro Reasoning models),2,33.3,6,26
+Manufacturing,I don’t know,AIModels,5,Meta Llama (all models),2,33.3,6,26
+Manufacturing,I don’t know,Database,1,Microsoft SQL Server,7,46.7,15,26
+Manufacturing,I don’t know,Database,2,SQLite,7,46.7,15,26
+Manufacturing,I don’t know,Database,3,MySQL,5,33.3,15,26
+Manufacturing,I don’t know,Database,4,MariaDB,4,26.7,15,26
+Manufacturing,I don’t know,Database,5,Microsoft Access,4,26.7,15,26
+Manufacturing,I don’t know,Platform,1,Pip,10,66.7,15,26
+Manufacturing,I don’t know,Platform,2,Docker,9,60.0,15,26
+Manufacturing,I don’t know,Platform,3,npm,8,53.3,15,26
+Manufacturing,I don’t know,Platform,4,Make,7,46.7,15,26
+Manufacturing,I don’t know,Platform,5,APT,6,40.0,15,26
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),8,100.0,8,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Anthropic: Claude Sonnet,3,37.5,8,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,DeepSeek (R- Reasoning models),3,37.5,8,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,DeepSeek (V- General purpose models),2,25.0,8,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,Gemini (Pro Reasoning models),2,25.0,8,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,MySQL,10,62.5,16,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,Microsoft SQL Server,7,43.8,16,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,MariaDB,5,31.2,16,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",Database,4,Microsoft Access,5,31.2,16,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",Database,5,PostgreSQL,5,31.2,16,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,Amazon Web Services (AWS),4,40.0,10,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,Pip,4,40.0,10,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,npm,4,40.0,10,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",Platform,4,pnpm,4,40.0,10,32
+Manufacturing,"Just me - I am a freelancer, sole proprietor, etc.",Platform,5,Cargo,3,30.0,10,32
+Manufacturing,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),33,80.5,41,126
+Manufacturing,Less than 20 employees,AIModels,2,Anthropic: Claude Sonnet,15,36.6,41,126
+Manufacturing,Less than 20 employees,AIModels,3,openAI Reasoning models,15,36.6,41,126
+Manufacturing,Less than 20 employees,AIModels,4,DeepSeek (R- Reasoning models),11,26.8,41,126
+Manufacturing,Less than 20 employees,AIModels,5,Gemini (Flash general purpose models),11,26.8,41,126
+Manufacturing,Less than 20 employees,Database,1,SQLite,43,55.1,78,126
+Manufacturing,Less than 20 employees,Database,2,PostgreSQL,42,53.8,78,126
+Manufacturing,Less than 20 employees,Database,3,MySQL,40,51.3,78,126
+Manufacturing,Less than 20 employees,Database,4,Microsoft SQL Server,33,42.3,78,126
+Manufacturing,Less than 20 employees,Database,5,MariaDB,17,21.8,78,126
+Manufacturing,Less than 20 employees,Platform,1,Docker,42,65.6,64,126
+Manufacturing,Less than 20 employees,Platform,2,npm,27,42.2,64,126
+Manufacturing,Less than 20 employees,Platform,3,Pip,25,39.1,64,126
+Manufacturing,Less than 20 employees,Platform,4,Amazon Web Services (AWS),24,37.5,64,126
+Manufacturing,Less than 20 employees,Platform,5,Microsoft Azure,17,26.6,64,126
+Media & Advertising Services,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),36,83.7,43,84
+Media & Advertising Services,"1,000 to 4,999 employees",AIModels,2,Anthropic: Claude Sonnet,16,37.2,43,84
+Media & Advertising Services,"1,000 to 4,999 employees",AIModels,3,openAI Reasoning models,16,37.2,43,84
+Media & Advertising Services,"1,000 to 4,999 employees",AIModels,4,Gemini (Flash general purpose models),15,34.9,43,84
+Media & Advertising Services,"1,000 to 4,999 employees",AIModels,5,Gemini (Pro Reasoning models),11,25.6,43,84
+Media & Advertising Services,"1,000 to 4,999 employees",Database,1,PostgreSQL,41,65.1,63,84
+Media & Advertising Services,"1,000 to 4,999 employees",Database,2,MySQL,28,44.4,63,84
+Media & Advertising Services,"1,000 to 4,999 employees",Database,3,Redis,24,38.1,63,84
+Media & Advertising Services,"1,000 to 4,999 employees",Database,4,Elasticsearch,22,34.9,63,84
+Media & Advertising Services,"1,000 to 4,999 employees",Database,5,SQLite,21,33.3,63,84
+Media & Advertising Services,"1,000 to 4,999 employees",Platform,1,Docker,50,76.9,65,84
+Media & Advertising Services,"1,000 to 4,999 employees",Platform,2,Amazon Web Services (AWS),46,70.8,65,84
+Media & Advertising Services,"1,000 to 4,999 employees",Platform,3,Homebrew,32,49.2,65,84
+Media & Advertising Services,"1,000 to 4,999 employees",Platform,4,npm,32,49.2,65,84
+Media & Advertising Services,"1,000 to 4,999 employees",Platform,5,Kubernetes,29,44.6,65,84
+Media & Advertising Services,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),21,91.3,23,61
+Media & Advertising Services,"10,000 or more employees",AIModels,2,Anthropic: Claude Sonnet,11,47.8,23,61
+Media & Advertising Services,"10,000 or more employees",AIModels,3,openAI Image generating models,9,39.1,23,61
+Media & Advertising Services,"10,000 or more employees",AIModels,4,Gemini (Pro Reasoning models),8,34.8,23,61
+Media & Advertising Services,"10,000 or more employees",AIModels,5,Meta Llama (all models),6,26.1,23,61
+Media & Advertising Services,"10,000 or more employees",Database,1,PostgreSQL,33,71.7,46,61
+Media & Advertising Services,"10,000 or more employees",Database,2,MySQL,16,34.8,46,61
+Media & Advertising Services,"10,000 or more employees",Database,3,SQLite,16,34.8,46,61
+Media & Advertising Services,"10,000 or more employees",Database,4,Dynamodb,14,30.4,46,61
+Media & Advertising Services,"10,000 or more employees",Database,5,Redis,14,30.4,46,61
+Media & Advertising Services,"10,000 or more employees",Platform,1,Docker,41,82.0,50,61
+Media & Advertising Services,"10,000 or more employees",Platform,2,Amazon Web Services (AWS),34,68.0,50,61
+Media & Advertising Services,"10,000 or more employees",Platform,3,npm,30,60.0,50,61
+Media & Advertising Services,"10,000 or more employees",Platform,4,Homebrew,23,46.0,50,61
+Media & Advertising Services,"10,000 or more employees",Platform,5,Kubernetes,21,42.0,50,61
+Media & Advertising Services,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),54,84.4,64,139
+Media & Advertising Services,100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,26,40.6,64,139
+Media & Advertising Services,100 to 499 employees,AIModels,3,Gemini (Pro Reasoning models),20,31.2,64,139
+Media & Advertising Services,100 to 499 employees,AIModels,4,openAI Reasoning models,19,29.7,64,139
+Media & Advertising Services,100 to 499 employees,AIModels,5,Gemini (Flash general purpose models),18,28.1,64,139
+Media & Advertising Services,100 to 499 employees,Database,1,PostgreSQL,73,69.5,105,139
+Media & Advertising Services,100 to 499 employees,Database,2,MySQL,54,51.4,105,139
+Media & Advertising Services,100 to 499 employees,Database,3,Redis,45,42.9,105,139
+Media & Advertising Services,100 to 499 employees,Database,4,SQLite,33,31.4,105,139
+Media & Advertising Services,100 to 499 employees,Database,5,Elasticsearch,32,30.5,105,139
+Media & Advertising Services,100 to 499 employees,Platform,1,Docker,86,80.4,107,139
+Media & Advertising Services,100 to 499 employees,Platform,2,Amazon Web Services (AWS),67,62.6,107,139
+Media & Advertising Services,100 to 499 employees,Platform,3,npm,57,53.3,107,139
+Media & Advertising Services,100 to 499 employees,Platform,4,Pip,52,48.6,107,139
+Media & Advertising Services,100 to 499 employees,Platform,5,Kubernetes,48,44.9,107,139
+Media & Advertising Services,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),63,80.8,78,160
+Media & Advertising Services,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,38,48.7,78,160
+Media & Advertising Services,20 to 99 employees,AIModels,3,openAI Reasoning models,30,38.5,78,160
+Media & Advertising Services,20 to 99 employees,AIModels,4,Gemini (Flash general purpose models),23,29.5,78,160
+Media & Advertising Services,20 to 99 employees,AIModels,5,Gemini (Pro Reasoning models),19,24.4,78,160
+Media & Advertising Services,20 to 99 employees,Database,1,PostgreSQL,72,60.0,120,160
+Media & Advertising Services,20 to 99 employees,Database,2,MySQL,69,57.5,120,160
+Media & Advertising Services,20 to 99 employees,Database,3,Redis,64,53.3,120,160
+Media & Advertising Services,20 to 99 employees,Database,4,SQLite,47,39.2,120,160
+Media & Advertising Services,20 to 99 employees,Database,5,MariaDB,41,34.2,120,160
+Media & Advertising Services,20 to 99 employees,Platform,1,Docker,88,77.2,114,160
+Media & Advertising Services,20 to 99 employees,Platform,2,npm,77,67.5,114,160
+Media & Advertising Services,20 to 99 employees,Platform,3,Amazon Web Services (AWS),59,51.8,114,160
+Media & Advertising Services,20 to 99 employees,Platform,4,Pip,47,41.2,114,160
+Media & Advertising Services,20 to 99 employees,Platform,5,Homebrew,45,39.5,114,160
+Media & Advertising Services,"5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),10,76.9,13,26
+Media & Advertising Services,"5,000 to 9,999 employees",AIModels,2,Anthropic: Claude Sonnet,5,38.5,13,26
+Media & Advertising Services,"5,000 to 9,999 employees",AIModels,3,Gemini (Pro Reasoning models),4,30.8,13,26
+Media & Advertising Services,"5,000 to 9,999 employees",AIModels,4,DeepSeek (R- Reasoning models),3,23.1,13,26
+Media & Advertising Services,"5,000 to 9,999 employees",AIModels,5,DeepSeek (V- General purpose models),2,15.4,13,26
+Media & Advertising Services,"5,000 to 9,999 employees",Database,1,PostgreSQL,7,46.7,15,26
+Media & Advertising Services,"5,000 to 9,999 employees",Database,2,MySQL,6,40.0,15,26
+Media & Advertising Services,"5,000 to 9,999 employees",Database,3,SQLite,6,40.0,15,26
+Media & Advertising Services,"5,000 to 9,999 employees",Database,4,BigQuery,5,33.3,15,26
+Media & Advertising Services,"5,000 to 9,999 employees",Database,5,Elasticsearch,5,33.3,15,26
+Media & Advertising Services,"5,000 to 9,999 employees",Platform,1,Docker,13,81.2,16,26
+Media & Advertising Services,"5,000 to 9,999 employees",Platform,2,Amazon Web Services (AWS),11,68.8,16,26
+Media & Advertising Services,"5,000 to 9,999 employees",Platform,3,Homebrew,10,62.5,16,26
+Media & Advertising Services,"5,000 to 9,999 employees",Platform,4,Pip,10,62.5,16,26
+Media & Advertising Services,"5,000 to 9,999 employees",Platform,5,npm,9,56.2,16,26
+Media & Advertising Services,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),29,85.3,34,61
+Media & Advertising Services,500 to 999 employees,AIModels,2,Anthropic: Claude Sonnet,21,61.8,34,61
+Media & Advertising Services,500 to 999 employees,AIModels,3,Gemini (Flash general purpose models),14,41.2,34,61
+Media & Advertising Services,500 to 999 employees,AIModels,4,openAI Reasoning models,12,35.3,34,61
+Media & Advertising Services,500 to 999 employees,AIModels,5,openAI Image generating models,11,32.4,34,61
+Media & Advertising Services,500 to 999 employees,Database,1,PostgreSQL,26,57.8,45,61
+Media & Advertising Services,500 to 999 employees,Database,2,MySQL,23,51.1,45,61
+Media & Advertising Services,500 to 999 employees,Database,3,Redis,19,42.2,45,61
+Media & Advertising Services,500 to 999 employees,Database,4,SQLite,18,40.0,45,61
+Media & Advertising Services,500 to 999 employees,Database,5,MongoDB,16,35.6,45,61
+Media & Advertising Services,500 to 999 employees,Platform,1,Docker,41,87.2,47,61
+Media & Advertising Services,500 to 999 employees,Platform,2,Amazon Web Services (AWS),31,66.0,47,61
+Media & Advertising Services,500 to 999 employees,Platform,3,npm,31,66.0,47,61
+Media & Advertising Services,500 to 999 employees,Platform,4,Google Cloud,24,51.1,47,61
+Media & Advertising Services,500 to 999 employees,Platform,5,Homebrew,23,48.9,47,61
+Media & Advertising Services,I don’t know,AIModels,1,openAI GPT (chatbot models),3,100.0,3,8
+Media & Advertising Services,I don’t know,AIModels,2,Anthropic: Claude Sonnet,2,66.7,3,8
+Media & Advertising Services,I don’t know,AIModels,3,DeepSeek (R- Reasoning models),2,66.7,3,8
+Media & Advertising Services,I don’t know,AIModels,4,DeepSeek (V- General purpose models),1,33.3,3,8
+Media & Advertising Services,I don’t know,AIModels,5,Gemini (Flash general purpose models),1,33.3,3,8
+Media & Advertising Services,I don’t know,Database,1,Cosmos DB,2,40.0,5,8
+Media & Advertising Services,I don’t know,Database,2,MongoDB,2,40.0,5,8
+Media & Advertising Services,I don’t know,Database,3,MySQL,2,40.0,5,8
+Media & Advertising Services,I don’t know,Database,4,Redis,2,40.0,5,8
+Media & Advertising Services,I don’t know,Database,5,SQLite,2,40.0,5,8
+Media & Advertising Services,I don’t know,Platform,1,Amazon Web Services (AWS),3,75.0,4,8
+Media & Advertising Services,I don’t know,Platform,2,Docker,2,50.0,4,8
+Media & Advertising Services,I don’t know,Platform,3,Homebrew,2,50.0,4,8
+Media & Advertising Services,I don’t know,Platform,4,NuGet,2,50.0,4,8
+Media & Advertising Services,I don’t know,Platform,5,npm,2,50.0,4,8
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),14,77.8,18,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Anthropic: Claude Sonnet,10,55.6,18,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,Gemini (Flash general purpose models),10,55.6,18,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,openAI Image generating models,10,55.6,18,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,Meta Llama (all models),8,44.4,18,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,MySQL,19,61.3,31,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,SQLite,15,48.4,31,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,MariaDB,14,45.2,31,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,4,PostgreSQL,10,32.3,31,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,5,MongoDB,9,29.0,31,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,Docker,17,68.0,25,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,Amazon Web Services (AWS),16,64.0,25,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,Cloudflare,15,60.0,25,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,4,npm,14,56.0,25,49
+Media & Advertising Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,5,Composer,11,44.0,25,49
+Media & Advertising Services,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),42,79.2,53,108
+Media & Advertising Services,Less than 20 employees,AIModels,2,Anthropic: Claude Sonnet,30,56.6,53,108
+Media & Advertising Services,Less than 20 employees,AIModels,3,Gemini (Flash general purpose models),26,49.1,53,108
+Media & Advertising Services,Less than 20 employees,AIModels,4,openAI Reasoning models,20,37.7,53,108
+Media & Advertising Services,Less than 20 employees,AIModels,5,openAI Image generating models,19,35.8,53,108
+Media & Advertising Services,Less than 20 employees,Database,1,MySQL,46,60.5,76,108
+Media & Advertising Services,Less than 20 employees,Database,2,PostgreSQL,41,53.9,76,108
+Media & Advertising Services,Less than 20 employees,Database,3,Redis,34,44.7,76,108
+Media & Advertising Services,Less than 20 employees,Database,4,SQLite,33,43.4,76,108
+Media & Advertising Services,Less than 20 employees,Database,5,MariaDB,29,38.2,76,108
+Media & Advertising Services,Less than 20 employees,Platform,1,Docker,53,74.6,71,108
+Media & Advertising Services,Less than 20 employees,Platform,2,npm,50,70.4,71,108
+Media & Advertising Services,Less than 20 employees,Platform,3,Amazon Web Services (AWS),40,56.3,71,108
+Media & Advertising Services,Less than 20 employees,Platform,4,Vite,28,39.4,71,108
+Media & Advertising Services,Less than 20 employees,Platform,5,Google Cloud,27,38.0,71,108
+Other:,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),128,84.8,151,333
+Other:,"1,000 to 4,999 employees",AIModels,2,Anthropic: Claude Sonnet,75,49.7,151,333
+Other:,"1,000 to 4,999 employees",AIModels,3,Gemini (Flash general purpose models),48,31.8,151,333
+Other:,"1,000 to 4,999 employees",AIModels,4,openAI Reasoning models,44,29.1,151,333
+Other:,"1,000 to 4,999 employees",AIModels,5,Gemini (Pro Reasoning models),43,28.5,151,333
+Other:,"1,000 to 4,999 employees",Database,1,PostgreSQL,122,58.4,209,333
+Other:,"1,000 to 4,999 employees",Database,2,MySQL,87,41.6,209,333
+Other:,"1,000 to 4,999 employees",Database,3,SQLite,82,39.2,209,333
+Other:,"1,000 to 4,999 employees",Database,4,Microsoft SQL Server,81,38.8,209,333
+Other:,"1,000 to 4,999 employees",Database,5,Redis,58,27.8,209,333
+Other:,"1,000 to 4,999 employees",Platform,1,Docker,150,69.8,215,333
+Other:,"1,000 to 4,999 employees",Platform,2,Pip,114,53.0,215,333
+Other:,"1,000 to 4,999 employees",Platform,3,npm,113,52.6,215,333
+Other:,"1,000 to 4,999 employees",Platform,4,Amazon Web Services (AWS),87,40.5,215,333
+Other:,"1,000 to 4,999 employees",Platform,5,Make,73,34.0,215,333
+Other:,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),111,81.6,136,290
+Other:,"10,000 or more employees",AIModels,2,Anthropic: Claude Sonnet,49,36.0,136,290
+Other:,"10,000 or more employees",AIModels,3,Gemini (Flash general purpose models),46,33.8,136,290
+Other:,"10,000 or more employees",AIModels,4,openAI Image generating models,36,26.5,136,290
+Other:,"10,000 or more employees",AIModels,5,openAI Reasoning models,34,25.0,136,290
+Other:,"10,000 or more employees",Database,1,PostgreSQL,96,55.5,173,290
+Other:,"10,000 or more employees",Database,2,SQLite,71,41.0,173,290
+Other:,"10,000 or more employees",Database,3,Microsoft SQL Server,57,32.9,173,290
+Other:,"10,000 or more employees",Database,4,MySQL,54,31.2,173,290
+Other:,"10,000 or more employees",Database,5,MongoDB,39,22.5,173,290
+Other:,"10,000 or more employees",Platform,1,Docker,138,69.7,198,290
+Other:,"10,000 or more employees",Platform,2,Pip,100,50.5,198,290
+Other:,"10,000 or more employees",Platform,3,npm,94,47.5,198,290
+Other:,"10,000 or more employees",Platform,4,Amazon Web Services (AWS),82,41.4,198,290
+Other:,"10,000 or more employees",Platform,5,Microsoft Azure,71,35.9,198,290
+Other:,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),179,85.6,209,472
+Other:,100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,87,41.6,209,472
+Other:,100 to 499 employees,AIModels,3,openAI Reasoning models,72,34.4,209,472
+Other:,100 to 499 employees,AIModels,4,Gemini (Flash general purpose models),60,28.7,209,472
+Other:,100 to 499 employees,AIModels,5,openAI Image generating models,54,25.8,209,472
+Other:,100 to 499 employees,Database,1,PostgreSQL,193,60.7,318,472
+Other:,100 to 499 employees,Database,2,SQLite,127,39.9,318,472
+Other:,100 to 499 employees,Database,3,Microsoft SQL Server,115,36.2,318,472
+Other:,100 to 499 employees,Database,4,MySQL,111,34.9,318,472
+Other:,100 to 499 employees,Database,5,Redis,96,30.2,318,472
+Other:,100 to 499 employees,Platform,1,Docker,223,71.9,310,472
+Other:,100 to 499 employees,Platform,2,npm,175,56.5,310,472
+Other:,100 to 499 employees,Platform,3,Amazon Web Services (AWS),127,41.0,310,472
+Other:,100 to 499 employees,Platform,4,Pip,125,40.3,310,472
+Other:,100 to 499 employees,Platform,5,Kubernetes,99,31.9,310,472
+Other:,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),166,83.8,198,461
+Other:,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,83,41.9,198,461
+Other:,20 to 99 employees,AIModels,3,openAI Reasoning models,69,34.8,198,461
+Other:,20 to 99 employees,AIModels,4,Gemini (Flash general purpose models),64,32.3,198,461
+Other:,20 to 99 employees,AIModels,5,openAI Image generating models,56,28.3,198,461
+Other:,20 to 99 employees,Database,1,PostgreSQL,189,59.4,318,461
+Other:,20 to 99 employees,Database,2,MySQL,131,41.2,318,461
+Other:,20 to 99 employees,Database,3,SQLite,119,37.4,318,461
+Other:,20 to 99 employees,Database,4,Redis,97,30.5,318,461
+Other:,20 to 99 employees,Database,5,Microsoft SQL Server,77,24.2,318,461
+Other:,20 to 99 employees,Platform,1,Docker,208,72.2,288,461
+Other:,20 to 99 employees,Platform,2,npm,155,53.8,288,461
+Other:,20 to 99 employees,Platform,3,Amazon Web Services (AWS),127,44.1,288,461
+Other:,20 to 99 employees,Platform,4,Pip,124,43.1,288,461
+Other:,20 to 99 employees,Platform,5,Google Cloud,82,28.5,288,461
+Other:,"5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),38,86.4,44,98
+Other:,"5,000 to 9,999 employees",AIModels,2,Anthropic: Claude Sonnet,20,45.5,44,98
+Other:,"5,000 to 9,999 employees",AIModels,3,openAI Image generating models,16,36.4,44,98
+Other:,"5,000 to 9,999 employees",AIModels,4,openAI Reasoning models,13,29.5,44,98
+Other:,"5,000 to 9,999 employees",AIModels,5,Gemini (Flash general purpose models),9,20.5,44,98
+Other:,"5,000 to 9,999 employees",Database,1,PostgreSQL,31,53.4,58,98
+Other:,"5,000 to 9,999 employees",Database,2,Microsoft SQL Server,25,43.1,58,98
+Other:,"5,000 to 9,999 employees",Database,3,SQLite,22,37.9,58,98
+Other:,"5,000 to 9,999 employees",Database,4,MySQL,18,31.0,58,98
+Other:,"5,000 to 9,999 employees",Database,5,MongoDB,11,19.0,58,98
+Other:,"5,000 to 9,999 employees",Platform,1,Docker,44,73.3,60,98
+Other:,"5,000 to 9,999 employees",Platform,2,Pip,33,55.0,60,98
+Other:,"5,000 to 9,999 employees",Platform,3,npm,26,43.3,60,98
+Other:,"5,000 to 9,999 employees",Platform,4,Amazon Web Services (AWS),23,38.3,60,98
+Other:,"5,000 to 9,999 employees",Platform,5,Microsoft Azure,18,30.0,60,98
+Other:,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),59,78.7,75,184
+Other:,500 to 999 employees,AIModels,2,Anthropic: Claude Sonnet,32,42.7,75,184
+Other:,500 to 999 employees,AIModels,3,openAI Reasoning models,23,30.7,75,184
+Other:,500 to 999 employees,AIModels,4,Gemini (Flash general purpose models),20,26.7,75,184
+Other:,500 to 999 employees,AIModels,5,DeepSeek (R- Reasoning models),16,21.3,75,184
+Other:,500 to 999 employees,Database,1,PostgreSQL,70,58.3,120,184
+Other:,500 to 999 employees,Database,2,SQLite,48,40.0,120,184
+Other:,500 to 999 employees,Database,3,MySQL,47,39.2,120,184
+Other:,500 to 999 employees,Database,4,Microsoft SQL Server,42,35.0,120,184
+Other:,500 to 999 employees,Database,5,MariaDB,26,21.7,120,184
+Other:,500 to 999 employees,Platform,1,Docker,87,75.0,116,184
+Other:,500 to 999 employees,Platform,2,Pip,59,50.9,116,184
+Other:,500 to 999 employees,Platform,3,npm,56,48.3,116,184
+Other:,500 to 999 employees,Platform,4,Amazon Web Services (AWS),50,43.1,116,184
+Other:,500 to 999 employees,Platform,5,Microsoft Azure,32,27.6,116,184
+Other:,I don’t know,AIModels,1,openAI GPT (chatbot models),14,77.8,18,77
+Other:,I don’t know,AIModels,2,Anthropic: Claude Sonnet,5,27.8,18,77
+Other:,I don’t know,AIModels,3,Gemini (Flash general purpose models),3,16.7,18,77
+Other:,I don’t know,AIModels,4,Meta Llama (all models),3,16.7,18,77
+Other:,I don’t know,AIModels,5,openAI Image generating models,3,16.7,18,77
+Other:,I don’t know,Database,1,PostgreSQL,17,56.7,30,77
+Other:,I don’t know,Database,2,MySQL,13,43.3,30,77
+Other:,I don’t know,Database,3,SQLite,13,43.3,30,77
+Other:,I don’t know,Database,4,Microsoft SQL Server,9,30.0,30,77
+Other:,I don’t know,Database,5,MariaDB,8,26.7,30,77
+Other:,I don’t know,Platform,1,Docker,24,70.6,34,77
+Other:,I don’t know,Platform,2,Pip,19,55.9,34,77
+Other:,I don’t know,Platform,3,npm,18,52.9,34,77
+Other:,I don’t know,Platform,4,Amazon Web Services (AWS),14,41.2,34,77
+Other:,I don’t know,Platform,5,Make,10,29.4,34,77
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),43,84.3,51,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Gemini (Flash general purpose models),28,54.9,51,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,Anthropic: Claude Sonnet,25,49.0,51,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,openAI Reasoning models,22,43.1,51,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,openAI Image generating models,21,41.2,51,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,MySQL,45,62.5,72,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,SQLite,29,40.3,72,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,MariaDB,26,36.1,72,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",Database,4,PostgreSQL,20,27.8,72,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",Database,5,Microsoft SQL Server,15,20.8,72,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,npm,23,50.0,46,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,Docker,18,39.1,46,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,Cloudflare,17,37.0,46,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",Platform,4,Pip,17,37.0,46,138
+Other:,"Just me - I am a freelancer, sole proprietor, etc.",Platform,5,Google Cloud,15,32.6,46,138
+Other:,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),140,80.0,175,386
+Other:,Less than 20 employees,AIModels,2,Anthropic: Claude Sonnet,81,46.3,175,386
+Other:,Less than 20 employees,AIModels,3,Gemini (Flash general purpose models),57,32.6,175,386
+Other:,Less than 20 employees,AIModels,4,openAI Reasoning models,57,32.6,175,386
+Other:,Less than 20 employees,AIModels,5,Gemini (Pro Reasoning models),40,22.9,175,386
+Other:,Less than 20 employees,Database,1,PostgreSQL,138,54.1,255,386
+Other:,Less than 20 employees,Database,2,MySQL,109,42.7,255,386
+Other:,Less than 20 employees,Database,3,SQLite,108,42.4,255,386
+Other:,Less than 20 employees,Database,4,Redis,78,30.6,255,386
+Other:,Less than 20 employees,Database,5,MariaDB,66,25.9,255,386
+Other:,Less than 20 employees,Platform,1,Docker,184,76.0,242,386
+Other:,Less than 20 employees,Platform,2,npm,144,59.5,242,386
+Other:,Less than 20 employees,Platform,3,Pip,107,44.2,242,386
+Other:,Less than 20 employees,Platform,4,Amazon Web Services (AWS),105,43.4,242,386
+Other:,Less than 20 employees,Platform,5,Vite,79,32.6,242,386
+Retail and Consumer Services,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),58,79.5,73,142
+Retail and Consumer Services,"1,000 to 4,999 employees",AIModels,2,Gemini (Flash general purpose models),31,42.5,73,142
+Retail and Consumer Services,"1,000 to 4,999 employees",AIModels,3,Anthropic: Claude Sonnet,30,41.1,73,142
+Retail and Consumer Services,"1,000 to 4,999 employees",AIModels,4,Gemini (Pro Reasoning models),22,30.1,73,142
+Retail and Consumer Services,"1,000 to 4,999 employees",AIModels,5,openAI Reasoning models,20,27.4,73,142
+Retail and Consumer Services,"1,000 to 4,999 employees",Database,1,PostgreSQL,59,54.1,109,142
+Retail and Consumer Services,"1,000 to 4,999 employees",Database,2,Microsoft SQL Server,41,37.6,109,142
+Retail and Consumer Services,"1,000 to 4,999 employees",Database,3,MySQL,33,30.3,109,142
+Retail and Consumer Services,"1,000 to 4,999 employees",Database,4,Redis,33,30.3,109,142
+Retail and Consumer Services,"1,000 to 4,999 employees",Database,5,MongoDB,31,28.4,109,142
+Retail and Consumer Services,"1,000 to 4,999 employees",Platform,1,Docker,85,76.6,111,142
+Retail and Consumer Services,"1,000 to 4,999 employees",Platform,2,Kubernetes,51,45.9,111,142
+Retail and Consumer Services,"1,000 to 4,999 employees",Platform,3,Amazon Web Services (AWS),50,45.0,111,142
+Retail and Consumer Services,"1,000 to 4,999 employees",Platform,4,npm,50,45.0,111,142
+Retail and Consumer Services,"1,000 to 4,999 employees",Platform,5,Google Cloud,45,40.5,111,142
+Retail and Consumer Services,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),57,76.0,75,173
+Retail and Consumer Services,"10,000 or more employees",AIModels,2,Anthropic: Claude Sonnet,33,44.0,75,173
+Retail and Consumer Services,"10,000 or more employees",AIModels,3,openAI Reasoning models,28,37.3,75,173
+Retail and Consumer Services,"10,000 or more employees",AIModels,4,Gemini (Flash general purpose models),24,32.0,75,173
+Retail and Consumer Services,"10,000 or more employees",AIModels,5,Gemini (Pro Reasoning models),22,29.3,75,173
+Retail and Consumer Services,"10,000 or more employees",Database,1,PostgreSQL,64,55.2,116,173
+Retail and Consumer Services,"10,000 or more employees",Database,2,SQLite,43,37.1,116,173
+Retail and Consumer Services,"10,000 or more employees",Database,3,Microsoft SQL Server,36,31.0,116,173
+Retail and Consumer Services,"10,000 or more employees",Database,4,MongoDB,35,30.2,116,173
+Retail and Consumer Services,"10,000 or more employees",Database,5,MySQL,35,30.2,116,173
+Retail and Consumer Services,"10,000 or more employees",Platform,1,Docker,94,72.3,130,173
+Retail and Consumer Services,"10,000 or more employees",Platform,2,npm,74,56.9,130,173
+Retail and Consumer Services,"10,000 or more employees",Platform,3,Amazon Web Services (AWS),57,43.8,130,173
+Retail and Consumer Services,"10,000 or more employees",Platform,4,Kubernetes,53,40.8,130,173
+Retail and Consumer Services,"10,000 or more employees",Platform,5,Homebrew,52,40.0,130,173
+Retail and Consumer Services,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),81,88.0,92,188
+Retail and Consumer Services,100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,42,45.7,92,188
+Retail and Consumer Services,100 to 499 employees,AIModels,3,openAI Reasoning models,38,41.3,92,188
+Retail and Consumer Services,100 to 499 employees,AIModels,4,Gemini (Flash general purpose models),36,39.1,92,188
+Retail and Consumer Services,100 to 499 employees,AIModels,5,Gemini (Pro Reasoning models),27,29.3,92,188
+Retail and Consumer Services,100 to 499 employees,Database,1,PostgreSQL,80,54.4,147,188
+Retail and Consumer Services,100 to 499 employees,Database,2,MySQL,63,42.9,147,188
+Retail and Consumer Services,100 to 499 employees,Database,3,Redis,58,39.5,147,188
+Retail and Consumer Services,100 to 499 employees,Database,4,Microsoft SQL Server,53,36.1,147,188
+Retail and Consumer Services,100 to 499 employees,Database,5,SQLite,43,29.3,147,188
+Retail and Consumer Services,100 to 499 employees,Platform,1,Docker,102,76.1,134,188
+Retail and Consumer Services,100 to 499 employees,Platform,2,npm,77,57.5,134,188
+Retail and Consumer Services,100 to 499 employees,Platform,3,Amazon Web Services (AWS),68,50.7,134,188
+Retail and Consumer Services,100 to 499 employees,Platform,4,Kubernetes,49,36.6,134,188
+Retail and Consumer Services,100 to 499 employees,Platform,5,Pip,46,34.3,134,188
+Retail and Consumer Services,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),59,88.1,67,141
+Retail and Consumer Services,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,28,41.8,67,141
+Retail and Consumer Services,20 to 99 employees,AIModels,3,openAI Reasoning models,25,37.3,67,141
+Retail and Consumer Services,20 to 99 employees,AIModels,4,Gemini (Flash general purpose models),23,34.3,67,141
+Retail and Consumer Services,20 to 99 employees,AIModels,5,Gemini (Pro Reasoning models),19,28.4,67,141
+Retail and Consumer Services,20 to 99 employees,Database,1,MySQL,67,60.9,110,141
+Retail and Consumer Services,20 to 99 employees,Database,2,PostgreSQL,51,46.4,110,141
+Retail and Consumer Services,20 to 99 employees,Database,3,Microsoft SQL Server,48,43.6,110,141
+Retail and Consumer Services,20 to 99 employees,Database,4,Redis,37,33.6,110,141
+Retail and Consumer Services,20 to 99 employees,Database,5,SQLite,37,33.6,110,141
+Retail and Consumer Services,20 to 99 employees,Platform,1,Docker,68,66.0,103,141
+Retail and Consumer Services,20 to 99 employees,Platform,2,npm,54,52.4,103,141
+Retail and Consumer Services,20 to 99 employees,Platform,3,Amazon Web Services (AWS),41,39.8,103,141
+Retail and Consumer Services,20 to 99 employees,Platform,4,Vite,29,28.2,103,141
+Retail and Consumer Services,20 to 99 employees,Platform,5,Microsoft Azure,28,27.2,103,141
+Retail and Consumer Services,"5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),18,81.8,22,49
+Retail and Consumer Services,"5,000 to 9,999 employees",AIModels,2,Gemini (Flash general purpose models),12,54.5,22,49
+Retail and Consumer Services,"5,000 to 9,999 employees",AIModels,3,Gemini (Pro Reasoning models),8,36.4,22,49
+Retail and Consumer Services,"5,000 to 9,999 employees",AIModels,4,openAI Reasoning models,7,31.8,22,49
+Retail and Consumer Services,"5,000 to 9,999 employees",AIModels,5,Anthropic: Claude Sonnet,3,13.6,22,49
+Retail and Consumer Services,"5,000 to 9,999 employees",Database,1,PostgreSQL,21,55.3,38,49
+Retail and Consumer Services,"5,000 to 9,999 employees",Database,2,MySQL,13,34.2,38,49
+Retail and Consumer Services,"5,000 to 9,999 employees",Database,3,MongoDB,12,31.6,38,49
+Retail and Consumer Services,"5,000 to 9,999 employees",Database,4,Redis,12,31.6,38,49
+Retail and Consumer Services,"5,000 to 9,999 employees",Database,5,SQLite,12,31.6,38,49
+Retail and Consumer Services,"5,000 to 9,999 employees",Platform,1,Docker,24,68.6,35,49
+Retail and Consumer Services,"5,000 to 9,999 employees",Platform,2,npm,20,57.1,35,49
+Retail and Consumer Services,"5,000 to 9,999 employees",Platform,3,Amazon Web Services (AWS),19,54.3,35,49
+Retail and Consumer Services,"5,000 to 9,999 employees",Platform,4,Pip,16,45.7,35,49
+Retail and Consumer Services,"5,000 to 9,999 employees",Platform,5,Google Cloud,15,42.9,35,49
+Retail and Consumer Services,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),31,79.5,39,90
+Retail and Consumer Services,500 to 999 employees,AIModels,2,Anthropic: Claude Sonnet,15,38.5,39,90
+Retail and Consumer Services,500 to 999 employees,AIModels,3,Gemini (Flash general purpose models),13,33.3,39,90
+Retail and Consumer Services,500 to 999 employees,AIModels,4,openAI Image generating models,10,25.6,39,90
+Retail and Consumer Services,500 to 999 employees,AIModels,5,Gemini (Pro Reasoning models),8,20.5,39,90
+Retail and Consumer Services,500 to 999 employees,Database,1,PostgreSQL,33,48.5,68,90
+Retail and Consumer Services,500 to 999 employees,Database,2,MySQL,27,39.7,68,90
+Retail and Consumer Services,500 to 999 employees,Database,3,Microsoft SQL Server,24,35.3,68,90
+Retail and Consumer Services,500 to 999 employees,Database,4,Redis,23,33.8,68,90
+Retail and Consumer Services,500 to 999 employees,Database,5,Elasticsearch,19,27.9,68,90
+Retail and Consumer Services,500 to 999 employees,Platform,1,Docker,45,70.3,64,90
+Retail and Consumer Services,500 to 999 employees,Platform,2,npm,44,68.8,64,90
+Retail and Consumer Services,500 to 999 employees,Platform,3,Amazon Web Services (AWS),32,50.0,64,90
+Retail and Consumer Services,500 to 999 employees,Platform,4,Kubernetes,30,46.9,64,90
+Retail and Consumer Services,500 to 999 employees,Platform,5,Homebrew,22,34.4,64,90
+Retail and Consumer Services,I don’t know,AIModels,1,openAI GPT (chatbot models),3,75.0,4,21
+Retail and Consumer Services,I don’t know,AIModels,2,DeepSeek (V- General purpose models),2,50.0,4,21
+Retail and Consumer Services,I don’t know,AIModels,3,Amazon Titan models,1,25.0,4,21
+Retail and Consumer Services,I don’t know,AIModels,4,Anthropic: Claude Sonnet,1,25.0,4,21
+Retail and Consumer Services,I don’t know,AIModels,5,Gemini (Flash general purpose models),1,25.0,4,21
+Retail and Consumer Services,I don’t know,Database,1,MySQL,4,36.4,11,21
+Retail and Consumer Services,I don’t know,Database,2,SQLite,4,36.4,11,21
+Retail and Consumer Services,I don’t know,Database,3,MariaDB,3,27.3,11,21
+Retail and Consumer Services,I don’t know,Database,4,PostgreSQL,3,27.3,11,21
+Retail and Consumer Services,I don’t know,Database,5,Microsoft Access,2,18.2,11,21
+Retail and Consumer Services,I don’t know,Platform,1,Gradle,6,50.0,12,21
+Retail and Consumer Services,I don’t know,Platform,2,npm,6,50.0,12,21
+Retail and Consumer Services,I don’t know,Platform,3,Docker,5,41.7,12,21
+Retail and Consumer Services,I don’t know,Platform,4,Amazon Web Services (AWS),4,33.3,12,21
+Retail and Consumer Services,I don’t know,Platform,5,Google Cloud,4,33.3,12,21
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),11,78.6,14,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Anthropic: Claude Sonnet,9,64.3,14,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,Gemini (Flash general purpose models),8,57.1,14,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,X Grok models,8,57.1,14,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,openAI Image generating models,8,57.1,14,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,SQLite,16,55.2,29,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,MySQL,15,51.7,29,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,PostgreSQL,13,44.8,29,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,4,Redis,10,34.5,29,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",Database,5,MariaDB,8,27.6,29,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,Docker,12,57.1,21,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,npm,11,52.4,21,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,Pip,10,47.6,21,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,4,Yarn,10,47.6,21,44
+Retail and Consumer Services,"Just me - I am a freelancer, sole proprietor, etc.",Platform,5,APT,7,33.3,21,44
+Retail and Consumer Services,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),35,83.3,42,107
+Retail and Consumer Services,Less than 20 employees,AIModels,2,Anthropic: Claude Sonnet,17,40.5,42,107
+Retail and Consumer Services,Less than 20 employees,AIModels,3,openAI Reasoning models,16,38.1,42,107
+Retail and Consumer Services,Less than 20 employees,AIModels,4,openAI Image generating models,14,33.3,42,107
+Retail and Consumer Services,Less than 20 employees,AIModels,5,Gemini (Flash general purpose models),13,31.0,42,107
+Retail and Consumer Services,Less than 20 employees,Database,1,MySQL,41,51.9,79,107
+Retail and Consumer Services,Less than 20 employees,Database,2,PostgreSQL,41,51.9,79,107
+Retail and Consumer Services,Less than 20 employees,Database,3,SQLite,32,40.5,79,107
+Retail and Consumer Services,Less than 20 employees,Database,4,Redis,25,31.6,79,107
+Retail and Consumer Services,Less than 20 employees,Database,5,Microsoft SQL Server,23,29.1,79,107
+Retail and Consumer Services,Less than 20 employees,Platform,1,Docker,39,58.2,67,107
+Retail and Consumer Services,Less than 20 employees,Platform,2,npm,36,53.7,67,107
+Retail and Consumer Services,Less than 20 employees,Platform,3,Amazon Web Services (AWS),28,41.8,67,107
+Retail and Consumer Services,Less than 20 employees,Platform,4,Pip,28,41.8,67,107
+Retail and Consumer Services,Less than 20 employees,Platform,5,Homebrew,21,31.3,67,107
+Software Development,"1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),483,83.3,580,1328
+Software Development,"1,000 to 4,999 employees",AIModels,2,Anthropic: Claude Sonnet,254,43.8,580,1328
+Software Development,"1,000 to 4,999 employees",AIModels,3,openAI Reasoning models,198,34.1,580,1328
+Software Development,"1,000 to 4,999 employees",AIModels,4,Gemini (Flash general purpose models),181,31.2,580,1328
+Software Development,"1,000 to 4,999 employees",AIModels,5,openAI Image generating models,164,28.3,580,1328
+Software Development,"1,000 to 4,999 employees",Database,1,PostgreSQL,507,57.5,882,1328
+Software Development,"1,000 to 4,999 employees",Database,2,MySQL,322,36.5,882,1328
+Software Development,"1,000 to 4,999 employees",Database,3,Redis,310,35.1,882,1328
+Software Development,"1,000 to 4,999 employees",Database,4,Microsoft SQL Server,292,33.1,882,1328
+Software Development,"1,000 to 4,999 employees",Database,5,SQLite,267,30.3,882,1328
+Software Development,"1,000 to 4,999 employees",Platform,1,Docker,699,76.0,920,1328
+Software Development,"1,000 to 4,999 employees",Platform,2,npm,518,56.3,920,1328
+Software Development,"1,000 to 4,999 employees",Platform,3,Amazon Web Services (AWS),465,50.5,920,1328
+Software Development,"1,000 to 4,999 employees",Platform,4,Kubernetes,390,42.4,920,1328
+Software Development,"1,000 to 4,999 employees",Platform,5,Pip,332,36.1,920,1328
+Software Development,"10,000 or more employees",AIModels,1,openAI GPT (chatbot models),577,79.7,724,1659
+Software Development,"10,000 or more employees",AIModels,2,Anthropic: Claude Sonnet,305,42.1,724,1659
+Software Development,"10,000 or more employees",AIModels,3,Gemini (Flash general purpose models),260,35.9,724,1659
+Software Development,"10,000 or more employees",AIModels,4,openAI Reasoning models,254,35.1,724,1659
+Software Development,"10,000 or more employees",AIModels,5,Gemini (Pro Reasoning models),196,27.1,724,1659
+Software Development,"10,000 or more employees",Database,1,PostgreSQL,544,54.8,993,1659
+Software Development,"10,000 or more employees",Database,2,MySQL,353,35.5,993,1659
+Software Development,"10,000 or more employees",Database,3,SQLite,338,34.0,993,1659
+Software Development,"10,000 or more employees",Database,4,Redis,271,27.3,993,1659
+Software Development,"10,000 or more employees",Database,5,Microsoft SQL Server,268,27.0,993,1659
+Software Development,"10,000 or more employees",Platform,1,Docker,798,70.9,1126,1659
+Software Development,"10,000 or more employees",Platform,2,npm,572,50.8,1126,1659
+Software Development,"10,000 or more employees",Platform,3,Amazon Web Services (AWS),514,45.6,1126,1659
+Software Development,"10,000 or more employees",Platform,4,Pip,497,44.1,1126,1659
+Software Development,"10,000 or more employees",Platform,5,Kubernetes,426,37.8,1126,1659
+Software Development,100 to 499 employees,AIModels,1,openAI GPT (chatbot models),943,84.5,1116,2485
+Software Development,100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,533,47.8,1116,2485
+Software Development,100 to 499 employees,AIModels,3,openAI Reasoning models,400,35.8,1116,2485
+Software Development,100 to 499 employees,AIModels,4,Gemini (Flash general purpose models),361,32.3,1116,2485
+Software Development,100 to 499 employees,AIModels,5,openAI Image generating models,304,27.2,1116,2485
+Software Development,100 to 499 employees,Database,1,PostgreSQL,1067,61.4,1737,2485
+Software Development,100 to 499 employees,Database,2,MySQL,642,37.0,1737,2485
+Software Development,100 to 499 employees,Database,3,Redis,636,36.6,1737,2485
+Software Development,100 to 499 employees,Database,4,SQLite,602,34.7,1737,2485
+Software Development,100 to 499 employees,Database,5,Microsoft SQL Server,558,32.1,1737,2485
+Software Development,100 to 499 employees,Platform,1,Docker,1297,77.6,1672,2485
+Software Development,100 to 499 employees,Platform,2,npm,997,59.6,1672,2485
+Software Development,100 to 499 employees,Platform,3,Amazon Web Services (AWS),800,47.8,1672,2485
+Software Development,100 to 499 employees,Platform,4,Kubernetes,613,36.7,1672,2485
+Software Development,100 to 499 employees,Platform,5,Pip,587,35.1,1672,2485
+Software Development,20 to 99 employees,AIModels,1,openAI GPT (chatbot models),1279,83.5,1531,3307
+Software Development,20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,712,46.5,1531,3307
+Software Development,20 to 99 employees,AIModels,3,openAI Reasoning models,559,36.5,1531,3307
+Software Development,20 to 99 employees,AIModels,4,Gemini (Flash general purpose models),533,34.8,1531,3307
+Software Development,20 to 99 employees,AIModels,5,openAI Image generating models,436,28.5,1531,3307
+Software Development,20 to 99 employees,Database,1,PostgreSQL,1454,61.4,2369,3307
+Software Development,20 to 99 employees,Database,2,MySQL,987,41.7,2369,3307
+Software Development,20 to 99 employees,Database,3,SQLite,907,38.3,2369,3307
+Software Development,20 to 99 employees,Database,4,Redis,802,33.9,2369,3307
+Software Development,20 to 99 employees,Database,5,Microsoft SQL Server,727,30.7,2369,3307
+Software Development,20 to 99 employees,Platform,1,Docker,1712,77.8,2200,3307
+Software Development,20 to 99 employees,Platform,2,npm,1424,64.7,2200,3307
+Software Development,20 to 99 employees,Platform,3,Amazon Web Services (AWS),1028,46.7,2200,3307
+Software Development,20 to 99 employees,Platform,4,Pip,816,37.1,2200,3307
+Software Development,20 to 99 employees,Platform,5,Vite,686,31.2,2200,3307
+Software Development,"5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),176,83.0,212,492
+Software Development,"5,000 to 9,999 employees",AIModels,2,Anthropic: Claude Sonnet,121,57.1,212,492
+Software Development,"5,000 to 9,999 employees",AIModels,3,Gemini (Flash general purpose models),88,41.5,212,492
+Software Development,"5,000 to 9,999 employees",AIModels,4,openAI Reasoning models,83,39.2,212,492
+Software Development,"5,000 to 9,999 employees",AIModels,5,Gemini (Pro Reasoning models),69,32.5,212,492
+Software Development,"5,000 to 9,999 employees",Database,1,PostgreSQL,165,52.5,314,492
+Software Development,"5,000 to 9,999 employees",Database,2,MySQL,122,38.9,314,492
+Software Development,"5,000 to 9,999 employees",Database,3,Redis,101,32.2,314,492
+Software Development,"5,000 to 9,999 employees",Database,4,Microsoft SQL Server,89,28.3,314,492
+Software Development,"5,000 to 9,999 employees",Database,5,MongoDB,89,28.3,314,492
+Software Development,"5,000 to 9,999 employees",Platform,1,Docker,229,70.7,324,492
+Software Development,"5,000 to 9,999 employees",Platform,2,npm,176,54.3,324,492
+Software Development,"5,000 to 9,999 employees",Platform,3,Amazon Web Services (AWS),168,51.9,324,492
+Software Development,"5,000 to 9,999 employees",Platform,4,Pip,131,40.4,324,492
+Software Development,"5,000 to 9,999 employees",Platform,5,Kubernetes,122,37.7,324,492
+Software Development,500 to 999 employees,AIModels,1,openAI GPT (chatbot models),325,85.3,381,869
+Software Development,500 to 999 employees,AIModels,2,Anthropic: Claude Sonnet,178,46.7,381,869
+Software Development,500 to 999 employees,AIModels,3,Gemini (Flash general purpose models),137,36.0,381,869
+Software Development,500 to 999 employees,AIModels,4,openAI Reasoning models,134,35.2,381,869
+Software Development,500 to 999 employees,AIModels,5,openAI Image generating models,107,28.1,381,869
+Software Development,500 to 999 employees,Database,1,PostgreSQL,352,62.0,568,869
+Software Development,500 to 999 employees,Database,2,MySQL,214,37.7,568,869
+Software Development,500 to 999 employees,Database,3,Redis,198,34.9,568,869
+Software Development,500 to 999 employees,Database,4,SQLite,183,32.2,568,869
+Software Development,500 to 999 employees,Database,5,Microsoft SQL Server,181,31.9,568,869
+Software Development,500 to 999 employees,Platform,1,Docker,441,75.9,581,869
+Software Development,500 to 999 employees,Platform,2,npm,377,64.9,581,869
+Software Development,500 to 999 employees,Platform,3,Amazon Web Services (AWS),276,47.5,581,869
+Software Development,500 to 999 employees,Platform,4,Pip,225,38.7,581,869
+Software Development,500 to 999 employees,Platform,5,Kubernetes,210,36.1,581,869
+Software Development,I don’t know,AIModels,1,openAI GPT (chatbot models),83,86.5,96,296
+Software Development,I don’t know,AIModels,2,Gemini (Flash general purpose models),40,41.7,96,296
+Software Development,I don’t know,AIModels,3,openAI Reasoning models,36,37.5,96,296
+Software Development,I don’t know,AIModels,4,Anthropic: Claude Sonnet,35,36.5,96,296
+Software Development,I don’t know,AIModels,5,DeepSeek (V- General purpose models),25,26.0,96,296
+Software Development,I don’t know,Database,1,PostgreSQL,95,54.0,176,296
+Software Development,I don’t know,Database,2,MySQL,90,51.1,176,296
+Software Development,I don’t know,Database,3,SQLite,78,44.3,176,296
+Software Development,I don’t know,Database,4,MongoDB,65,36.9,176,296
+Software Development,I don’t know,Database,5,Microsoft SQL Server,56,31.8,176,296
+Software Development,I don’t know,Platform,1,Docker,119,73.5,162,296
+Software Development,I don’t know,Platform,2,npm,98,60.5,162,296
+Software Development,I don’t know,Platform,3,Pip,84,51.9,162,296
+Software Development,I don’t know,Platform,4,Amazon Web Services (AWS),76,46.9,162,296
+Software Development,I don’t know,Platform,5,APT,46,28.4,162,296
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,openAI GPT (chatbot models),354,82.7,428,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,Anthropic: Claude Sonnet,198,46.3,428,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,Gemini (Flash general purpose models),186,43.5,428,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,openAI Reasoning models,169,39.5,428,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,DeepSeek (R- Reasoning models),160,37.4,428,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",Database,1,PostgreSQL,390,60.4,646,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",Database,2,MySQL,370,57.3,646,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",Database,3,SQLite,327,50.6,646,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",Database,4,MariaDB,222,34.4,646,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",Database,5,MongoDB,198,30.7,646,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",Platform,1,Docker,375,66.4,565,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",Platform,2,npm,365,64.6,565,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",Platform,3,Pip,247,43.7,565,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",Platform,4,Amazon Web Services (AWS),241,42.7,565,925
+Software Development,"Just me - I am a freelancer, sole proprietor, etc.",Platform,5,Vite,196,34.7,565,925
+Software Development,Less than 20 employees,AIModels,1,openAI GPT (chatbot models),1114,82.0,1359,2952
+Software Development,Less than 20 employees,AIModels,2,Anthropic: Claude Sonnet,626,46.1,1359,2952
+Software Development,Less than 20 employees,AIModels,3,Gemini (Flash general purpose models),499,36.7,1359,2952
+Software Development,Less than 20 employees,AIModels,4,openAI Reasoning models,487,35.8,1359,2952
+Software Development,Less than 20 employees,AIModels,5,openAI Image generating models,365,26.9,1359,2952
+Software Development,Less than 20 employees,Database,1,PostgreSQL,1272,59.5,2137,2952
+Software Development,Less than 20 employees,Database,2,MySQL,1008,47.2,2137,2952
+Software Development,Less than 20 employees,Database,3,SQLite,907,42.4,2137,2952
+Software Development,Less than 20 employees,Database,4,Redis,696,32.6,2137,2952
+Software Development,Less than 20 employees,Database,5,MariaDB,624,29.2,2137,2952
+Software Development,Less than 20 employees,Platform,1,Docker,1432,73.7,1942,2952
+Software Development,Less than 20 employees,Platform,2,npm,1326,68.3,1942,2952
+Software Development,Less than 20 employees,Platform,3,Amazon Web Services (AWS),901,46.4,1942,2952
+Software Development,Less than 20 employees,Platform,4,Pip,751,38.7,1942,2952
+Software Development,Less than 20 employees,Platform,5,Vite,730,37.6,1942,2952
+"Transportation, or Supply Chain","1,000 to 4,999 employees",AIModels,1,openAI GPT (chatbot models),47,85.5,55,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",AIModels,2,Anthropic: Claude Sonnet,24,43.6,55,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",AIModels,3,Gemini (Flash general purpose models),20,36.4,55,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",AIModels,4,openAI Reasoning models,18,32.7,55,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",AIModels,5,openAI Image generating models,14,25.5,55,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",Database,1,PostgreSQL,46,54.8,84,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",Database,2,Microsoft SQL Server,39,46.4,84,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",Database,3,MySQL,26,31.0,84,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",Database,4,SQLite,26,31.0,84,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",Database,5,Redis,25,29.8,84,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",Platform,1,Docker,64,70.3,91,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",Platform,2,npm,50,54.9,91,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",Platform,3,Amazon Web Services (AWS),48,52.7,91,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",Platform,4,Pip,41,45.1,91,121
+"Transportation, or Supply Chain","1,000 to 4,999 employees",Platform,5,Microsoft Azure,36,39.6,91,121
+"Transportation, or Supply Chain","10,000 or more employees",AIModels,1,openAI GPT (chatbot models),50,71.4,70,157
+"Transportation, or Supply Chain","10,000 or more employees",AIModels,2,openAI Reasoning models,21,30.0,70,157
+"Transportation, or Supply Chain","10,000 or more employees",AIModels,3,Anthropic: Claude Sonnet,18,25.7,70,157
+"Transportation, or Supply Chain","10,000 or more employees",AIModels,4,Gemini (Flash general purpose models),18,25.7,70,157
+"Transportation, or Supply Chain","10,000 or more employees",AIModels,5,openAI Image generating models,17,24.3,70,157
+"Transportation, or Supply Chain","10,000 or more employees",Database,1,PostgreSQL,69,56.6,122,157
+"Transportation, or Supply Chain","10,000 or more employees",Database,2,Microsoft SQL Server,51,41.8,122,157
+"Transportation, or Supply Chain","10,000 or more employees",Database,3,SQLite,39,32.0,122,157
+"Transportation, or Supply Chain","10,000 or more employees",Database,4,MySQL,32,26.2,122,157
+"Transportation, or Supply Chain","10,000 or more employees",Database,5,Redis,26,21.3,122,157
+"Transportation, or Supply Chain","10,000 or more employees",Platform,1,Docker,87,70.2,124,157
+"Transportation, or Supply Chain","10,000 or more employees",Platform,2,npm,64,51.6,124,157
+"Transportation, or Supply Chain","10,000 or more employees",Platform,3,Amazon Web Services (AWS),59,47.6,124,157
+"Transportation, or Supply Chain","10,000 or more employees",Platform,4,Kubernetes,54,43.5,124,157
+"Transportation, or Supply Chain","10,000 or more employees",Platform,5,Microsoft Azure,50,40.3,124,157
+"Transportation, or Supply Chain",100 to 499 employees,AIModels,1,openAI GPT (chatbot models),61,87.1,70,168
+"Transportation, or Supply Chain",100 to 499 employees,AIModels,2,Anthropic: Claude Sonnet,32,45.7,70,168
+"Transportation, or Supply Chain",100 to 499 employees,AIModels,3,Gemini (Flash general purpose models),22,31.4,70,168
+"Transportation, or Supply Chain",100 to 499 employees,AIModels,4,Gemini (Pro Reasoning models),18,25.7,70,168
+"Transportation, or Supply Chain",100 to 499 employees,AIModels,5,openAI Reasoning models,18,25.7,70,168
+"Transportation, or Supply Chain",100 to 499 employees,Database,1,PostgreSQL,73,59.8,122,168
+"Transportation, or Supply Chain",100 to 499 employees,Database,2,MySQL,42,34.4,122,168
+"Transportation, or Supply Chain",100 to 499 employees,Database,3,Microsoft SQL Server,39,32.0,122,168
+"Transportation, or Supply Chain",100 to 499 employees,Database,4,SQLite,39,32.0,122,168
+"Transportation, or Supply Chain",100 to 499 employees,Database,5,Redis,35,28.7,122,168
+"Transportation, or Supply Chain",100 to 499 employees,Platform,1,Docker,84,73.7,114,168
+"Transportation, or Supply Chain",100 to 499 employees,Platform,2,npm,57,50.0,114,168
+"Transportation, or Supply Chain",100 to 499 employees,Platform,3,Amazon Web Services (AWS),53,46.5,114,168
+"Transportation, or Supply Chain",100 to 499 employees,Platform,4,Pip,46,40.4,114,168
+"Transportation, or Supply Chain",100 to 499 employees,Platform,5,Homebrew,37,32.5,114,168
+"Transportation, or Supply Chain",20 to 99 employees,AIModels,1,openAI GPT (chatbot models),40,78.4,51,152
+"Transportation, or Supply Chain",20 to 99 employees,AIModels,2,Anthropic: Claude Sonnet,25,49.0,51,152
+"Transportation, or Supply Chain",20 to 99 employees,AIModels,3,openAI Reasoning models,18,35.3,51,152
+"Transportation, or Supply Chain",20 to 99 employees,AIModels,4,Gemini (Flash general purpose models),16,31.4,51,152
+"Transportation, or Supply Chain",20 to 99 employees,AIModels,5,Gemini (Pro Reasoning models),14,27.5,51,152
+"Transportation, or Supply Chain",20 to 99 employees,Database,1,PostgreSQL,64,57.7,111,152
+"Transportation, or Supply Chain",20 to 99 employees,Database,2,MySQL,43,38.7,111,152
+"Transportation, or Supply Chain",20 to 99 employees,Database,3,SQLite,41,36.9,111,152
+"Transportation, or Supply Chain",20 to 99 employees,Database,4,Microsoft SQL Server,40,36.0,111,152
+"Transportation, or Supply Chain",20 to 99 employees,Database,5,Redis,32,28.8,111,152
+"Transportation, or Supply Chain",20 to 99 employees,Platform,1,npm,60,69.8,86,152
+"Transportation, or Supply Chain",20 to 99 employees,Platform,2,Docker,59,68.6,86,152
+"Transportation, or Supply Chain",20 to 99 employees,Platform,3,Amazon Web Services (AWS),39,45.3,86,152
+"Transportation, or Supply Chain",20 to 99 employees,Platform,4,Pip,38,44.2,86,152
+"Transportation, or Supply Chain",20 to 99 employees,Platform,5,Kubernetes,29,33.7,86,152
+"Transportation, or Supply Chain","5,000 to 9,999 employees",AIModels,1,openAI GPT (chatbot models),18,78.3,23,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",AIModels,2,Anthropic: Claude Sonnet,7,30.4,23,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",AIModels,3,Gemini (Flash general purpose models),6,26.1,23,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",AIModels,4,DeepSeek (R- Reasoning models),5,21.7,23,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",AIModels,5,openAI Image generating models,5,21.7,23,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",Database,1,PostgreSQL,20,50.0,40,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",Database,2,Microsoft SQL Server,15,37.5,40,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",Database,3,SQLite,14,35.0,40,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",Database,4,MySQL,13,32.5,40,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",Database,5,Oracle,12,30.0,40,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",Platform,1,Docker,25,78.1,32,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",Platform,2,Amazon Web Services (AWS),16,50.0,32,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",Platform,3,npm,16,50.0,32,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",Platform,4,Pip,14,43.8,32,54
+"Transportation, or Supply Chain","5,000 to 9,999 employees",Platform,5,Kubernetes,12,37.5,32,54
+"Transportation, or Supply Chain",500 to 999 employees,AIModels,1,openAI GPT (chatbot models),22,81.5,27,61
+"Transportation, or Supply Chain",500 to 999 employees,AIModels,2,Anthropic: Claude Sonnet,10,37.0,27,61
+"Transportation, or Supply Chain",500 to 999 employees,AIModels,3,DeepSeek (R- Reasoning models),9,33.3,27,61
+"Transportation, or Supply Chain",500 to 999 employees,AIModels,4,Gemini (Flash general purpose models),7,25.9,27,61
+"Transportation, or Supply Chain",500 to 999 employees,AIModels,5,openAI Image generating models,6,22.2,27,61
+"Transportation, or Supply Chain",500 to 999 employees,Database,1,PostgreSQL,28,62.2,45,61
+"Transportation, or Supply Chain",500 to 999 employees,Database,2,Microsoft SQL Server,21,46.7,45,61
+"Transportation, or Supply Chain",500 to 999 employees,Database,3,SQLite,19,42.2,45,61
+"Transportation, or Supply Chain",500 to 999 employees,Database,4,MySQL,17,37.8,45,61
+"Transportation, or Supply Chain",500 to 999 employees,Database,5,Redis,16,35.6,45,61
+"Transportation, or Supply Chain",500 to 999 employees,Platform,1,Docker,29,76.3,38,61
+"Transportation, or Supply Chain",500 to 999 employees,Platform,2,npm,20,52.6,38,61
+"Transportation, or Supply Chain",500 to 999 employees,Platform,3,Pip,19,50.0,38,61
+"Transportation, or Supply Chain",500 to 999 employees,Platform,4,Microsoft Azure,17,44.7,38,61
+"Transportation, or Supply Chain",500 to 999 employees,Platform,5,Maven (build tool),15,39.5,38,61
+"Transportation, or Supply Chain",I don’t know,AIModels,1,Anthropic: Claude Sonnet,3,100.0,3,15
+"Transportation, or Supply Chain",I don’t know,AIModels,2,openAI GPT (chatbot models),3,100.0,3,15
+"Transportation, or Supply Chain",I don’t know,AIModels,3,openAI Reasoning models,2,66.7,3,15
+"Transportation, or Supply Chain",I don’t know,AIModels,4,DeepSeek (R- Reasoning models),1,33.3,3,15
+"Transportation, or Supply Chain",I don’t know,AIModels,5,Gemini (Flash general purpose models),1,33.3,3,15
+"Transportation, or Supply Chain",I don’t know,Database,1,PostgreSQL,6,54.5,11,15
+"Transportation, or Supply Chain",I don’t know,Database,2,MySQL,5,45.5,11,15
+"Transportation, or Supply Chain",I don’t know,Database,3,Microsoft SQL Server,4,36.4,11,15
+"Transportation, or Supply Chain",I don’t know,Database,4,SQLite,4,36.4,11,15
+"Transportation, or Supply Chain",I don’t know,Database,5,MariaDB,3,27.3,11,15
+"Transportation, or Supply Chain",I don’t know,Platform,1,Microsoft Azure,8,100.0,8,15
+"Transportation, or Supply Chain",I don’t know,Platform,2,Docker,6,75.0,8,15
+"Transportation, or Supply Chain",I don’t know,Platform,3,Pip,6,75.0,8,15
+"Transportation, or Supply Chain",I don’t know,Platform,4,Amazon Web Services (AWS),4,50.0,8,15
+"Transportation, or Supply Chain",I don’t know,Platform,5,Homebrew,4,50.0,8,15
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",AIModels,1,Anthropic: Claude Sonnet,7,77.8,9,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",AIModels,2,openAI GPT (chatbot models),7,77.8,9,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",AIModels,3,Gemini (Pro Reasoning models),4,44.4,9,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",AIModels,4,openAI Image generating models,4,44.4,9,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",AIModels,5,DeepSeek (R- Reasoning models),3,33.3,9,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",Database,1,MySQL,10,50.0,20,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",Database,2,PostgreSQL,10,50.0,20,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",Database,3,SQLite,10,50.0,20,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",Database,4,BigQuery,6,30.0,20,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",Database,5,Firebase Realtime Database,3,15.0,20,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",Platform,1,Docker,8,72.7,11,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",Platform,2,Pip,7,63.6,11,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",Platform,3,npm,6,54.5,11,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",Platform,4,Amazon Web Services (AWS),5,45.5,11,28
+"Transportation, or Supply Chain","Just me - I am a freelancer, sole proprietor, etc.",Platform,5,Google Cloud,5,45.5,11,28
+"Transportation, or Supply Chain",Less than 20 employees,AIModels,1,openAI GPT (chatbot models),31,86.1,36,86
+"Transportation, or Supply Chain",Less than 20 employees,AIModels,2,Gemini (Flash general purpose models),17,47.2,36,86
+"Transportation, or Supply Chain",Less than 20 employees,AIModels,3,Anthropic: Claude Sonnet,15,41.7,36,86
+"Transportation, or Supply Chain",Less than 20 employees,AIModels,4,Gemini (Pro Reasoning models),11,30.6,36,86
+"Transportation, or Supply Chain",Less than 20 employees,AIModels,5,openAI Image generating models,7,19.4,36,86
+"Transportation, or Supply Chain",Less than 20 employees,Database,1,PostgreSQL,36,57.1,63,86
+"Transportation, or Supply Chain",Less than 20 employees,Database,2,Microsoft SQL Server,20,31.7,63,86
+"Transportation, or Supply Chain",Less than 20 employees,Database,3,MySQL,19,30.2,63,86
+"Transportation, or Supply Chain",Less than 20 employees,Database,4,SQLite,17,27.0,63,86
+"Transportation, or Supply Chain",Less than 20 employees,Database,5,Redis,16,25.4,63,86
+"Transportation, or Supply Chain",Less than 20 employees,Platform,1,Docker,35,74.5,47,86
+"Transportation, or Supply Chain",Less than 20 employees,Platform,2,npm,30,63.8,47,86
+"Transportation, or Supply Chain",Less than 20 employees,Platform,3,Amazon Web Services (AWS),17,36.2,47,86
+"Transportation, or Supply Chain",Less than 20 employees,Platform,4,Pip,15,31.9,47,86
+"Transportation, or Supply Chain",Less than 20 employees,Platform,5,Google Cloud,13,27.7,47,86
