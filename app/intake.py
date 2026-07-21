@@ -11,6 +11,8 @@ import time
 # fixes it regardless of where the command is run from.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import time
+
 import streamlit as st
 
 from app.data.options import ORG_SIZES, PRIVACY_POSTURES, INDUSTRIES, WORKFLOWS
@@ -410,6 +412,15 @@ if submitted:
 # Card 2.6's generate_summary (via run_pipeline) now returns timing/token data
 # alongside the summary text — log it here so you have real latency/throughput
 # numbers, not just "it felt slow," if performance ever comes up during testing.
+#
+# NOTE: this used to be followed by a second, duplicate elapsed_seconds/
+# log_event("results_shown")/log_event("llm_summary_generated") block — a
+# merge-conflict artifact from 960cf01 ("Merge main into Gabi and resolve
+# conflicts") where both sides of the merge had independently added the same
+# Card 3.3 logging code. It double-logged every results_shown and
+# llm_summary_generated event (confirmed live in data/telemetry.log — 6 of 20
+# results_shown events were exact back-to-back duplicates), which understates
+# Card P.14's funnel rates by roughly half. Removed — log each event once.
         log_event("llm_summary_generated", **result["llm_metrics"])
         st.session_state.result = result  # persist across reruns — see note below
 

@@ -337,6 +337,7 @@ if durations:
 
 ### Common pitfalls
 - Don't try to build field-level abandonment tracking with fine-grained JS event hooks — that's over-engineering for a 2-person, 4-week MVP. Session-state + a log line at submit is what the Technical Work Breakdown explicitly scoped ("reduced telemetry granularity vs. a dedicated tool — acceptable trade-off").
+- **Caught 2026-07-21 — double-logging via a bad merge:** commit `960cf01` ("Merge main into Gabi and resolve conflicts") kept two independently-added copies of the `results_shown`/`llm_summary_generated` logging block in `app/intake.py`, so every successful submission wrote each event twice. Confirmed live in `data/telemetry.log` — 6 of 20 `results_shown` events were exact back-to-back duplicates. Averages weren't affected (duplicate values don't move a mean), but any count-based read — including Card P.14's funnel — was overstating session volume by roughly 2x for real/exported ratios. Fixed by removing the second block; only log each event once per submission. If you ever add wiring near this block again, check for an existing `log_event` call for the same event name first, since this is exactly the kind of duplicate a three-way merge can silently reintroduce.
 
 ---
 

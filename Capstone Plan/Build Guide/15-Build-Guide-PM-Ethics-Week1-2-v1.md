@@ -342,3 +342,82 @@ Before Week 3 puts a real UI in front of the backend, run the whole chain — no
 - [ ] Full backend dry run completed on 3 profiles, with a dated defect list.
 
 Continue to `16-Build-Guide-PM-Ethics-Week3-v1.md` next.
+
+
+---
+
+## Profile 1
+=== AI-Assisted Stack Architect — Blueprint ===
+
+RECOMMENDED STACK:
+  1. IBM watsonx (Assistant/AI/Orchestrate)
+  2. Microsoft Azure (AI/ML services)
+  3. Azure OpenAI Service
+  4. Gemini (consumer)
+  5. Amazon Bedrock
+
+COST FORECAST (illustrative):
+  Primary API: €43.75/mo
+  Assistant:   €2240.00/mo
+  (Pricing shown is illustrative and may be out of date. Always verify current pricing on the vendor's official page before budgeting.)
+
+REAL CASE REFERENCES:
+  - IBM (https://www.ibm.com/case-studies/ibm-salesforce)
+  - Capacity (https://www.microsoft.com/en/customers/story/24201-capacity-azure-phi)
+  - IBM (https://www.ibm.com/think/topics/artificial-intelligence-business-use-cases)
+  - IBM Software Support (https://www.ibm.com/case-studies/ibm-software-support)
+
+SUMMARY:
+Based on 15 comparable deployments, the recommended stack uses IBM watsonx (Assistant/AI/Orchestrate) for the assistant and Azure OpenAI Service for the primary API. The forecasted monthly cost is €2283.75, with Azure OpenAI Service at €43.75 and IBM watsonx at €2240. This exceeds your €800 monthly budget by €1483.75. A smaller pilot group or a lower‑cost alternative could help bring the spend within budget.
+
+---
+
+## Profile 2
+=== AI-Assisted Stack Architect — Blueprint ===
+
+RECOMMENDED STACK:
+  1. Amazon Bedrock
+  2. AWS (SageMaker/S3/EC2/etc.)
+  3. Google Cloud Platform
+  4. IBM watsonx (Assistant/AI/Orchestrate)
+  5. Microsoft Dynamics 365
+
+COST FORECAST (illustrative):
+  Primary API: €3500.00/mo
+  Assistant:   €3500.00/mo
+  (Pricing shown is illustrative and may be out of date. Always verify current pricing on the vendor's official page before budgeting.)
+
+REAL CASE REFERENCES:
+  - Highmark Health (https://cloud.google.com/transform/101-real-world-generative-ai-use-cases-from-industry-leaders#intelligence-system-for-healthcare-analytics-and-insights)
+  - EkaCare (https://aws.amazon.com/solutions/case-studies/generative-ai-ekacare/?did=cr_card&trk=cr_card)
+  - Shanghai Changjiang Science and Technology Development (https://www.ibm.com/case-studies/shanghai-changjiang-science-and-technology-development-co-ltd)
+  - SolutionHealth (https://www.microsoft.com/en/customers/story/22439-solutionhealth-azure)
+
+SUMMARY:
+Based on 13 comparable deployments, Amazon Bedrock paired with IBM watsonx (Assistant/AI/Orchestrate) offers a proven, directionally suited to governable environments solution. The forecasted monthly cost is €7,000, which exceeds your €5,000 budget by €2,000. A smaller pilot group or a lower‑cost alternative could help bring the spend within budget.
+
+
+---
+
+## Profile 3
+=== AI-Assisted Stack Architect — Blueprint ===
+
+RECOMMENDED STACK:
+  1. AWS (SageMaker/S3/EC2/etc.)
+  2. Microsoft Azure (AI/ML services)
+  3. Google Cloud Platform
+  4. OpenAI API (GPT-4o class)
+  5. Amazon Bedrock
+
+COST FORECAST (illustrative):
+  Primary API: €218.75/mo
+  (Pricing shown is illustrative and may be out of date. Always verify current pricing on the vendor's official page before budgeting.)
+
+REAL CASE REFERENCES:
+  - FarmByte (https://aws.amazon.com/solutions/case-studies/farmbyte/?did=cr_card&trk=cr_card)
+  - ITC (https://www.microsoft.com/en-in/aifirstmovers/itc)
+  - AgriConnect (https://news.microsoft.com/source/asia/2025/02/27/harvesting-hope-with-agriconnect-how-ai-is-uplifting-filipino-farmers/)
+  - Palo Alto Networks (https://cloud.google.com/transform/101-real-world-generative-ai-use-cases-from-industry-leaders#powering-data-management-platform-with-google-cloud-ai-and-bigquery)
+
+SUMMARY:
+The recommended stack includes AWS (SageMaker/S3/EC2/etc.), Microsoft Azure (AI/ML services), Google Cloud Platform, OpenAI API (GPT-4o class), and Amazon Bedrock. Based on 15 comparable deployments, the primary API cost for OpenAI API (GPT-4o class) is about €218.75 per month. This forecast exceeds your €1 monthly budget by €217.75, so you might consider a smaller pilot group or a lower‑cost alternative to stay within budget. All tools are suitable for standard privacy environments.

@@ -56,7 +56,7 @@ cover/
 *.pot
 
 # Django stuff:
-*.log
+#*.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
@@ -234,3 +234,11 @@ data/use-cases.csv
 
 # macOS
 .DS_Store
+
+# Our PM slides
+PM_slides/
+AASA_Week2_Stakeholder_Checkin.pptx
+data/telemetry.log
+.python-version
+.~lock.StackPunk_PM_TeamCheckIn.pptx#
+StackPunk_PM_TeamCheckIn.pptx
