@@ -19,11 +19,12 @@ def render_blueprint(result: dict):
     # Lovable-parity) — the theme carries the visual identity now.
     st.markdown(f"## {result.get('project_name') or 'Your AI Stack Blueprint'}")
 
-    # Status chips + directional banner stay ABOVE the tabs — they're the
+    # Directional banner + status chips stay ABOVE the tabs — they're the
     # at-a-glance summary (matched-case count, regulated notice, budget fit) and
-    # should be visible no matter which tab is open.
-    _render_status_chips(result)
+    # should be visible no matter which tab is open. UI-v2d: banner first, then
+    # the chips row directly above the tabs (order swapped per feedback).
     _render_directional_banner(result)
+    _render_status_chips(result)
 
     # Change 2 (UI-v2 · reduce-scroll): the blueprint used to be six sections
     # stacked down one long column (Stack → Cost → Cases → Summary → Export →

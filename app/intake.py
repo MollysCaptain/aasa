@@ -151,8 +151,8 @@ DARK_CSS = """
         font-family: 'Roboto Mono', 'Courier New', monospace;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
-        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        font-size: 0.85rem;   /* UI-v2d: bumped from 0.72rem — form + Feedback labels were hard to read */
         color: #9aa4b2;
     }
     /* Block B metrics -> match the hero stat numbers */
@@ -303,7 +303,7 @@ DARK_CSS = """
         color: #818cf8;
         font-family: 'Roboto Mono', 'Courier New', monospace;
         font-weight: 600;
-        font-size: 0.85rem;
+        font-size: 0.95rem;   /* UI-v2d: bumped from 0.85rem for legibility */
     }
     /* --- Blueprint tabs (UI-v2b) — more prominent per Week-3 tutor feedback.
        Bigger, uppercase mono labels with clear spacing; the selected tab and
