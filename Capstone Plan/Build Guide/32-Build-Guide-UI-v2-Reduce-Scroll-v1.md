@@ -19,6 +19,8 @@ keys (`stack_filter`, `case_count`, `clear_result`, `copy_confirm`, `save_bp_*`,
 | `04c9352` | UI-v2b | Roboto Mono SemiBold (600) for accent text |
 | `647c2b0` | UI-v2c | Block A: single orange price tag + hyperlinked tool names |
 | `a5d22c4` | UI-v2d | Swap banner/chips order + larger why/label fonts |
+| `2907cf0` | UI-v2 fix | Hero now collapses on the submit run (added `st.rerun()`) |
+| `61512a0` | UI-v2e | Stack toggle removed · Clear above tabs · copy-confirm in action row · saved-blueprint appears on Save · save-time dropped from label |
 
 Files touched across all passes: `app/intake.py`, `app/dashboard.py`,
 `app/logic/pricing.py`, `.streamlit/config.toml`, and `static/fonts/`
@@ -110,6 +112,33 @@ tabs). In `DARK_CSS`, the `why:` label (`.aasa-why`, 0.85→0.95rem) and all wid
 labels (`[data-testid="stWidgetLabel"] p`, 0.72→0.85rem, letter-spacing
 0.1→0.08em) are larger, so the Block A `why:` lines and the Feedback question
 labels are easier to read. Styling only.
+
+---
+
+## Pass 5 — UI-v2e (Stack toggle, Export layout, saved-blueprint fixes) · commits `2907cf0`, `61512a0`
+
+More live-feedback changes:
+
+- **Hero submit-run fix** (`2907cf0`): the hero is gated on `result not in
+  st.session_state`, but on the form-submit run it rendered *before* the result
+  was stored, so it lingered until the next interaction. Added `st.rerun()`
+  right after the result is set. Same root cause fixed for saved blueprints
+  below.
+- **Stack pricing-type toggle removed** (`_render_stack_block`): the
+  Recommended/Token/Seat/Compute/Free radio and `_STACK_FILTER_OPTIONS` are gone;
+  Block A always shows the full ranked recommendation.
+- **Clear moved above the tabs**: right-aligned button on the row directly above
+  the tab bar (was in the Export action row). Still pops `result` only — never
+  the saved list.
+- **Export action row = four equal columns**: Save / Download (.md) / .env
+  scaffold / **I've copied my blueprint** — the copy-confirm button took Clear's
+  old slot, and its separate line below the row was removed, giving even spacing.
+- **Saved blueprint appears on Save** (`render_save_button`): `st.rerun()` after
+  the append so the sidebar list updates on the same click, not after the next
+  interaction.
+- **Save-time dropped from the label**: the `HH:MM` was just a save marker;
+  blueprints are already distinguished by name/number. Still stored in the
+  object (so JSON exports keep it), just not displayed.
 
 ---
 
