@@ -498,6 +498,13 @@ if submitted:
 # Card P.14's funnel rates by roughly half. Removed — log each event once.
         log_event("llm_summary_generated", **result["llm_metrics"])
         st.session_state.result = result  # persist across reruns — see note below
+        # UI-v2 fix: rerun immediately so the hero's "result not in
+        # st.session_state" gate (above) re-evaluates with the result now set.
+        # Without this, on the submit run the hero had already rendered before
+        # result existed, so it lingered beside the blueprint until the next
+        # interaction. The results_shown/llm_summary_generated events above are
+        # logged once, before this rerun, so telemetry is unaffected.
+        st.rerun()
 
 # Renders on every rerun as long as a result exists — not gated on `submitted`.
 # See Card 1.4's "Why not render inside if submitted:" note for why this matters:
