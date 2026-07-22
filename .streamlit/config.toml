@@ -1,16 +1,18 @@
 # Native-widget theming (restyle round, revised twice after team feedback).
 # primaryColor drives radio dots, focus rings and progress bars.
-# Font decision v3 (2026-07): Inter for UI text (professional, screen-first),
-# JetBrains Mono for the monospace accents. The families are LOADED by the
-# Google-Fonts @import at the top of app/intake.py's DARK_CSS — this config
-# only tells Streamlit's own widgets to reference them. Both stacks carry
-# system fallbacks so an offline demo degrades gracefully.
+# Font decision v5 (2026-07): Inter for UI text (professional, screen-first),
+# Roboto Mono for the monospace accents (was JetBrains Mono until v5 — swapped
+# for legibility after Week-3 tutor feedback). The families are LOADED by the
+# self-hosted @font-face rules at the top of app/intake.py's DARK_CSS (served
+# from static/fonts/, no Google-Fonts request) — this config only tells
+# Streamlit's own widgets to reference them. Both stacks carry system
+# fallbacks so an offline demo degrades gracefully.
 # Accent decision v2: orange #e0872f -> light indigo #818cf8 (indigo-400);
 # classic indigo #4B0082 would be nearly invisible on this background.
 
 [server]
 # Serves ./static at the app/static/ URL path — used to self-host the
-# Inter / JetBrains Mono fonts (static/fonts/) so no user browser makes a
+# Inter / Roboto Mono fonts (static/fonts/) so no user browser makes a
 # third-party Google Fonts request. Closes the IP-exposure caveat from the
 # Week 2 data-minimisation ethics checkpoint (Card P.4).
 enableStaticServing = true
@@ -22,4 +24,4 @@ backgroundColor = "#0f1115"
 secondaryBackgroundColor = "#1b1e26"
 textColor = "#e8e9ec"
 font = "Inter, -apple-system, 'Segoe UI', sans-serif"
-codeFont = "'JetBrains Mono', 'Courier New', monospace"
+codeFont = "'Roboto Mono', 'Courier New', monospace"

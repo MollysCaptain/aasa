@@ -37,13 +37,16 @@ st.set_page_config(
 # block as the single home for all custom classes.
 DARK_CSS = """
 <style>
-    /* Font decision v4 (2026-07): Inter for UI text, JetBrains Mono for the
-       monospace accents — now SELF-HOSTED from static/fonts/ instead of
-       Google Fonts, so no user's browser makes a third-party request (closes
-       the IP-exposure caveat from the Week 2 data-minimisation checkpoint).
-       Files are OFL-licensed, vendored via @fontsource. Served by Streamlit's
-       static file server (enableStaticServing in .streamlit/config.toml) at
-       the app/static/ URL path. Every font-family below still carries a system
+    /* Font decision v5 (2026-07): Inter for UI text, Roboto Mono for the
+       monospace accents (labels, chips, code tags, "why:" lines, tab bar).
+       v5 replaced JetBrains Mono with Roboto Mono after Week-3 tutor feedback
+       — more legible at small sizes while staying distinct from Inter. Both
+       families are SELF-HOSTED from static/fonts/ instead of Google Fonts, so
+       no user's browser makes a third-party request (closes the IP-exposure
+       caveat from the Week 2 data-minimisation checkpoint). Files are
+       OFL-licensed, vendored via @fontsource. Served by Streamlit's static
+       file server (enableStaticServing in .streamlit/config.toml) at the
+       app/static/ URL path. Every font-family below still carries a system
        fallback stack, so if static serving is ever off the app degrades
        gracefully instead of breaking. */
     @font-face { font-family: 'Inter'; font-weight: 400; font-display: swap;
@@ -52,10 +55,10 @@ DARK_CSS = """
         src: url('app/static/fonts/inter-latin-600-normal.woff2') format('woff2'); }
     @font-face { font-family: 'Inter'; font-weight: 700; font-display: swap;
         src: url('app/static/fonts/inter-latin-700-normal.woff2') format('woff2'); }
-    @font-face { font-family: 'JetBrains Mono'; font-weight: 400; font-display: swap;
-        src: url('app/static/fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2'); }
-    @font-face { font-family: 'JetBrains Mono'; font-weight: 700; font-display: swap;
-        src: url('app/static/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+    @font-face { font-family: 'Roboto Mono'; font-weight: 400; font-display: swap;
+        src: url('app/static/fonts/roboto-mono-latin-400-normal.woff2') format('woff2'); }
+    @font-face { font-family: 'Roboto Mono'; font-weight: 700; font-display: swap;
+        src: url('app/static/fonts/roboto-mono-latin-700-normal.woff2') format('woff2'); }
 
     .stApp {
         background-color: #0f1115;
@@ -140,7 +143,7 @@ DARK_CSS = """
     }
     /* Widget labels -> uppercase micro-labels, Lovable style */
     [data-testid="stWidgetLabel"] p {
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         text-transform: uppercase;
         letter-spacing: 0.1em;
         font-size: 0.72rem;
@@ -148,11 +151,11 @@ DARK_CSS = """
     }
     /* Block B metrics -> match the hero stat numbers */
     [data-testid="stMetricValue"] {
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         color: #818cf8;
     }
     [data-testid="stMetricLabel"] p {
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         text-transform: uppercase;
         letter-spacing: 0.1em;
         font-size: 0.72rem;
@@ -175,7 +178,7 @@ DARK_CSS = """
     }
     /* --- top bar --- */
     .aasa-brand {
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         color: #e8e9ec;
         font-size: 1.05rem;
         letter-spacing: 0.08em;
@@ -186,7 +189,7 @@ DARK_CSS = """
         border: 1px solid #818cf8;
         color: #818cf8;
         padding: 3px 12px;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         font-size: 0.72rem;
         letter-spacing: 0.12em;
     }
@@ -199,7 +202,7 @@ DARK_CSS = """
     }
     .aasa-eyebrow {
         color: #818cf8;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         font-size: 0.75rem;
         letter-spacing: 0.18em;
     }
@@ -212,13 +215,13 @@ DARK_CSS = """
     .aasa-hero h1 .accent { color: #818cf8; }
     .aasa-hero p { color: #9aa4b2; max-width: 46em; }
     .aasa-stat-num {
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         font-size: 1.7rem;
         color: #f5f1ea;
         font-weight: bold;
     }
     .aasa-stat-label {
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         font-size: 0.68rem;
         color: #6b7480;
         letter-spacing: 0.1em;
@@ -238,7 +241,7 @@ DARK_CSS = """
         color: #818cf8;
         padding: 2px 10px;
         margin: 0 6px 6px 0;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         font-size: 0.72rem;
         letter-spacing: 0.06em;
     }
@@ -254,7 +257,7 @@ DARK_CSS = """
     }
     .aasa-banner b {
         color: #818cf8;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         letter-spacing: 0.08em;
     }
     .aasa-stack-name {
@@ -264,9 +267,29 @@ DARK_CSS = """
     }
     .aasa-why {
         color: #818cf8;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         font-size: 0.85rem;
     }
+    /* --- Blueprint tabs (UI-v2b) — more prominent per Week-3 tutor feedback.
+       Bigger, uppercase mono labels with clear spacing; the selected tab and
+       its underline go indigo so the current section is obvious. baseweb
+       selectors verified on the project's Streamlit build — re-check after any
+       Streamlit upgrade (same caveat as the button selectors above). The
+       Material icons themselves come from the tab labels in dashboard.py. */
+    button[data-baseweb="tab"] {
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.92rem;
+        font-weight: 700;
+        padding: 12px 18px;
+        color: #9aa4b2;
+    }
+    button[data-baseweb="tab"] * { font-size: 0.92rem; }   /* size the icon glyph with the label */
+    div[data-baseweb="tab-list"] { gap: 6px; border-bottom: 1px solid #2b2f3a; }
+    button[data-baseweb="tab"]:hover { color: #e8e9ec; }
+    button[data-baseweb="tab"][aria-selected="true"] { color: #818cf8; }
+    div[data-baseweb="tab-highlight"] { background-color: #818cf8; height: 3px; }
 </style>
 """
 st.markdown(DARK_CSS, unsafe_allow_html=True)

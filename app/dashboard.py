@@ -34,8 +34,21 @@ def render_blueprint(result: dict):
     # called exactly as before, just inside its tab. All widget keys
     # (stack_filter, case_count, clear_result, copy_confirm) are unchanged, so
     # session state and the DARK_CSS class hooks keep working.
+    # UI-v2b: Material icons (Streamlit's built-in :material/: set — no emoji,
+    # consistent with the team's de-emoji styling) + prominence CSS in
+    # intake.py's DARK_CSS make the tab bar clearly the primary navigation.
+    # NOTE: :material/...: labels need a Streamlit build that renders Material
+    # Symbols in tab labels (the project's current build does). If they ever
+    # show as literal ":material/..." text, the Streamlit version is too old.
     tab_stack, tab_cost, tab_cases, tab_summary, tab_export, tab_how = st.tabs(
-        ["1 · Stack", "2 · Cost", "3 · Cases", "Summary", "Export", "How it works"]
+        [
+            ":material/layers: 1 · Stack",
+            ":material/payments: 2 · Cost",
+            ":material/library_books: 3 · Cases",
+            ":material/summarize: Summary",
+            ":material/download: Export",
+            ":material/help: How it works",
+        ]
     )
 
     with tab_stack:
