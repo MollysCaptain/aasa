@@ -279,6 +279,26 @@ DARK_CSS = """
         font-weight: 700;
         font-size: 1.05rem;
     }
+    /* UI-v2c: when the stack name is a link to the tool's site, keep it green
+       (Streamlit's default link colour would otherwise turn it blue) and only
+       underline on hover so it doesn't look like body-copy link text. */
+    a.aasa-stack-name, a.aasa-stack-name:link, a.aasa-stack-name:visited {
+        color: #5fb39c;
+        text-decoration: none;
+    }
+    a.aasa-stack-name:hover { text-decoration: underline; }
+    /* UI-v2c: pricing-model tag — orange + mono so it separates from the green
+       stack name. Own class (not the global `code` rule, which also styles the
+       .env scaffold + export code blocks) so the colour change stays scoped. */
+    .aasa-price-tag {
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
+        color: #e0872f;
+        background-color: #1b1e26;
+        padding: 1px 6px;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+    }
     .aasa-why {
         color: #818cf8;
         font-family: 'Roboto Mono', 'Courier New', monospace;

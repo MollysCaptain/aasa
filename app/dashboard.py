@@ -153,6 +153,18 @@ _PRICE_FALLBACK_LABELS = {
     "free": "Free / Self-hosted",
 }
 
+# UI-v2c — display text for the orange pricing-model tag in Block A. Rendered
+# as one styled token (no separate "-priced" add-on). Team wording decision:
+# "open source" (not "free-priced") and "usage-based" (not "compute-priced");
+# token/seat keep the "-priced" form. Falls back to "<model>-priced" for any
+# unexpected model value.
+_PRICE_TAG_LABELS = {
+    "token": "token-priced",
+    "seat": "seat-priced",
+    "compute": "usage-based",
+    "free": "open source",
+}
+
 # Toggle options for Block A (Update E) — maps the displayed pill label to the
 # PRICING "model" value it filters on. "Recommended" (the default) shows the
 # full ranked list, unfiltered, exactly as before this update.
@@ -235,6 +247,8 @@ def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dic
         entry = PRICING.get(tool_id, {})
         label = entry.get("label", tool_id)
         pricing_model = entry.get("model", "unknown")
+        tool_url = entry.get("url")   # UI-v2c — official homepage, if known
+        price_tag = _PRICE_TAG_LABELS.get(pricing_model, f"{pricing_model}-priced")
         evidence_count = sum(1 for c in matched_cases if tool_id in c.get("canonical_tools", []))
         evidence_pct = int(100 * evidence_count / total_cases)
 
@@ -247,11 +261,19 @@ def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dic
 
         col1, col2 = st.columns([3, 1])
         with col1:
-            # Tool name in green (.aasa-stack-name, in intake.py's DARK_CSS);
-            # pricing-model tag stays as an indigo code span for contrast.
+            # Tool name in green (.aasa-stack-name). UI-v2c: the whole name is a
+            # hyperlink to the tool's official site when we have a URL (falls
+            # back to a plain span otherwise), and the pricing-model tag is now
+            # one orange .aasa-price-tag token ("seat-priced" / "token-priced" /
+            # "usage-based" / "open source" — single font, no split "-priced"
+            # add-on) so it reads as one unit and stands apart from the name.
+            if tool_url:
+                name_html = (f'<a class="aasa-stack-name" href="{tool_url}" '
+                             f'target="_blank" rel="noopener">{rank}. {label}</a>')
+            else:
+                name_html = f'<span class="aasa-stack-name">{rank}. {label}</span>'
             st.markdown(
-                f'<span class="aasa-stack-name">{rank}. {label}</span>'
-                f'  ·  <code>{pricing_model}</code>-priced',
+                f'{name_html}  ·  <span class="aasa-price-tag">{price_tag}</span>',
                 unsafe_allow_html=True,
             )
             # Lovable-parity UI round — per-tool "why:" rationale line.
