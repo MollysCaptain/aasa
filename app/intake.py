@@ -271,10 +271,11 @@ DARK_CSS = """
 """
 st.markdown(DARK_CSS, unsafe_allow_html=True)
 
-# Icebox B.6 (Build Guide 27) — sidebar panel listing this session's saved
-# blueprints, with JSON export/import. Rendered on every rerun so loads work
-# from anywhere; the matching Save button lives in dashboard.py's action row.
-render_saved_panel()
+# Icebox B.6 (Build Guide 27) — the saved-blueprints panel is a sidebar panel.
+# Change 1 (UI-v2 · reduce-scroll) moved the intake form into the sidebar too,
+# so render_saved_panel() is now called *after* the form (further down) to keep
+# the form on top and the saved list beneath it. It still renders on every
+# rerun so loads work from anywhere.
 
 
 # --- Hero stats, computed at load (not hardcoded) ---------------------------
@@ -306,8 +307,13 @@ st.markdown(
 )
 
 # --- Hero / intro ---
-st.markdown(
-    f"""
+# Change 3 (UI-v2 · reduce-scroll): the full hero is ~one screen tall. Show it
+# only before a blueprint exists — once results are on screen the compact top
+# bar above is enough, and the user is no longer forced to scroll past the hero
+# to reach their own blueprint. The top bar (above) still renders on every run.
+if "result" not in st.session_state:
+    st.markdown(
+        f"""
     <div class="aasa-hero">
         <div class="aasa-eyebrow">CAPSTONE MVP · GROUNDED IN {_n_cases:,} REAL AI DEPLOYMENTS</div>
         <h1>Match your constraints to <span class="accent">what teams like yours
@@ -338,55 +344,68 @@ st.markdown(
         numbers below are directional, not advice.</div>
     </div>
     """,
-    unsafe_allow_html=True,
-)
-
-# Near the top of intake.py, before the form:
-if "form_start_time" not in st.session_state:
-    st.session_state.form_start_time = time.time()
-    log_event("form_start")
-
-# --- The 5-field form ---
-# Options now come from app/data/options.py — real Industry/Workflow values
-# derived from the case dataset (Card 2.1 Step 0), not hardcoded placeholders.
-with st.form("intake_form"):
-    workflow = st.selectbox("Target AI Workflow", WORKFLOWS)
-    industry = st.selectbox("Industry", INDUSTRIES)
-    org_size_key = st.selectbox(
-        "Organisation Size",
-        options=list(ORG_SIZES.keys()),
-        format_func=lambda k: ORG_SIZES[k],   # shows the friendly label, stores the short key
-    )
-    privacy_key = st.radio(
-        "Data-Privacy Posture",
-        options=list(PRIVACY_POSTURES.keys()),
-        format_func=lambda k: PRIVACY_POSTURES[k],
-        horizontal=True,
-        help="Regulated = you handle data subject to HIPAA/GDPR/financial "
-             "regulation and need governable, self-hostable tools.",
-    )
-    budget = st.number_input(
-        "Monthly Budget (€)",
-        min_value=0, step=50, value=800,
+        unsafe_allow_html=True,
     )
 
-    # Icebox B.5 (Build Guide 24) — both optional; deliberately NOT validated
-    # in validate_intake, so leaving them empty changes nothing.
-    with st.expander("Optional: project details"):
-        project_name = st.text_input(
-            "Project name",
-            max_chars=60,
-            help="Shown on your blueprint and export — useful if you save or share it. "
-                 "No need to enter personal or company-identifying information.",
+# --- Sidebar: intake form + saved blueprints -------------------------------
+# Change 1 (UI-v2 · reduce-scroll): the 5-field form now lives in the sidebar.
+# This frees the main column for the blueprint, so results are no longer stacked
+# beneath a full-width form and the user isn't forced to scroll past the intake
+# to reach (or re-read) their result. The form stays visible for re-runs.
+# render_saved_panel() is called at the END of this block so the saved list
+# sits beneath the form in the sidebar (it targets st.sidebar internally).
+with st.sidebar:
+    st.markdown("### Build a blueprint")
+
+    # form_start_time drives Card 3.3's time-to-results telemetry — set once
+    # per session, before the form renders.
+    if "form_start_time" not in st.session_state:
+        st.session_state.form_start_time = time.time()
+        log_event("form_start")
+
+    # Options come from app/data/options.py — real Industry/Workflow values
+    # derived from the case dataset (Card 2.1 Step 0), not hardcoded placeholders.
+    with st.form("intake_form"):
+        workflow = st.selectbox("Target AI Workflow", WORKFLOWS)
+        industry = st.selectbox("Industry", INDUSTRIES)
+        org_size_key = st.selectbox(
+            "Organisation Size",
+            options=list(ORG_SIZES.keys()),
+            format_func=lambda k: ORG_SIZES[k],   # shows the friendly label, stores the short key
         )
-        exclude_tools = st.multiselect(
-            "Vendors to exclude",
-            options=sorted(PRICING.keys(), key=lambda k: PRICING[k]["label"]),
-            format_func=lambda k: PRICING[k]["label"],
-            help="Tools you can't or won't use. They'll be removed before ranking.",
+        privacy_key = st.radio(
+            "Data-Privacy Posture",
+            options=list(PRIVACY_POSTURES.keys()),
+            format_func=lambda k: PRIVACY_POSTURES[k],
+            horizontal=True,
+            help="Regulated = you handle data subject to HIPAA/GDPR/financial "
+                 "regulation and need governable, self-hostable tools.",
+        )
+        budget = st.number_input(
+            "Monthly Budget (€)",
+            min_value=0, step=50, value=800,
         )
 
-    submitted = st.form_submit_button("Generate my blueprint")
+        # Icebox B.5 (Build Guide 24) — both optional; deliberately NOT validated
+        # in validate_intake, so leaving them empty changes nothing.
+        with st.expander("Optional: project details"):
+            project_name = st.text_input(
+                "Project name",
+                max_chars=60,
+                help="Shown on your blueprint and export — useful if you save or share it. "
+                     "No need to enter personal or company-identifying information.",
+            )
+            exclude_tools = st.multiselect(
+                "Vendors to exclude",
+                options=sorted(PRICING.keys(), key=lambda k: PRICING[k]["label"]),
+                format_func=lambda k: PRICING[k]["label"],
+                help="Tools you can't or won't use. They'll be removed before ranking.",
+            )
+
+        submitted = st.form_submit_button("Generate my blueprint")
+
+    # Saved-blueprints panel (B.6) — rendered beneath the form, still in sidebar.
+    render_saved_panel()
 
 if submitted:
     is_valid, error_message = validate_intake(
@@ -427,6 +446,6 @@ if submitted:
 # Streamlit reruns the whole script on every interaction, and once Epic 3 adds
 # buttons inside the results view, those reruns would otherwise wipe the blueprint.
 if "result" in st.session_state:
-    st.success("Blueprint ready — see below.")
+    st.success("Blueprint ready — explore the tabs below.")
     render_blueprint(st.session_state.result)
     render_feedback_form()

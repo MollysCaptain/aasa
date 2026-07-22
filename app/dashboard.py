@@ -19,27 +19,45 @@ def render_blueprint(result: dict):
     # Lovable-parity) — the theme carries the visual identity now.
     st.markdown(f"## {result.get('project_name') or 'Your AI Stack Blueprint'}")
 
+    # Status chips + directional banner stay ABOVE the tabs — they're the
+    # at-a-glance summary (matched-case count, regulated notice, budget fit) and
+    # should be visible no matter which tab is open.
     _render_status_chips(result)
     _render_directional_banner(result)
 
-    _render_stack_block(result["recommended_stack"], result["matched_cases"], result["tool_costs"])
-    st.divider()
-    _render_cost_block(result["cost_forecast"])
-    st.divider()
-    _render_case_references_block(result["matched_cases"], result["recommended_stack"],
-                                  result.get("query", {}))
-    st.divider()
-    st.markdown("### Summary")
-    st.write(result["summary_text"])
-    st.divider()
-    st.markdown("### Export")
-    blueprint_text = blueprint_to_text(result)
-    st.caption("Hover the code block below and click the copy icon in the top-right corner.")
-    st.code(blueprint_text, language=None)
-    _render_action_row(result)
-    render_copy_confirmation()
-    st.divider()
-    _render_methodology_block()
+    # Change 2 (UI-v2 · reduce-scroll): the blueprint used to be six sections
+    # stacked down one long column (Stack → Cost → Cases → Summary → Export →
+    # How it works), separated by dividers — the main cause of the "everything
+    # on one page / endless scrolling" tutor feedback. They're now tabs, so the
+    # whole blueprint fits one screen and the user picks what to look at.
+    # Nothing about the blocks themselves changed — each _render_* function is
+    # called exactly as before, just inside its tab. All widget keys
+    # (stack_filter, case_count, clear_result, copy_confirm) are unchanged, so
+    # session state and the DARK_CSS class hooks keep working.
+    tab_stack, tab_cost, tab_cases, tab_summary, tab_export, tab_how = st.tabs(
+        ["1 · Stack", "2 · Cost", "3 · Cases", "Summary", "Export", "How it works"]
+    )
+
+    with tab_stack:
+        _render_stack_block(result["recommended_stack"], result["matched_cases"],
+                            result["tool_costs"])
+    with tab_cost:
+        _render_cost_block(result["cost_forecast"])
+    with tab_cases:
+        _render_case_references_block(result["matched_cases"], result["recommended_stack"],
+                                      result.get("query", {}))
+    with tab_summary:
+        st.markdown("### Summary")
+        st.write(result["summary_text"])
+    with tab_export:
+        st.markdown("### Export")
+        blueprint_text = blueprint_to_text(result)
+        st.caption("Hover the code block below and click the copy icon in the top-right corner.")
+        st.code(blueprint_text, language=None)
+        _render_action_row(result)
+        render_copy_confirmation()
+    with tab_how:
+        _render_methodology_block()
 
 
 # --- Lovable-parity UI round: status chips + banner -------------------------
