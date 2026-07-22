@@ -26,15 +26,25 @@ def render_blueprint(result: dict):
     _render_directional_banner(result)
     _render_status_chips(result)
 
+    # UI-v2e: Clear moved up here, right-aligned just above the tab bar (was in
+    # the Export action row). Popping "result" + rerun returns to the empty
+    # state. B.6 note: it pops "result" ONLY — it never touches
+    # st.session_state.saved_blueprints, so clearing the view keeps saved work.
+    _, clear_col = st.columns([5, 1])
+    with clear_col:
+        if st.button("Clear", key="clear_result"):
+            st.session_state.pop("result", None)
+            st.rerun()
+
     # Change 2 (UI-v2 · reduce-scroll): the blueprint used to be six sections
     # stacked down one long column (Stack → Cost → Cases → Summary → Export →
     # How it works), separated by dividers — the main cause of the "everything
     # on one page / endless scrolling" tutor feedback. They're now tabs, so the
     # whole blueprint fits one screen and the user picks what to look at.
     # Nothing about the blocks themselves changed — each _render_* function is
-    # called exactly as before, just inside its tab. All widget keys
-    # (stack_filter, case_count, clear_result, copy_confirm) are unchanged, so
-    # session state and the DARK_CSS class hooks keep working.
+    # called exactly as before, just inside its tab. Remaining widget keys
+    # (case_count, clear_result, copy_confirm) are unchanged, so session state
+    # and the DARK_CSS class hooks keep working.
     # UI-v2b: Material icons (Streamlit's built-in :material/: set — no emoji,
     # consistent with the team's de-emoji styling) + prominence CSS in
     # intake.py's DARK_CSS make the tab bar clearly the primary navigation.
@@ -69,7 +79,6 @@ def render_blueprint(result: dict):
         st.caption("Hover the code block below and click the copy icon in the top-right corner.")
         st.code(blueprint_text, language=None)
         _render_action_row(result)
-        render_copy_confirmation()
     with tab_how:
         _render_methodology_block()
 
@@ -110,15 +119,12 @@ def _render_directional_banner(result: dict):
     )
 
 
-# --- Lovable-parity UI round: action row (guides 25 + 26 + 27 + Clear) -------
-# B.6 note: Clear pops "result" only — it deliberately does NOT touch
-# st.session_state.saved_blueprints (clearing the current view must never
-# delete saved work).
+# --- Lovable-parity UI round: action row (guides 25 + 26 + 27) --------------
+# UI-v2e: four EQUAL columns for even spacing. Clear moved out (now above the
+# tabs); "I've copied my blueprint" moved in where Clear used to be.
 
 def _render_action_row(result: dict):
-    # [3,3,3,2] + the CSS nowrap rule: the earlier [2,2,2,1] left the Clear
-    # column so narrow its label wrapped mid-word ("Clea / r").
-    col0, col1, col2, col3 = st.columns([3, 3, 3, 2])
+    col0, col1, col2, col3 = st.columns(4)
     with col0:
         render_save_button(result)
     with col1:
@@ -140,9 +146,7 @@ def _render_action_row(result: dict):
             ):
                 log_event("scaffold_downloaded")
     with col3:
-        if st.button("Clear", key="clear_result"):
-            st.session_state.pop("result", None)
-            st.rerun()
+        render_copy_confirmation()
 
 
 # Update E — fallback text for the grey caption when a tool has no monthly_eur
@@ -165,18 +169,6 @@ _PRICE_TAG_LABELS = {
     "compute": "usage-based",
     "free": "open source",
 }
-
-# Toggle options for Block A (Update E) — maps the displayed pill label to the
-# PRICING "model" value it filters on. "Recommended" (the default) shows the
-# full ranked list, unfiltered, exactly as before this update.
-_STACK_FILTER_OPTIONS = {
-    "Recommended": None,
-    "Token": "token",
-    "Seat": "seat",
-    "Compute": "compute",
-    "Free": "free",
-}
-
 
 # Lovable-parity UI round — hand-written one-line rationales for the tools that
 # most often reach Block A (mirrors the prototype's per-tool "why:" line, e.g.
@@ -223,26 +215,13 @@ def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dic
                  "Try relaxing the privacy posture or broadening the workflow.")
         return
 
-    filter_label = st.radio(
-        "Filter by pricing type", list(_STACK_FILTER_OPTIONS.keys()),
-        horizontal=True, key="stack_filter", label_visibility="collapsed",
-    )
-    filter_model = _STACK_FILTER_OPTIONS[filter_label]
-
-    if filter_model is None:
-        visible_tools = ranked_tools
-    else:
-        visible_tools = [t for t in ranked_tools if PRICING.get(t, {}).get("model") == filter_model]
-
-    if not visible_tools:
-        st.info(f"None of the current recommendations are {filter_label.lower()}-priced. "
-                 "Try a different filter or \"Recommended\" for the full list.")
-        return
+    # UI-v2e: the pricing-type filter toggle (Recommended/Token/Seat/Compute/Free)
+    # was removed per feedback — always show the full ranked recommendation.
+    visible_tools = ranked_tools
 
     # Evidence count: how many matched cases mention each tool — this is the
-    # "evidence bar" the task card asks for. Denominator stays the total matched
-    # case count regardless of which filter is active, so the percentage always
-    # reflects real-world evidence, not just evidence within the filtered subset.
+    # "evidence bar" the task card asks for. Denominator is the total matched
+    # case count, so the percentage reflects real-world evidence.
     total_cases = max(len(matched_cases), 1)
     for rank, tool_id in enumerate(visible_tools, start=1):
         entry = PRICING.get(tool_id, {})

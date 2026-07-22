@@ -29,11 +29,14 @@ def render_save_button(result: dict):
         if st.button("Save", key="save_bp_go"):
             _store().append({
                 "name": name.strip() or default_name,
-                "saved_at": time.strftime("%H:%M"),
+                "saved_at": time.strftime("%H:%M"),   # stored for export; no longer shown in the list
                 "result": result,
             })
             log_event("blueprint_saved")
-            st.success(f"Saved — see sidebar.")
+            # UI-v2e: rerun so the sidebar's render_saved_panel() (which already
+            # ran earlier this pass) re-renders with the new item — otherwise the
+            # saved blueprint only appeared after the user's *next* interaction.
+            st.rerun()
 
 
 def render_saved_panel():
@@ -43,7 +46,9 @@ def render_saved_panel():
         if not saved:
             st.caption("Nothing saved yet this session.")
         for i, item in enumerate(saved):
-            if st.button(f"{item['name']}  ·  {item['saved_at']}", key=f"load_bp_{i}"):
+            # UI-v2e: save-time (HH:MM) dropped from the label — blueprints are
+            # already distinguished by name/number, so it added little.
+            if st.button(f"{item['name']}", key=f"load_bp_{i}"):
                 # Loading overwrites the current (possibly unsaved) result —
                 # intended mechanic; the render-on-every-rerun pattern from
                 # Card 1.4 re-renders the loaded blueprint with no pipeline run.
