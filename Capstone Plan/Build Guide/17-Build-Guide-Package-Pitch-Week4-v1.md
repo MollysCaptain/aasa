@@ -109,6 +109,7 @@ print(f'Compliance-rule pass rate: {pass_rate}% (violations: {violations or \"no
 ```
 
 6. **Assemble one summary table** — this is the artifact this card actually produces:
+(scripts/validation_metrics_table.py)
 
 ```markdown
 ## Validation Metrics — Final
@@ -122,6 +123,9 @@ print(f'Compliance-rule pass rate: {pass_rate}% (violations: {violations or \"no
 | Avg. LLM latency | — (informational) | ___ s | — | — |
 | Sample size | 5-8 real testers | ___ | *not powered for comparative claims — see note above* | — |
 ```
+
+
+
 
 ### How to verify this card is done
 - Every row in the table above has a real, computed number — not a placeholder or an estimate.
