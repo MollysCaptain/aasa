@@ -18,6 +18,7 @@ keys (`stack_filter`, `case_count`, `clear_result`, `copy_confirm`, `save_bp_*`,
 | `69e2201` | UI-v2b | Roboto Mono accent font + prominent Material-icon tabs |
 | `04c9352` | UI-v2b | Roboto Mono SemiBold (600) for accent text |
 | `647c2b0` | UI-v2c | Block A: single orange price tag + hyperlinked tool names |
+| `a5d22c4` | UI-v2d | Swap banner/chips order + larger why/label fonts |
 
 Files touched across all passes: `app/intake.py`, `app/dashboard.py`,
 `app/logic/pricing.py`, `.streamlit/config.toml`, and `static/fonts/`
@@ -98,6 +99,17 @@ supporting CSS/data:
    `app/logic/pricing.py` (official homepages — illustrative/product-root, verify
    like the prices). `a.aasa-stack-name` CSS keeps the linked name green and only
    underlines on hover.
+
+---
+
+## Pass 4 — UI-v2d (banner/chips order + label legibility) · commit `a5d22c4`
+
+Small live-feedback tweaks. In `render_blueprint()` the **DIRECTIONAL ONLY**
+banner now renders *before* the status-chips row (chips sit directly above the
+tabs). In `DARK_CSS`, the `why:` label (`.aasa-why`, 0.85→0.95rem) and all widget
+labels (`[data-testid="stWidgetLabel"] p`, 0.72→0.85rem, letter-spacing
+0.1→0.08em) are larger, so the Block A `why:` lines and the Feedback question
+labels are easier to read. Styling only.
 
 ---
 
