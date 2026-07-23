@@ -26,7 +26,11 @@ from app.saved_blueprints import render_saved_panel
 st.set_page_config(
     page_title="AASA — AI-Assisted Stack Architect",
     page_icon="🧭",
-    layout="centered",
+    # UI-v2 change 4 (wide-layout variant, branch Ash3-wide): with the intake
+    # form in the sidebar, "wide" lets the main column (and the Stack/Cost/Cases
+    # blocks + their st.columns) use the full page width. Kept on its own branch
+    # so the centered version (Ash3) and this one can be compared side by side.
+    layout="wide",
 )
 
 # --- Dark, "neo-industrial" styling ---
