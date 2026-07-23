@@ -22,15 +22,31 @@ from app.analytics.tracker import log_event
 from app.survey_modal import render_feedback_form
 from app.saved_blueprints import render_saved_panel
 
+# --- Sidebar state machine (Ash3-update v2) --------------------------------
+# Streamlit 1.59 lets set_page_config run every rerun and change the sidebar via
+# initial_sidebar_state: "collapsed", or an int width in px (200-600, resizable),
+# or None = SIDEBAR_UNSET (leave exactly as-is). We push a NEW value only at
+# transition moments (stored in _sidebar_next by the Generate / Clear / Save
+# handlers) and pass None otherwise, so we never fight the user's manual
+# expand/resize between transitions.
+#   - first load / Clear -> 560px wide (empty state has room for the form)
+#   - Generate           -> "collapsed" (results get the whole screen)
+#   - Save               -> 420px expanded (so the new saved blueprint is visible)
+_SIDEBAR_WIDE = 560     # px — empty state / Clear (Generate=collapsed, Save=420, both set by their handlers)
+if "_sidebar_seen" not in st.session_state:
+    st.session_state["_sidebar_seen"] = True
+    _sidebar_state = _SIDEBAR_WIDE
+else:
+    _sidebar_state = st.session_state.pop("_sidebar_next", None)  # None => unchanged
+
 # --- Page setup: must be the first Streamlit command in the script ---
 st.set_page_config(
     page_title="AASA — AI-Assisted Stack Architect",
     page_icon="🧭",
-    # UI-v2 change 4 (wide-layout variant, branch Ash3-wide): with the intake
-    # form in the sidebar, "wide" lets the main column (and the Stack/Cost/Cases
-    # blocks + their st.columns) use the full page width. Kept on its own branch
-    # so the centered version (Ash3) and this one can be compared side by side.
+    # Wide layout (from the Ash3-wide variant): with the form in the sidebar,
+    # the main column and the Stack/Cost/Cases columns use the full page width.
     layout="wide",
+    initial_sidebar_state=_sidebar_state,
 )
 
 # --- Dark, "neo-industrial" styling ---
@@ -340,24 +356,25 @@ DARK_CSS = """
        dashboard.py -> Streamlit emits a matching .st-key-<key> class. */
     .st-key-aasa_prose_summary, .st-key-aasa_prose_cases { max-width: 72ch; }
     .st-key-aasa_prose_how { max-width: 52rem; }   /* wider: keeps the 3 "how" columns comfortable */
+    /* Ash3-update v2: when the sidebar is collapsed (after Generate), label the
+       native expand control (the ">>" chevron) so users recognise it reopens
+       the form. ::after appends the text beside the icon; width:auto stops the
+       icon-sized button clipping it. Streamlit-internal testid — verify live /
+       re-check after any Streamlit upgrade. */
+    [data-testid="stExpandSidebarButton"] { width: auto !important; }
+    [data-testid="stExpandSidebarButton"]::after {
+        content: "Blueprint Builder";
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        color: #9aa4b2;
+        margin-left: 0.5em;
+        white-space: nowrap;
+    }
 </style>
 """
 st.markdown(DARK_CSS, unsafe_allow_html=True)
-
-# Ash3-update: the sidebar starts WIDE on the empty state (more room for the
-# form + labels), then drops to Streamlit's default width once a blueprint
-# exists so the results get the space. Only injected when there's no result;
-# Clear removes the result and the wide sidebar returns on the next run.
-# !important is required to beat Streamlit's own sidebar width — a side effect
-# is that manual drag-resize is limited while the wide rule is active, which is
-# acceptable given the requested automatic behaviour. Selector is
-# Streamlit-internal (verify on the live app; re-check after any upgrade).
-if "result" not in st.session_state:
-    st.markdown(
-        "<style>section[data-testid='stSidebar']{width:34rem !important;"
-        "min-width:34rem !important;}</style>",
-        unsafe_allow_html=True,
-    )
 
 # Icebox B.6 (Build Guide 27) — the saved-blueprints panel is a sidebar panel.
 # Change 1 (UI-v2 · reduce-scroll) moved the intake form into the sidebar too,
@@ -528,6 +545,9 @@ if submitted:
 # Card P.14's funnel rates by roughly half. Removed — log each event once.
         log_event("llm_summary_generated", **result["llm_metrics"])
         st.session_state.result = result  # persist across reruns — see note below
+        # Ash3-update v2: collapse the sidebar on the rerun below so the fresh
+        # blueprint gets the whole screen (the ">>" control reopens the form).
+        st.session_state["_sidebar_next"] = "collapsed"
         # UI-v2 fix: rerun immediately so the hero's "result not in
         # st.session_state" gate (above) re-evaluates with the result now set.
         # Without this, on the submit run the hero had already rendered before

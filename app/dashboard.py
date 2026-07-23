@@ -34,6 +34,9 @@ def render_blueprint(result: dict):
     with clear_col:
         if st.button("Clear", key="clear_result"):
             st.session_state.pop("result", None)
+            # Ash3-update v2: back to the empty state → reopen the sidebar wide
+            # (560px) so the form is front-and-centre again.
+            st.session_state["_sidebar_next"] = 560
             st.rerun()
 
     # Change 2 (UI-v2 · reduce-scroll): the blueprint used to be six sections

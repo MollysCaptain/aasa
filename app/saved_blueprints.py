@@ -38,6 +38,9 @@ def _save_blueprint_dialog(result: dict):
         # Flag drives the green confirmation under the Save button (below), and
         # st.rerun() closes this dialog + refreshes the sidebar list in one go.
         st.session_state["_blueprint_just_saved"] = True
+        # Ash3-update v2: reopen the sidebar (420px) so the user sees the newly
+        # saved blueprint in the (now expanded) list.
+        st.session_state["_sidebar_next"] = 420
         st.rerun()
 
 
