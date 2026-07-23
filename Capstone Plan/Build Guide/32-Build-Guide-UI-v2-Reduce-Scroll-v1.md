@@ -21,6 +21,7 @@ keys (`stack_filter`, `case_count`, `clear_result`, `copy_confirm`, `save_bp_*`,
 | `a5d22c4` | UI-v2d | Swap banner/chips order + larger why/label fonts |
 | `2907cf0` | UI-v2 fix | Hero now collapses on the submit run (added `st.rerun()`) |
 | `61512a0` | UI-v2e | Stack toggle removed · Clear above tabs · copy-confirm in action row · saved-blueprint appears on Save · save-time dropped from label |
+| `b62bd30` | UI-v2f | Chips back above banner · copy label → "Blueprint copied" · save pop-up is now an st.dialog that closes + shows "Blueprint saved!" |
 
 Files touched across all passes: `app/intake.py`, `app/dashboard.py`,
 `app/logic/pricing.py`, `.streamlit/config.toml`, and `static/fonts/`
@@ -139,6 +140,23 @@ More live-feedback changes:
 - **Save-time dropped from the label**: the `HH:MM` was just a save marker;
   blueprints are already distinguished by name/number. Still stored in the
   object (so JSON exports keep it), just not displayed.
+
+---
+
+## Pass 6 — UI-v2f (chips order, copy label, save dialog) · commit `b62bd30`
+
+- **Chips above the banner again**: `render_blueprint` renders the status chips
+  first, then the DIRECTIONAL-ONLY banner (reverting the UI-v2d swap per feedback).
+- **Copy button label shortened**: `"I've copied my blueprint"` → `"Blueprint
+  copied"` (`app/survey_modal.py`) so it fits inside the button in the
+  four-equal-column action row.
+- **Save flow → `st.dialog`** (`app/saved_blueprints.py`): the name pop-up is now
+  a modal (`_save_blueprint_dialog`) instead of an `st.popover`. A popover can't
+  be closed programmatically, so it lingered open after Save and a repeat click
+  re-saved the same name. The dialog closes reliably on `st.rerun()` after
+  saving, and a one-shot green **"Blueprint saved!"** message renders beneath the
+  Save button (driven by a `_blueprint_just_saved` session flag).
+  *Streamlit 1.59.2 is installed, so `st.dialog` is available.*
 
 ---
 
