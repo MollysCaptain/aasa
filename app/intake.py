@@ -22,28 +22,7 @@ from app.analytics.tracker import log_event
 from app.survey_modal import render_feedback_form
 from app.saved_blueprints import render_saved_panel
 
-# --- Sidebar state machine (Ash3-update v2.1) ------------------------------
-# Streamlit 1.59 lets set_page_config run every rerun and set the sidebar via
-# initial_sidebar_state: "collapsed", or an int width in px (200-600, resizable).
-# We DERIVE the desired state from session_state and send it on EVERY run (not
-# one-shot): Streamlit re-runs the script on load and on form_start, and an
-# earlier version that sent None on those extra runs reset the width to a narrow
-# default (the "tiny on open" bug) and dropped the collapse/expand transitions.
-# Sending the state every run keeps it stable.
-#   - no blueprint yet  -> 560px wide (empty state has room for the form)
-#   - blueprint exists  -> "collapsed" (results get the whole screen)
-#   - just saved (1 run)-> 420px expanded, so the new saved blueprint is visible
-# Only READ session_state here (no mutation before set_page_config); the
-# just-saved flag is cleared just after.
-_SIDEBAR_WIDE = 560     # px, empty state (200-600 allowed, user-resizable)
-_SIDEBAR_OPEN = 420     # px, one-shot reopen right after Save
-_force_open = st.session_state.get("_sidebar_force_open", False)
-if _force_open:
-    _sidebar_state = _SIDEBAR_OPEN
-elif "result" in st.session_state:
-    _sidebar_state = "collapsed"
-else:
-    _sidebar_state = _SIDEBAR_WIDE
+_SIDEBAR_WIDTH = 540    # px — width of the open sidebar
 
 # --- Page setup: must be the first Streamlit command in the script ---
 st.set_page_config(
@@ -52,13 +31,21 @@ st.set_page_config(
     # Wide layout (from the Ash3-wide variant): with the form in the sidebar,
     # the main column and the Stack/Cost/Cases columns use the full page width.
     layout="wide",
-    initial_sidebar_state=_sidebar_state,
+    initial_sidebar_state="expanded",
 )
 
-# Clear the one-shot "just saved -> reopen" flag now that it's been applied, so
-# the next interaction reverts to the collapsed results view.
-if _force_open:
-    del st.session_state["_sidebar_force_open"]
+# --- Sidebar open/closed is OUR state, driven by CSS (Ash3-update v2.2) ------
+# Streamlit's initial_sidebar_state is only honoured on the first page load, not
+# on reruns (confirmed live — two attempts via the API left the sidebar tiny and
+# never collapsed/expanded on Generate/Save). So we manage open/closed ourselves:
+# a session flag decides whether CSS shows the sidebar (fixed width) or hides it
+# (display:none), and we render our own "Blueprint Builder" control to reopen it
+# (Streamlit's native >> chevron only appears for its own collapse state, which
+# we don't use). This is CSS — the same mechanism that reliably set the sidebar
+# width earlier in the project.
+#   - open  -> sidebar shown at 540px           (empty state, after Save/Clear)
+#   - closed -> sidebar hidden, reopen button    (after Generate)
+st.session_state.setdefault("sidebar_open", True)
 
 # --- Dark, "neo-industrial" styling ---
 # st.markdown with unsafe_allow_html=True lets us inject raw CSS.
@@ -367,25 +354,40 @@ DARK_CSS = """
        dashboard.py -> Streamlit emits a matching .st-key-<key> class. */
     .st-key-aasa_prose_summary, .st-key-aasa_prose_cases { max-width: 72ch; }
     .st-key-aasa_prose_how { max-width: 52rem; }   /* wider: keeps the 3 "how" columns comfortable */
-    /* Ash3-update v2: when the sidebar is collapsed (after Generate), label the
-       native expand control (the ">>" chevron) so users recognise it reopens
-       the form. ::after appends the text beside the icon; width:auto stops the
-       icon-sized button clipping it. Streamlit-internal testid — verify live /
-       re-check after any Streamlit upgrade. */
-    [data-testid="stExpandSidebarButton"] { width: auto !important; }
-    [data-testid="stExpandSidebarButton"]::after {
-        content: "Blueprint Builder";
+    /* Ash3-update v2.2: we manage the sidebar open/closed ourselves (see below),
+       so hide Streamlit's native collapse (<<) and expand (>>) controls to keep
+       our state and the UI in sync. Our own "Blueprint Builder" button reopens
+       the sidebar when it's hidden. */
+    [data-testid="stSidebarCollapseButton"], [data-testid="stExpandSidebarButton"] {
+        display: none !important;
+    }
+    /* Style our reopen control (a keyed st.button) to sit top-left like a chevron. */
+    .st-key-reopen_sidebar button {
         font-family: 'Roboto Mono', 'Courier New', monospace;
         font-weight: 600;
-        font-size: 0.8rem;
         letter-spacing: 0.04em;
-        color: #9aa4b2;
-        margin-left: 0.5em;
-        white-space: nowrap;
     }
 </style>
 """
 st.markdown(DARK_CSS, unsafe_allow_html=True)
+
+# --- Apply the sidebar open/closed state via CSS + a custom reopen control ---
+if st.session_state.sidebar_open:
+    st.markdown(
+        f"<style>section[data-testid='stSidebar']{{width:{_SIDEBAR_WIDTH}px !important;"
+        f"min-width:{_SIDEBAR_WIDTH}px !important;}}</style>",
+        unsafe_allow_html=True,
+    )
+else:
+    # Hide the whole sidebar; the main column reflows to full width. The reopen
+    # button below is the only way back in (native chevron is hidden by DARK_CSS).
+    st.markdown(
+        "<style>section[data-testid='stSidebar']{display:none !important;}</style>",
+        unsafe_allow_html=True,
+    )
+    if st.button("≫  Blueprint Builder", key="reopen_sidebar"):
+        st.session_state.sidebar_open = True
+        st.rerun()
 
 # Icebox B.6 (Build Guide 27) — the saved-blueprints panel is a sidebar panel.
 # Change 1 (UI-v2 · reduce-scroll) moved the intake form into the sidebar too,
@@ -556,9 +558,9 @@ if submitted:
 # Card P.14's funnel rates by roughly half. Removed — log each event once.
         log_event("llm_summary_generated", **result["llm_metrics"])
         st.session_state.result = result  # persist across reruns — see note below
-        # Ash3-update v2.1: no explicit sidebar flag needed — once "result" is in
-        # session_state, the state machine at the top collapses the sidebar on
-        # the rerun below (results get the whole screen; ">>" reopens the form).
+        # Ash3-update v2.2: hide the sidebar so the fresh blueprint gets the whole
+        # screen; the "Blueprint Builder" button (top-left) reopens it.
+        st.session_state.sidebar_open = False
         # UI-v2 fix: rerun immediately so the hero's "result not in
         # st.session_state" gate (above) re-evaluates with the result now set.
         # Without this, on the submit run the hero had already rendered before

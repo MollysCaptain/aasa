@@ -34,8 +34,8 @@ def render_blueprint(result: dict):
     with clear_col:
         if st.button("Clear", key="clear_result"):
             st.session_state.pop("result", None)
-            # Ash3-update v2.1: with "result" gone, the state machine at the top
-            # of intake.py reopens the sidebar wide (560px) on the rerun.
+            # Ash3-update v2.2: back to the empty state → reopen the sidebar.
+            st.session_state["sidebar_open"] = True
             st.rerun()
 
     # Change 2 (UI-v2 · reduce-scroll): the blueprint used to be six sections
