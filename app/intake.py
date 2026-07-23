@@ -22,7 +22,7 @@ from app.analytics.tracker import log_event
 from app.survey_modal import render_feedback_form
 from app.saved_blueprints import render_saved_panel
 
-_SIDEBAR_WIDTH = 540    # px — width of the open sidebar
+_SIDEBAR_WIDTH = 440    # px — open-sidebar width floor (drag wider allowed; ~midpoint of 340-540)
 
 # --- Page setup: must be the first Streamlit command in the script ---
 st.set_page_config(
@@ -361,8 +361,8 @@ DARK_CSS = """
     [data-testid="stSidebarCollapseButton"], [data-testid="stExpandSidebarButton"] {
         display: none !important;
     }
-    /* Style our reopen control (a keyed st.button) to sit top-left like a chevron. */
-    .st-key-reopen_sidebar button {
+    /* Style our custom sidebar controls (keyed st.buttons) — mono, top-left. */
+    .st-key-reopen_sidebar button, .st-key-collapse_sidebar button {
         font-family: 'Roboto Mono', 'Courier New', monospace;
         font-weight: 600;
         letter-spacing: 0.04em;
@@ -379,8 +379,12 @@ st.markdown(DARK_CSS, unsafe_allow_html=True)
 # Otherwise use the flag (Generate sets it False to collapse; the reopen button
 # and Clear/Save set it True).
 _sidebar_open = st.session_state.get("sidebar_open", True)
-if ("result" not in st.session_state) or st.session_state.get("_blueprint_just_saved"):
-    _sidebar_open = True
+# Force open (covers Clear -> empty state, and Save) UNLESS the user explicitly
+# clicked Collapse — that lets the ≪ Collapse button work even in the empty
+# state, where otherwise "no result" would force the sidebar back open.
+if not st.session_state.get("_user_collapsed", False):
+    if ("result" not in st.session_state) or st.session_state.get("_blueprint_just_saved"):
+        _sidebar_open = True
 st.session_state.sidebar_open = _sidebar_open
 
 if _sidebar_open:
@@ -392,6 +396,11 @@ if _sidebar_open:
         f"<style>section[data-testid='stSidebar']{{min-width:{_SIDEBAR_WIDTH}px !important;}}</style>",
         unsafe_allow_html=True,
     )
+    # Our own collapse control (native << is hidden by DARK_CSS), top-left.
+    if st.button("≪  Collapse", key="collapse_sidebar"):
+        st.session_state.sidebar_open = False
+        st.session_state["_user_collapsed"] = True
+        st.rerun()
 else:
     # Hide the whole sidebar; the main column reflows to full width. The reopen
     # button below is the only way back in (native chevron is hidden by DARK_CSS).
@@ -401,6 +410,8 @@ else:
     )
     if st.button("≫  Blueprint Builder", key="reopen_sidebar"):
         st.session_state.sidebar_open = True
+        st.session_state["_user_collapsed"] = False
+        st.session_state["build_open"] = True   # reopening shows the form expanded
         st.rerun()
 
 # Icebox B.6 (Build Guide 27) — the saved-blueprints panel is a sidebar panel.
@@ -487,40 +498,47 @@ if "result" not in st.session_state:
 # render_saved_panel() is called at the END of this block so the saved list
 # sits beneath the form in the sidebar (it targets st.sidebar internally).
 with st.sidebar:
-    st.markdown("### Build a blueprint")
-
     # form_start_time drives Card 3.3's time-to-results telemetry — set once
     # per session, before the form renders.
     if "form_start_time" not in st.session_state:
         st.session_state.form_start_time = time.time()
         log_event("form_start")
 
-    # Options come from app/data/options.py — real Industry/Workflow values
-    # derived from the case dataset (Card 2.1 Step 0), not hardcoded placeholders.
-    with st.form("intake_form"):
-        workflow = st.selectbox("Target AI Workflow", WORKFLOWS)
-        industry = st.selectbox("Industry", INDUSTRIES)
-        org_size_key = st.selectbox(
-            "Organisation Size",
-            options=list(ORG_SIZES.keys()),
-            format_func=lambda k: ORG_SIZES[k],   # shows the friendly label, stores the short key
-        )
-        privacy_key = st.radio(
-            "Data-Privacy Posture",
-            options=list(PRIVACY_POSTURES.keys()),
-            format_func=lambda k: PRIVACY_POSTURES[k],
-            horizontal=True,
-            help="Regulated = you handle data subject to HIPAA/GDPR/financial "
-                 "regulation and need governable, self-hostable tools.",
-        )
-        budget = st.number_input(
-            "Monthly Budget (€)",
-            min_value=0, step=50, value=800,
-        )
+    # Ash3-update v2.4: the form now lives in a "Build a blueprint" expander, like
+    # the Saved-blueprints panel. build_open drives its expanded state — open by
+    # default, but auto-collapsed right after a Save (set in saved_blueprints.py)
+    # so the freshly-saved blueprint below becomes the focus. Reopen/Clear set it
+    # back open.
+    _build_open = st.session_state.get("build_open", True)
+    with st.expander("Build a blueprint", expanded=_build_open):
+        # Options come from app/data/options.py — real Industry/Workflow values
+        # derived from the case dataset (Card 2.1 Step 0), not hardcoded.
+        with st.form("intake_form"):
+            workflow = st.selectbox("Target AI Workflow", WORKFLOWS)
+            industry = st.selectbox("Industry", INDUSTRIES)
+            org_size_key = st.selectbox(
+                "Organisation Size",
+                options=list(ORG_SIZES.keys()),
+                format_func=lambda k: ORG_SIZES[k],   # friendly label, stores the short key
+            )
+            privacy_key = st.radio(
+                "Data-Privacy Posture",
+                options=list(PRIVACY_POSTURES.keys()),
+                format_func=lambda k: PRIVACY_POSTURES[k],
+                horizontal=True,
+                help="Regulated = you handle data subject to HIPAA/GDPR/financial "
+                     "regulation and need governable, self-hostable tools.",
+            )
+            budget = st.number_input(
+                "Monthly Budget (€)",
+                min_value=0, step=50, value=800,
+            )
 
-        # Icebox B.5 (Build Guide 24) — both optional; deliberately NOT validated
-        # in validate_intake, so leaving them empty changes nothing.
-        with st.expander("Optional: project details"):
+            # Icebox B.5 (Build Guide 24) — both optional; deliberately NOT
+            # validated in validate_intake, so leaving them empty changes nothing.
+            # NB: rendered inline (not in a nested expander) — Streamlit forbids
+            # an expander inside the "Build a blueprint" expander above.
+            st.caption("Optional — leave blank to skip")
             project_name = st.text_input(
                 "Project name",
                 max_chars=60,
@@ -534,7 +552,7 @@ with st.sidebar:
                 help="Tools you can't or won't use. They'll be removed before ranking.",
             )
 
-        submitted = st.form_submit_button("Generate my blueprint")
+            submitted = st.form_submit_button("Generate my blueprint")
 
     # Saved-blueprints panel (B.6) — rendered beneath the form, still in sidebar.
     render_saved_panel()

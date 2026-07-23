@@ -34,8 +34,11 @@ def render_blueprint(result: dict):
     with clear_col:
         if st.button("Clear", key="clear_result"):
             st.session_state.pop("result", None)
-            # Ash3-update v2.2: back to the empty state → reopen the sidebar.
+            # Ash3-update v2.2/2.4: back to the empty state → reopen the sidebar
+            # with the Build-a-blueprint form expanded.
             st.session_state["sidebar_open"] = True
+            st.session_state["_user_collapsed"] = False
+            st.session_state["build_open"] = True
             st.rerun()
 
     # Change 2 (UI-v2 · reduce-scroll): the blueprint used to be six sections
