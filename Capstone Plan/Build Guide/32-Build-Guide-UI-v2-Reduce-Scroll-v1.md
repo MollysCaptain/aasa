@@ -22,6 +22,7 @@ keys (`stack_filter`, `case_count`, `clear_result`, `copy_confirm`, `save_bp_*`,
 | `2907cf0` | UI-v2 fix | Hero now collapses on the submit run (added `st.rerun()`) |
 | `61512a0` | UI-v2e | Stack toggle removed · Clear above tabs · copy-confirm in action row · saved-blueprint appears on Save · save-time dropped from label |
 | `b62bd30` | UI-v2f | Chips back above banner · copy label → "Blueprint copied" · save pop-up is now an st.dialog that closes + shows "Blueprint saved!" |
+| `8602253` | UI-v2g | Copy label → "Blueprint copied ✓" |
 
 Files touched across all passes: `app/intake.py`, `app/dashboard.py`,
 `app/logic/pricing.py`, `.streamlit/config.toml`, and `static/fonts/`
