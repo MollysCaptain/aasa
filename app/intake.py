@@ -22,22 +22,28 @@ from app.analytics.tracker import log_event
 from app.survey_modal import render_feedback_form
 from app.saved_blueprints import render_saved_panel
 
-# --- Sidebar state machine (Ash3-update v2) --------------------------------
-# Streamlit 1.59 lets set_page_config run every rerun and change the sidebar via
-# initial_sidebar_state: "collapsed", or an int width in px (200-600, resizable),
-# or None = SIDEBAR_UNSET (leave exactly as-is). We push a NEW value only at
-# transition moments (stored in _sidebar_next by the Generate / Clear / Save
-# handlers) and pass None otherwise, so we never fight the user's manual
-# expand/resize between transitions.
-#   - first load / Clear -> 560px wide (empty state has room for the form)
-#   - Generate           -> "collapsed" (results get the whole screen)
-#   - Save               -> 420px expanded (so the new saved blueprint is visible)
-_SIDEBAR_WIDE = 560     # px — empty state / Clear (Generate=collapsed, Save=420, both set by their handlers)
-if "_sidebar_seen" not in st.session_state:
-    st.session_state["_sidebar_seen"] = True
-    _sidebar_state = _SIDEBAR_WIDE
+# --- Sidebar state machine (Ash3-update v2.1) ------------------------------
+# Streamlit 1.59 lets set_page_config run every rerun and set the sidebar via
+# initial_sidebar_state: "collapsed", or an int width in px (200-600, resizable).
+# We DERIVE the desired state from session_state and send it on EVERY run (not
+# one-shot): Streamlit re-runs the script on load and on form_start, and an
+# earlier version that sent None on those extra runs reset the width to a narrow
+# default (the "tiny on open" bug) and dropped the collapse/expand transitions.
+# Sending the state every run keeps it stable.
+#   - no blueprint yet  -> 560px wide (empty state has room for the form)
+#   - blueprint exists  -> "collapsed" (results get the whole screen)
+#   - just saved (1 run)-> 420px expanded, so the new saved blueprint is visible
+# Only READ session_state here (no mutation before set_page_config); the
+# just-saved flag is cleared just after.
+_SIDEBAR_WIDE = 560     # px, empty state (200-600 allowed, user-resizable)
+_SIDEBAR_OPEN = 420     # px, one-shot reopen right after Save
+_force_open = st.session_state.get("_sidebar_force_open", False)
+if _force_open:
+    _sidebar_state = _SIDEBAR_OPEN
+elif "result" in st.session_state:
+    _sidebar_state = "collapsed"
 else:
-    _sidebar_state = st.session_state.pop("_sidebar_next", None)  # None => unchanged
+    _sidebar_state = _SIDEBAR_WIDE
 
 # --- Page setup: must be the first Streamlit command in the script ---
 st.set_page_config(
@@ -48,6 +54,11 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state=_sidebar_state,
 )
+
+# Clear the one-shot "just saved -> reopen" flag now that it's been applied, so
+# the next interaction reverts to the collapsed results view.
+if _force_open:
+    del st.session_state["_sidebar_force_open"]
 
 # --- Dark, "neo-industrial" styling ---
 # st.markdown with unsafe_allow_html=True lets us inject raw CSS.
@@ -545,9 +556,9 @@ if submitted:
 # Card P.14's funnel rates by roughly half. Removed — log each event once.
         log_event("llm_summary_generated", **result["llm_metrics"])
         st.session_state.result = result  # persist across reruns — see note below
-        # Ash3-update v2: collapse the sidebar on the rerun below so the fresh
-        # blueprint gets the whole screen (the ">>" control reopens the form).
-        st.session_state["_sidebar_next"] = "collapsed"
+        # Ash3-update v2.1: no explicit sidebar flag needed — once "result" is in
+        # session_state, the state machine at the top collapses the sidebar on
+        # the rerun below (results get the whole screen; ">>" reopens the form).
         # UI-v2 fix: rerun immediately so the hero's "result not in
         # st.session_state" gate (above) re-evaluates with the result now set.
         # Without this, on the submit run the hero had already rendered before
