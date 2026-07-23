@@ -16,27 +16,40 @@ def _store() -> list:
     return st.session_state.saved_blueprints
 
 
+@st.dialog("Save blueprint")
+def _save_blueprint_dialog(result: dict):
+    """The name-entry pop-up. UI-v2f: this is now an st.dialog (modal) instead of
+    an st.popover — a popover can't be closed programmatically, so it lingered
+    open after Save and a second click re-saved the same name. A dialog closes
+    reliably on st.rerun(), which we call right after saving."""
+    default_name = result.get("project_name") or f"Blueprint {len(_store()) + 1}"
+    name = st.text_input(
+        "Name", value=default_name, key="save_bp_name",
+        help="A label for your own reference. No need to enter personal "
+             "or company-identifying information.",
+    )
+    if st.button("Save", key="save_bp_go"):
+        _store().append({
+            "name": name.strip() or default_name,
+            "saved_at": time.strftime("%H:%M"),   # stored for export; no longer shown in the list
+            "result": result,
+        })
+        log_event("blueprint_saved")
+        # Flag drives the green confirmation under the Save button (below), and
+        # st.rerun() closes this dialog + refreshes the sidebar list in one go.
+        st.session_state["_blueprint_just_saved"] = True
+        st.rerun()
+
+
 def render_save_button(result: dict):
     """Lives in dashboard.py's _render_action_row(), first column — matching
-    the Lovable prototype's '★ Save blueprint' placement."""
-    default_name = result.get("project_name") or f"Blueprint {len(_store()) + 1}"
-    with st.popover("★ Save blueprint"):
-        name = st.text_input(
-            "Name", value=default_name, key="save_bp_name",
-            help="A label for your own reference. No need to enter personal "
-                 "or company-identifying information.",
-        )
-        if st.button("Save", key="save_bp_go"):
-            _store().append({
-                "name": name.strip() or default_name,
-                "saved_at": time.strftime("%H:%M"),   # stored for export; no longer shown in the list
-                "result": result,
-            })
-            log_event("blueprint_saved")
-            # UI-v2e: rerun so the sidebar's render_saved_panel() (which already
-            # ran earlier this pass) re-renders with the new item — otherwise the
-            # saved blueprint only appeared after the user's *next* interaction.
-            st.rerun()
+    the Lovable prototype's '★ Save blueprint' placement. Opens the save dialog;
+    shows a one-shot 'Blueprint saved!' confirmation beneath the button after a
+    successful save."""
+    if st.button("★ Save blueprint", key="save_bp_open"):
+        _save_blueprint_dialog(result)
+    if st.session_state.pop("_blueprint_just_saved", False):
+        st.success("Blueprint saved!")
 
 
 def render_saved_panel():
