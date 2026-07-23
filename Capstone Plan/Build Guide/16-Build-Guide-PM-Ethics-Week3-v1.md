@@ -18,14 +18,14 @@ A **smoke test** is a fast, manual pass through the app's main paths, checking t
 ```markdown
 ## Smoke Test Checklist — Day 17
 
-- [ ] Submit a normal, complete form → see all 3 blocks render with real data (not placeholders).
-- [ ] Submit with the budget field empty/zero → see a clear validation error, no crash.
-- [ ] Submit with "Regulated" privacy → confirm no consumer-only tool appears in Block A.
-- [ ] Submit with "Standard" privacy → confirm the stack differs from the regulated run above.
-- [ ] Submit a workflow/industry combination likely to have very few matches → confirm the "no tools cleared" / graceful-empty message shows, not a crash.
-- [ ] Click the export/copy control → confirm the copied text actually contains real tool names and the real cost figures shown on screen.
-- [ ] Submit the trust survey → confirm a new line appears in `data/telemetry.log`.
-- [ ] Reload the page fresh → confirm the form resets cleanly (no leftover state causing confusing behaviour).
+- [X] Submit a normal, complete form → see all 3 blocks render with real data (not placeholders).
+- [X] Submit with the budget field empty/zero → see a clear validation error, no crash.
+- [X] Submit with "Regulated" privacy → confirm no consumer-only tool appears in Block A.
+- [X] Submit with "Standard" privacy → confirm the stack differs from the regulated run above.
+- [X] Submit a workflow/industry combination likely to have very few matches → confirm the "no tools cleared" / graceful-empty message shows, not a crash.
+- [X] Click the export/copy control → confirm the copied text actually contains real tool names and the real cost figures shown on screen.
+- [X] Submit the trust survey → confirm a new line appears in `data/telemetry.log`.
+- [X] Reload the page fresh → confirm the form resets cleanly (no leftover state causing confusing behaviour).
 ```
 
 2. **Run through the checklist together**, one of you driving the keyboard, the other reading the checklist and writing down anything unexpected.
