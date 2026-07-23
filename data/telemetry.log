@@ -100,3 +100,6 @@
 {"event": "llm_summary_generated", "timestamp": 1784799527.935272, "duration_seconds": 1.67, "prompt_tokens": 1039, "completion_tokens": 1033, "tokens_per_second": 618.6}
 {"event": "results_shown", "timestamp": 1784799563.3647358, "elapsed_seconds": 149.8}
 {"event": "llm_summary_generated", "timestamp": 1784799563.365969, "duration_seconds": 1.31, "prompt_tokens": 1082, "completion_tokens": 731, "tokens_per_second": 558.0}
+{"event": "form_start", "timestamp": 1784837088.3000386}
+{"event": "results_shown", "timestamp": 1784837356.437565, "elapsed_seconds": 268.1}
+{"event": "llm_summary_generated", "timestamp": 1784837356.4385755, "duration_seconds": 1.41, "prompt_tokens": 1087, "completion_tokens": 655, "tokens_per_second": 464.5}
