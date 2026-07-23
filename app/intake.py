@@ -174,6 +174,10 @@ DARK_CSS = """
         color: #818cf8;
         background-color: #1b1e26;
     }
+    /* UI-v2h: hide Streamlit's "Press Enter to submit form" / "Press Enter to
+       apply" helper under text/number inputs — it's noise here, since the form
+       is submitted with the Generate button, not Enter. */
+    [data-testid="InputInstructions"] { display: none; }
     /* Dividers + alerts onto the panel palette */
     hr { border-color: #2b2f3a; }
     [data-testid="stAlert"] {
