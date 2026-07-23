@@ -54,38 +54,41 @@ def render_save_button(result: dict):
 
 def render_saved_panel():
     saved = _store()
+    # Ash3-update: the panel now lives in a collapsible expander (was rendered
+    # inline) to cut the sidebar's height / scrolling. Expanded by default only
+    # when there's something saved to see; collapsed on the empty state.
     with st.sidebar:
-        st.markdown("### ★ Saved blueprints")
-        if not saved:
-            st.caption("Nothing saved yet this session.")
-        for i, item in enumerate(saved):
-            # UI-v2e: save-time (HH:MM) dropped from the label — blueprints are
-            # already distinguished by name/number, so it added little.
-            if st.button(f"{item['name']}", key=f"load_bp_{i}"):
-                # Loading overwrites the current (possibly unsaved) result —
-                # intended mechanic; the render-on-every-rerun pattern from
-                # Card 1.4 re-renders the loaded blueprint with no pipeline run.
-                st.session_state.result = item["result"]
-                st.rerun()
-        if saved:
-            st.download_button(
-                "Export all (.json)",
-                json.dumps(saved, default=str),
-                file_name="aasa-saved-blueprints.json",
-                mime="application/json",
-            )
-        uploaded = st.file_uploader("Import (.json)", type="json", key="bp_import")
-        if uploaded is not None and st.button("Load imported", key="bp_import_go"):
-            try:
-                data = json.load(uploaded)
-                # Minimal shape check — user-supplied file, fail friendly.
-                assert isinstance(data, list)
-                assert all(isinstance(x, dict) and "result" in x and "name" in x
-                           for x in data)
-            except (json.JSONDecodeError, AssertionError, UnicodeDecodeError):
-                st.error("That file doesn't look like an AASA blueprint export.")
-            else:
-                st.session_state.saved_blueprints = data
-                st.rerun()
-        st.caption("Saved blueprints live in this browser session only — "
-                   "export the JSON to keep them.")
+        with st.expander(f"★ Saved blueprints ({len(saved)})", expanded=bool(saved)):
+            if not saved:
+                st.caption("Nothing saved yet this session.")
+            for i, item in enumerate(saved):
+                # UI-v2e: save-time (HH:MM) dropped from the label — blueprints
+                # are already distinguished by name/number, so it added little.
+                if st.button(f"{item['name']}", key=f"load_bp_{i}"):
+                    # Loading overwrites the current (possibly unsaved) result —
+                    # intended mechanic; the render-on-every-rerun pattern from
+                    # Card 1.4 re-renders the loaded blueprint with no pipeline run.
+                    st.session_state.result = item["result"]
+                    st.rerun()
+            if saved:
+                st.download_button(
+                    "Export all (.json)",
+                    json.dumps(saved, default=str),
+                    file_name="aasa-saved-blueprints.json",
+                    mime="application/json",
+                )
+            uploaded = st.file_uploader("Import (.json)", type="json", key="bp_import")
+            if uploaded is not None and st.button("Load imported", key="bp_import_go"):
+                try:
+                    data = json.load(uploaded)
+                    # Minimal shape check — user-supplied file, fail friendly.
+                    assert isinstance(data, list)
+                    assert all(isinstance(x, dict) and "result" in x and "name" in x
+                               for x in data)
+                except (json.JSONDecodeError, AssertionError, UnicodeDecodeError):
+                    st.error("That file doesn't look like an AASA blueprint export.")
+                else:
+                    st.session_state.saved_blueprints = data
+                    st.rerun()
+            st.caption("Saved blueprints live in this browser session only — "
+                       "export the JSON to keep them.")

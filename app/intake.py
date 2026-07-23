@@ -333,9 +333,31 @@ DARK_CSS = """
     button[data-baseweb="tab"]:hover { color: #e8e9ec; }
     button[data-baseweb="tab"][aria-selected="true"] { color: #818cf8; }
     div[data-baseweb="tab-highlight"] { background-color: #818cf8; height: 3px; }
+    /* Ash3-update: cap the reading width of the prose-heavy tab sections so the
+       wide layout stays legible (long lines of body text are hard to read).
+       Block A (Stack) and Block B (Cost) are NOT wrapped, so their columns /
+       metrics keep the full page width. Keys set via st.container(key=...) in
+       dashboard.py -> Streamlit emits a matching .st-key-<key> class. */
+    .st-key-aasa_prose_summary, .st-key-aasa_prose_cases { max-width: 72ch; }
+    .st-key-aasa_prose_how { max-width: 52rem; }   /* wider: keeps the 3 "how" columns comfortable */
 </style>
 """
 st.markdown(DARK_CSS, unsafe_allow_html=True)
+
+# Ash3-update: the sidebar starts WIDE on the empty state (more room for the
+# form + labels), then drops to Streamlit's default width once a blueprint
+# exists so the results get the space. Only injected when there's no result;
+# Clear removes the result and the wide sidebar returns on the next run.
+# !important is required to beat Streamlit's own sidebar width — a side effect
+# is that manual drag-resize is limited while the wide rule is active, which is
+# acceptable given the requested automatic behaviour. Selector is
+# Streamlit-internal (verify on the live app; re-check after any upgrade).
+if "result" not in st.session_state:
+    st.markdown(
+        "<style>section[data-testid='stSidebar']{width:34rem !important;"
+        "min-width:34rem !important;}</style>",
+        unsafe_allow_html=True,
+    )
 
 # Icebox B.6 (Build Guide 27) — the saved-blueprints panel is a sidebar panel.
 # Change 1 (UI-v2 · reduce-scroll) moved the intake form into the sidebar too,

@@ -68,11 +68,15 @@ def render_blueprint(result: dict):
     with tab_cost:
         _render_cost_block(result["cost_forecast"])
     with tab_cases:
-        _render_case_references_block(result["matched_cases"], result["recommended_stack"],
-                                      result.get("query", {}))
+        # Ash3-update: keyed container caps the reading width (CSS in intake.py)
+        # so the case cards don't stretch full-bleed in wide layout.
+        with st.container(key="aasa_prose_cases"):
+            _render_case_references_block(result["matched_cases"], result["recommended_stack"],
+                                          result.get("query", {}))
     with tab_summary:
-        st.markdown("### Summary")
-        st.write(result["summary_text"])
+        with st.container(key="aasa_prose_summary"):
+            st.markdown("### Summary")
+            st.write(result["summary_text"])
     with tab_export:
         st.markdown("### Export")
         blueprint_text = blueprint_to_text(result)
@@ -80,7 +84,8 @@ def render_blueprint(result: dict):
         st.code(blueprint_text, language=None)
         _render_action_row(result)
     with tab_how:
-        _render_methodology_block()
+        with st.container(key="aasa_prose_how"):
+            _render_methodology_block()
 
 
 # --- Lovable-parity UI round: status chips + banner -------------------------
