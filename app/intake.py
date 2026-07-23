@@ -173,6 +173,10 @@ DARK_CSS = """
         font-size: 0.85rem;   /* UI-v2d: bumped from 0.72rem — form + Feedback labels were hard to read */
         color: #9aa4b2;
     }
+    /* v2.7: intake-form field titles in the indigo accent (per feedback).
+       Scoped to the sidebar (higher specificity beats the grey rule above) so
+       the Feedback form + metric labels in the main area stay grey. */
+    section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p { color: #818cf8; }
     /* Block B metrics -> match the hero stat numbers */
     [data-testid="stMetricValue"] {
         font-family: 'Roboto Mono', 'Courier New', monospace;
