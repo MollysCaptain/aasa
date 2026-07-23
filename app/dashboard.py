@@ -12,21 +12,14 @@ from app.survey_modal import render_copy_confirmation
 from app.saved_blueprints import render_save_button
 from app.analytics.tracker import log_event
 
-# Intake form widget keys (defined in app/intake.py). Clear pops them so the
-# form resets to defaults on the next run.
-_INTAKE_WIDGET_KEYS = (
-    "in_workflow", "in_industry", "in_org_size", "in_privacy",
-    "in_budget", "in_project_name", "in_exclude_tools",
-)
-
-
 def _clear_blueprint():
-    """Ash3-update v2.5: Clear's on_click callback. Runs BEFORE widgets
-    re-instantiate, so popping the intake widget keys here safely resets the
-    form to its default values. Also drops the result and reopens the sidebar
-    with the form expanded."""
-    for k in ("result", *_INTAKE_WIDGET_KEYS):
-        st.session_state.pop(k, None)
+    """Clear's on_click callback. v2.6: bumps form_nonce so the intake widgets
+    (keyed in_<name>_<nonce> in intake.py) get fresh keys next run and reset to
+    their DEFAULTS — the reliable reset for widgets inside an st.form, where
+    simply deleting the keys doesn't work (the frontend retains the values).
+    Also drops the result and reopens the sidebar with the form expanded."""
+    st.session_state.pop("result", None)
+    st.session_state["form_nonce"] = st.session_state.get("form_nonce", 0) + 1
     st.session_state["sidebar_open"] = True
     st.session_state["_user_collapsed"] = False
     st.session_state["build_open"] = True

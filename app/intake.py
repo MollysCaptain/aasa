@@ -511,20 +511,25 @@ with st.sidebar:
     # back open.
     # Ash3-update v2.5: the expander key includes _build_open so it REMOUNTS when
     # that flag flips — otherwise Streamlit ignores `expanded` changes on rerun
-    # and the "collapse on Save" wouldn't take effect. Explicit widget keys
-    # (in_*) let the Clear button reset the form to defaults (see dashboard.py).
+    # and the "collapse on Save" wouldn't take effect.
+    # v2.6: widget keys are suffixed with a form_nonce. Clear bumps the nonce
+    # (dashboard.py) so the widgets get brand-new keys and reset to their
+    # DEFAULTS — deleting the old keys wasn't enough for widgets inside an
+    # st.form (the frontend retains their values). Reading the returned values
+    # (workflow, industry, ...) is unaffected; only the keys change.
     _build_open = st.session_state.get("build_open", True)
+    _fn = st.session_state.get("form_nonce", 0)
     with st.expander("Build a blueprint", expanded=_build_open, key=f"build_exp_{_build_open}"):
         # Options come from app/data/options.py — real Industry/Workflow values
         # derived from the case dataset (Card 2.1 Step 0), not hardcoded.
         with st.form("intake_form"):
-            workflow = st.selectbox("Target AI Workflow", WORKFLOWS, key="in_workflow")
-            industry = st.selectbox("Industry", INDUSTRIES, key="in_industry")
+            workflow = st.selectbox("Target AI Workflow", WORKFLOWS, key=f"in_workflow_{_fn}")
+            industry = st.selectbox("Industry", INDUSTRIES, key=f"in_industry_{_fn}")
             org_size_key = st.selectbox(
                 "Organisation Size",
                 options=list(ORG_SIZES.keys()),
                 format_func=lambda k: ORG_SIZES[k],   # friendly label, stores the short key
-                key="in_org_size",
+                key=f"in_org_size_{_fn}",
             )
             privacy_key = st.radio(
                 "Data-Privacy Posture",
@@ -533,12 +538,12 @@ with st.sidebar:
                 horizontal=True,
                 help="Regulated = you handle data subject to HIPAA/GDPR/financial "
                      "regulation and need governable, self-hostable tools.",
-                key="in_privacy",
+                key=f"in_privacy_{_fn}",
             )
             budget = st.number_input(
                 "Monthly Budget (€)",
                 min_value=0, step=50, value=800,
-                key="in_budget",
+                key=f"in_budget_{_fn}",
             )
 
             # Icebox B.5 (Build Guide 24) — both optional; deliberately NOT
@@ -551,14 +556,14 @@ with st.sidebar:
                 max_chars=60,
                 help="Shown on your blueprint and export — useful if you save or share it. "
                      "No need to enter personal or company-identifying information.",
-                key="in_project_name",
+                key=f"in_project_name_{_fn}",
             )
             exclude_tools = st.multiselect(
                 "Vendors to exclude",
                 options=sorted(PRICING.keys(), key=lambda k: PRICING[k]["label"]),
                 format_func=lambda k: PRICING[k]["label"],
                 help="Tools you can't or won't use. They'll be removed before ranking.",
-                key="in_exclude_tools",
+                key=f"in_exclude_tools_{_fn}",
             )
 
             submitted = st.form_submit_button("Generate my blueprint")
