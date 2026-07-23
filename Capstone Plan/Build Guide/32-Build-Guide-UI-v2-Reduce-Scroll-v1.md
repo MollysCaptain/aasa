@@ -23,6 +23,7 @@ keys (`stack_filter`, `case_count`, `clear_result`, `copy_confirm`, `save_bp_*`,
 | `61512a0` | UI-v2e | Stack toggle removed · Clear above tabs · copy-confirm in action row · saved-blueprint appears on Save · save-time dropped from label |
 | `b62bd30` | UI-v2f | Chips back above banner · copy label → "Blueprint copied" · save pop-up is now an st.dialog that closes + shows "Blueprint saved!" |
 | `8602253` | UI-v2g | Copy label → "Blueprint copied ✓" |
+| `bc162ac` | UI-v2h | Hide "Press Enter to submit form" input hint |
 
 Files touched across all passes: `app/intake.py`, `app/dashboard.py`,
 `app/logic/pricing.py`, `.streamlit/config.toml`, and `static/fonts/`
@@ -158,6 +159,28 @@ More live-feedback changes:
   saving, and a one-shot green **"Blueprint saved!"** message renders beneath the
   Save button (driven by a `_blueprint_just_saved` session flag).
   *Streamlit 1.59.2 is installed, so `st.dialog` is available.*
+
+---
+
+## Pass 7 — UI-v2h (input hint) · commit `bc162ac`
+
+- **"Press Enter to submit form" hint removed**: `DARK_CSS` now hides
+  `[data-testid="InputInstructions"]` (`display:none`), so the helper text under
+  the Monthly Budget number input — and other form inputs — is gone. The form is
+  submitted with the Generate button, so the hint was noise.
+- **Long-name hover tooltip on the other dropdowns — no change needed**: the
+  full-name-on-hover the team liked on the "Vendors to exclude" multiselect is
+  the browser/BaseWeb native tooltip that appears when an option is too long to
+  fit and gets *truncated*. `st.selectbox` (Workflow / Industry / Organisation
+  Size) and `st.multiselect` are built on the **same** shared BaseWeb Select
+  dropdown (verified: both frontend chunks import the same `esm.*`/`index.*`
+  chunks), so the behaviour is already identical — it simply only triggers when
+  a value is long enough to be cut off. The vendor labels are long (and the
+  sidebar is narrow), so they truncate; the Workflow/Industry/Org values are
+  short and fit, so there's nothing to reveal. If an always-on tooltip is wanted
+  regardless of truncation, the follow-up option is to add `help=` text to those
+  three `st.selectbox` calls (adds a "?" icon) — deliberately left out here since
+  it's a different interaction than the native hover.
 
 ---
 
