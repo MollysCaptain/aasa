@@ -372,10 +372,24 @@ DARK_CSS = """
 st.markdown(DARK_CSS, unsafe_allow_html=True)
 
 # --- Apply the sidebar open/closed state via CSS + a custom reopen control ---
-if st.session_state.sidebar_open:
+# DERIVE the effective open/closed state so Clear and Save reliably bring the
+# sidebar back (the raw flag alone proved flaky in testing). Force open when:
+#   - there's no blueprint (empty state — the form must be visible; covers Clear)
+#   - a save just happened (so the new saved blueprint is visible; covers Save)
+# Otherwise use the flag (Generate sets it False to collapse; the reopen button
+# and Clear/Save set it True).
+_sidebar_open = st.session_state.get("sidebar_open", True)
+if ("result" not in st.session_state) or st.session_state.get("_blueprint_just_saved"):
+    _sidebar_open = True
+st.session_state.sidebar_open = _sidebar_open
+
+if _sidebar_open:
+    # min-width (NOT a fixed width): Streamlit applies the sidebar width as an
+    # inline style from a resizable React component, so a fixed `width:!important`
+    # blocked dragging. min-width sets the open width but still lets the user drag
+    # the sidebar WIDER (it just can't be dragged narrower than this).
     st.markdown(
-        f"<style>section[data-testid='stSidebar']{{width:{_SIDEBAR_WIDTH}px !important;"
-        f"min-width:{_SIDEBAR_WIDTH}px !important;}}</style>",
+        f"<style>section[data-testid='stSidebar']{{min-width:{_SIDEBAR_WIDTH}px !important;}}</style>",
         unsafe_allow_html=True,
     )
 else:
