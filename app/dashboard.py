@@ -12,6 +12,25 @@ from app.survey_modal import render_copy_confirmation
 from app.saved_blueprints import render_save_button
 from app.analytics.tracker import log_event
 
+# Intake form widget keys (defined in app/intake.py). Clear pops them so the
+# form resets to defaults on the next run.
+_INTAKE_WIDGET_KEYS = (
+    "in_workflow", "in_industry", "in_org_size", "in_privacy",
+    "in_budget", "in_project_name", "in_exclude_tools",
+)
+
+
+def _clear_blueprint():
+    """Ash3-update v2.5: Clear's on_click callback. Runs BEFORE widgets
+    re-instantiate, so popping the intake widget keys here safely resets the
+    form to its default values. Also drops the result and reopens the sidebar
+    with the form expanded."""
+    for k in ("result", *_INTAKE_WIDGET_KEYS):
+        st.session_state.pop(k, None)
+    st.session_state["sidebar_open"] = True
+    st.session_state["_user_collapsed"] = False
+    st.session_state["build_open"] = True
+
 
 def render_blueprint(result: dict):
     # B.5 (Build Guide 24) — optional project name replaces the generic title.
@@ -32,14 +51,9 @@ def render_blueprint(result: dict):
     # st.session_state.saved_blueprints, so clearing the view keeps saved work.
     _, clear_col = st.columns([5, 1])
     with clear_col:
-        if st.button("Clear", key="clear_result"):
-            st.session_state.pop("result", None)
-            # Ash3-update v2.2/2.4: back to the empty state → reopen the sidebar
-            # with the Build-a-blueprint form expanded.
-            st.session_state["sidebar_open"] = True
-            st.session_state["_user_collapsed"] = False
-            st.session_state["build_open"] = True
-            st.rerun()
+        # Ash3-update v2.5: Clear now resets the intake form to defaults too, via
+        # an on_click callback (reliable widget-reset pattern — no st.rerun here).
+        st.button("Clear", key="clear_result", on_click=_clear_blueprint)
 
     # Change 2 (UI-v2 · reduce-scroll): the blueprint used to be six sections
     # stacked down one long column (Stack → Cost → Cases → Summary → Export →

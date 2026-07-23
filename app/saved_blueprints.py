@@ -65,7 +65,13 @@ def render_saved_panel():
     # inline) to cut the sidebar's height / scrolling. Expanded by default only
     # when there's something saved to see; collapsed on the empty state.
     with st.sidebar:
-        with st.expander(f"★ Saved blueprints ({len(saved)})", expanded=bool(saved)):
+        # Ash3-update v2.5: key includes the expanded state so the expander
+        # REMOUNTS when it flips (Streamlit ignores `expanded` changes on rerun
+        # otherwise). bool(saved) -> expands once there's a saved blueprint, e.g.
+        # right after a Save, making the list prominent.
+        _saved_open = bool(saved)
+        with st.expander(f"★ Saved blueprints ({len(saved)})",
+                         expanded=_saved_open, key=f"saved_exp_{_saved_open}"):
             if not saved:
                 st.caption("Nothing saved yet this session.")
             for i, item in enumerate(saved):
