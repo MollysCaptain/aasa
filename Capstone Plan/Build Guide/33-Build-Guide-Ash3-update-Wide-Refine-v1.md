@@ -78,6 +78,25 @@ reopens at Streamlit's remembered width (resizable). **Save** reliably reopens a
 `420px`. If exact reopen-width control is required, the fallback is a custom
 expand button (which loses the native chevron look).
 
+### Superseded — v2.1 / v2.2
+
+The `initial_sidebar_state` API route (v2 and v2.1, commits `a04ca6d` /
+`ae501be`) **did not work in the live runtime**: two tests showed the sidebar
+tiny on open and no collapse/expand on Generate/Save — Streamlit honours
+`initial_sidebar_state` only on the first page load, not on reruns. **v2.2**
+(commit `c8c22d1`) replaces it with a CSS-driven approach that reliably worked
+for sidebar width earlier in the project:
+
+- A `sidebar_open` session flag drives CSS: sidebar shown at **540px** (open) or
+  `display:none` (closed); the main column reflows to full width when hidden.
+- The native collapse (`<<`) / expand (`>>`) controls are hidden; a custom
+  **"≫ Blueprint Builder"** button (top-left of the main area) reopens the
+  sidebar.
+- Transitions: **Generate → closed**; **Save / Clear / reopen-button → open**;
+  first load defaults open (fixes tiny-on-open).
+- Trade-off: the open width is fixed (CSS `!important`), so **drag-resize is
+  disabled** — reliability chosen over resizability after the API route failed.
+
 ## QA items (live run required, on a machine with the full stack)
 
 - [ ] **Sidebar collapse/expand (v2):** wide (`560px`) on first load; **fully
