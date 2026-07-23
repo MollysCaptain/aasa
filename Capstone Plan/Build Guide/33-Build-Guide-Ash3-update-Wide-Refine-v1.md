@@ -54,11 +54,37 @@ convention is the same one the existing button CSS already relies on. The app
 was **not** run (no `chroma_store` / model / `GROQ_API_KEY` here), so a live
 render is still required.
 
+## Update — v2 (sidebar collapse + Blueprint Builder label) · commit `a04ca6d`
+
+Gabi asked for a fully-collapsing sidebar (not just narrower) with a clear way
+to reopen it. Reworked using Streamlit 1.59's dynamic
+`set_page_config(initial_sidebar_state=...)` (it can run every rerun; accepts
+`"collapsed"` or an **int width 200–600px, user-resizable**):
+
+- **State machine** (`app/intake.py`): first load / **Clear** → `560px` wide
+  (resizable); **Generate** → `"collapsed"` (results take the whole screen);
+  **Save** → `420px` expanded (so the new saved blueprint is visible). A value
+  is pushed only at those transitions (`_sidebar_next`, set by the Generate /
+  Clear / Save handlers) and `None` otherwise, so manual expand/resize is never
+  fought between transitions. Replaced the earlier `!important` width hack, so
+  the sidebar is now natively drag-resizable.
+- **"Blueprint Builder" label** on the collapsed `>>` control
+  (`[data-testid="stExpandSidebarButton"]::after`) so users know it reopens the
+  form.
+
+**Known limitation (verify in QA):** reopening via the native `>>` chevron is a
+pure frontend toggle (no rerun), so its width can't be forced from Python — it
+reopens at Streamlit's remembered width (resizable). **Save** reliably reopens at
+`420px`. If exact reopen-width control is required, the fallback is a custom
+expand button (which loses the native chevron look).
+
 ## QA items (live run required, on a machine with the full stack)
 
-- [ ] **Sidebar auto-width:** wide on first load; collapses to default after
-  Generate; returns to wide after Clear. Confirm the form/labels look right at
-  `34rem` (tune the value if needed) and that the collapse (hamburger) still works.
+- [ ] **Sidebar collapse/expand (v2):** wide (`560px`) on first load; **fully
+  collapses** after Generate showing the `>>` control labelled "Blueprint
+  Builder"; reopens on clicking it (width Streamlit-managed, resizable) and
+  reopens at `420px` after **Save**; **Clear** returns to wide. Confirm the
+  label renders (not clipped) and the widths feel right (tune `560` / `420`).
 - [ ] **Readability:** Summary / Cases / How-it-works read at a comfortable
   width in wide layout; Stack and Cost still use the full width. Adjust the
   `72ch` / `52rem` caps if they feel off.
@@ -73,5 +99,6 @@ render is still required.
   findings + screenshots. (Tracked as its own Icebox card — see chat.)
 
 ## Rollback
-Single commit (`66721d7`) on its own branch; delete the branch or revert the
-commit to drop these refinements with no effect on `Ash3` / `Ash3-wide`.
+Commits `66721d7` (v1) and `a04ca6d` (v2) on the `Ash3-update` branch; delete
+the branch or revert the commits to drop these refinements with no effect on
+`Ash3` / `Ash3-wide`.
