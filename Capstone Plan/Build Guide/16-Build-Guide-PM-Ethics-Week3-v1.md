@@ -23,6 +23,7 @@ A **smoke test** is a fast, manual pass through the app's main paths, checking t
 - [X] Submit with "Regulated" privacy → confirm no consumer-only tool appears in Block A.
 - [X] Submit with "Standard" privacy → confirm the stack differs from the regulated run above.
 - [X] Submit a workflow/industry combination likely to have very few matches → confirm the "no tools cleared" / graceful-empty message shows, not a crash.
+I tried several workflow/industry combos likely to be thin (Content & Creative × Media/Entertainment & Sports, Training & L&D × Robotics), both under Regulated privacy — and none actually triggered the empty state. Two things explain why: retrieval always returns the nearest 15 cases regardless of true relevance (semantic search doesn't return "zero results," it returns its 15 closest neighbors), and even niche/regulated queries in this real dataset still surface at least one governable cloud/API tool (AWS, Azure, NVIDIA, etc. are pervasive infrastructure mentions). So "very few matches" isn't really reachable through workflow/industry choice alone with this dataset — worth noting as a real observation for our Known Limitations writeup.
 - [X] Click the export/copy control → confirm the copied text actually contains real tool names and the real cost figures shown on screen.
 - [X] Submit the trust survey → confirm a new line appears in `data/telemetry.log`.
 - [X] Reload the page fresh → confirm the form resets cleanly (no leftover state causing confusing behaviour).
