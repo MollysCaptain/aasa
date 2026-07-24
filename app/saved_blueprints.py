@@ -16,58 +16,92 @@ def _store() -> list:
     return st.session_state.saved_blueprints
 
 
+@st.dialog("Save blueprint")
+def _save_blueprint_dialog(result: dict):
+    """The name-entry pop-up. UI-v2f: this is now an st.dialog (modal) instead of
+    an st.popover — a popover can't be closed programmatically, so it lingered
+    open after Save and a second click re-saved the same name. A dialog closes
+    reliably on st.rerun(), which we call right after saving."""
+    default_name = result.get("project_name") or f"Blueprint {len(_store()) + 1}"
+    name = st.text_input(
+        "Name", value=default_name, key="save_bp_name",
+        help="A label for your own reference. No need to enter personal "
+             "or company-identifying information.",
+    )
+    if st.button("Save", key="save_bp_go"):
+        _store().append({
+            "name": name.strip() or default_name,
+            "saved_at": time.strftime("%H:%M"),   # stored for export; no longer shown in the list
+            "result": result,
+        })
+        log_event("blueprint_saved")
+        # Flag drives the green confirmation under the Save button (below), and
+        # st.rerun() closes this dialog + refreshes the sidebar list in one go.
+        st.session_state["_blueprint_just_saved"] = True
+        # Ash3-update v2.2/2.4: reopen the sidebar, and set the "inverse of start"
+        # layout — collapse the Build-a-blueprint form and let the Saved list
+        # (expanded=bool(saved), now non-empty) take focus so the user sees the
+        # blueprint they just saved.
+        st.session_state["sidebar_open"] = True
+        st.session_state["_user_collapsed"] = False
+        st.session_state["build_open"] = False
+        st.rerun()
+
+
 def render_save_button(result: dict):
     """Lives in dashboard.py's _render_action_row(), first column — matching
-    the Lovable prototype's '★ Save blueprint' placement."""
-    default_name = result.get("project_name") or f"Blueprint {len(_store()) + 1}"
-    with st.popover("★ Save blueprint"):
-        name = st.text_input(
-            "Name", value=default_name, key="save_bp_name",
-            help="A label for your own reference. No need to enter personal "
-                 "or company-identifying information.",
-        )
-        if st.button("Save", key="save_bp_go"):
-            _store().append({
-                "name": name.strip() or default_name,
-                "saved_at": time.strftime("%H:%M"),
-                "result": result,
-            })
-            log_event("blueprint_saved")
-            st.success(f"Saved — see sidebar.")
+    the Lovable prototype's '★ Save blueprint' placement. Opens the save dialog;
+    shows a one-shot 'Blueprint saved!' confirmation beneath the button after a
+    successful save."""
+    if st.button("★ Save blueprint", key="save_bp_open"):
+        _save_blueprint_dialog(result)
+    if st.session_state.pop("_blueprint_just_saved", False):
+        st.success("Blueprint saved!")
 
 
 def render_saved_panel():
     saved = _store()
+    # Ash3-update: the panel now lives in a collapsible expander (was rendered
+    # inline) to cut the sidebar's height / scrolling. Expanded by default only
+    # when there's something saved to see; collapsed on the empty state.
     with st.sidebar:
-        st.markdown("### ★ Saved blueprints")
-        if not saved:
-            st.caption("Nothing saved yet this session.")
-        for i, item in enumerate(saved):
-            if st.button(f"{item['name']}  ·  {item['saved_at']}", key=f"load_bp_{i}"):
-                # Loading overwrites the current (possibly unsaved) result —
-                # intended mechanic; the render-on-every-rerun pattern from
-                # Card 1.4 re-renders the loaded blueprint with no pipeline run.
-                st.session_state.result = item["result"]
-                st.rerun()
-        if saved:
-            st.download_button(
-                "Export all (.json)",
-                json.dumps(saved, default=str),
-                file_name="aasa-saved-blueprints.json",
-                mime="application/json",
-            )
-        uploaded = st.file_uploader("Import (.json)", type="json", key="bp_import")
-        if uploaded is not None and st.button("Load imported", key="bp_import_go"):
-            try:
-                data = json.load(uploaded)
-                # Minimal shape check — user-supplied file, fail friendly.
-                assert isinstance(data, list)
-                assert all(isinstance(x, dict) and "result" in x and "name" in x
-                           for x in data)
-            except (json.JSONDecodeError, AssertionError, UnicodeDecodeError):
-                st.error("That file doesn't look like an AASA blueprint export.")
-            else:
-                st.session_state.saved_blueprints = data
-                st.rerun()
-        st.caption("Saved blueprints live in this browser session only — "
-                   "export the JSON to keep them.")
+        # Ash3-update v2.5: key includes the expanded state so the expander
+        # REMOUNTS when it flips (Streamlit ignores `expanded` changes on rerun
+        # otherwise). bool(saved) -> expands once there's a saved blueprint, e.g.
+        # right after a Save, making the list prominent.
+        _saved_open = bool(saved)
+        with st.expander(f"★ Saved blueprints ({len(saved)})",
+                         expanded=_saved_open, key=f"saved_exp_{_saved_open}"):
+            if not saved:
+                st.caption("Nothing saved yet this session.")
+            for i, item in enumerate(saved):
+                # UI-v2e: save-time (HH:MM) dropped from the label — blueprints
+                # are already distinguished by name/number, so it added little.
+                if st.button(f"{item['name']}", key=f"load_bp_{i}"):
+                    # Loading overwrites the current (possibly unsaved) result —
+                    # intended mechanic; the render-on-every-rerun pattern from
+                    # Card 1.4 re-renders the loaded blueprint with no pipeline run.
+                    st.session_state.result = item["result"]
+                    st.rerun()
+            if saved:
+                st.download_button(
+                    "Export all (.json)",
+                    json.dumps(saved, default=str),
+                    file_name="aasa-saved-blueprints.json",
+                    mime="application/json",
+                )
+            uploaded = st.file_uploader("Import (.json)", type="json", key="bp_import")
+            if uploaded is not None and st.button("Load imported", key="bp_import_go"):
+                try:
+                    data = json.load(uploaded)
+                    # Minimal shape check — user-supplied file, fail friendly.
+                    assert isinstance(data, list)
+                    assert all(isinstance(x, dict) and "result" in x and "name" in x
+                               for x in data)
+                except (json.JSONDecodeError, AssertionError, UnicodeDecodeError):
+                    st.error("That file doesn't look like an AASA blueprint export.")
+                else:
+                    st.session_state.saved_blueprints = data
+                    st.rerun()
+            st.caption("Saved blueprints live in this browser session only — "
+                       "export the JSON to keep them.")

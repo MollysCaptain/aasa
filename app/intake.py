@@ -22,12 +22,30 @@ from app.analytics.tracker import log_event
 from app.survey_modal import render_feedback_form
 from app.saved_blueprints import render_saved_panel
 
+_SIDEBAR_WIDTH = 440    # px — open-sidebar width floor (drag wider allowed; ~midpoint of 340-540)
+
 # --- Page setup: must be the first Streamlit command in the script ---
 st.set_page_config(
     page_title="AASA — AI-Assisted Stack Architect",
     page_icon="🧭",
-    layout="centered",
+    # Wide layout (from the Ash3-wide variant): with the form in the sidebar,
+    # the main column and the Stack/Cost/Cases columns use the full page width.
+    layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# --- Sidebar open/closed is OUR state, driven by CSS (Ash3-update v2.2) ------
+# Streamlit's initial_sidebar_state is only honoured on the first page load, not
+# on reruns (confirmed live — two attempts via the API left the sidebar tiny and
+# never collapsed/expanded on Generate/Save). So we manage open/closed ourselves:
+# a session flag decides whether CSS shows the sidebar (fixed width) or hides it
+# (display:none), and we render our own "Blueprint Builder" control to reopen it
+# (Streamlit's native >> chevron only appears for its own collapse state, which
+# we don't use). This is CSS — the same mechanism that reliably set the sidebar
+# width earlier in the project.
+#   - open  -> sidebar shown at 540px           (empty state, after Save/Clear)
+#   - closed -> sidebar hidden, reopen button    (after Generate)
+st.session_state.setdefault("sidebar_open", True)
 
 # --- Dark, "neo-industrial" styling ---
 # st.markdown with unsafe_allow_html=True lets us inject raw CSS.
@@ -37,13 +55,19 @@ st.set_page_config(
 # block as the single home for all custom classes.
 DARK_CSS = """
 <style>
-    /* Font decision v4 (2026-07): Inter for UI text, JetBrains Mono for the
-       monospace accents — now SELF-HOSTED from static/fonts/ instead of
-       Google Fonts, so no user's browser makes a third-party request (closes
-       the IP-exposure caveat from the Week 2 data-minimisation checkpoint).
-       Files are OFL-licensed, vendored via @fontsource. Served by Streamlit's
-       static file server (enableStaticServing in .streamlit/config.toml) at
-       the app/static/ URL path. Every font-family below still carries a system
+    /* Font decision v5 (2026-07): Inter for UI text, Roboto Mono for the
+       monospace accents (labels, chips, code tags, "why:" lines, tab bar).
+       v5 replaced JetBrains Mono with Roboto Mono after Week-3 tutor feedback
+       — more legible at small sizes while staying distinct from Inter. v5.1
+       set most Roboto Mono accent text (everything below except the tab bar,
+       which stays Bold/700) to SemiBold/600 instead of Regular/400 — team
+       decision after seeing the live render. Both families are SELF-HOSTED
+       from static/fonts/ instead of Google Fonts, so
+       no user's browser makes a third-party request (closes the IP-exposure
+       caveat from the Week 2 data-minimisation checkpoint). Files are
+       OFL-licensed, vendored via @fontsource. Served by Streamlit's static
+       file server (enableStaticServing in .streamlit/config.toml) at the
+       app/static/ URL path. Every font-family below still carries a system
        fallback stack, so if static serving is ever off the app degrades
        gracefully instead of breaking. */
     @font-face { font-family: 'Inter'; font-weight: 400; font-display: swap;
@@ -52,10 +76,12 @@ DARK_CSS = """
         src: url('app/static/fonts/inter-latin-600-normal.woff2') format('woff2'); }
     @font-face { font-family: 'Inter'; font-weight: 700; font-display: swap;
         src: url('app/static/fonts/inter-latin-700-normal.woff2') format('woff2'); }
-    @font-face { font-family: 'JetBrains Mono'; font-weight: 400; font-display: swap;
-        src: url('app/static/fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2'); }
-    @font-face { font-family: 'JetBrains Mono'; font-weight: 700; font-display: swap;
-        src: url('app/static/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+    @font-face { font-family: 'Roboto Mono'; font-weight: 400; font-display: swap;
+        src: url('app/static/fonts/roboto-mono-latin-400-normal.woff2') format('woff2'); }
+    @font-face { font-family: 'Roboto Mono'; font-weight: 600; font-display: swap;
+        src: url('app/static/fonts/roboto-mono-latin-600-normal.woff2') format('woff2'); }
+    @font-face { font-family: 'Roboto Mono'; font-weight: 700; font-display: swap;
+        src: url('app/static/fonts/roboto-mono-latin-700-normal.woff2') format('woff2'); }
 
     .stApp {
         background-color: #0f1115;
@@ -140,19 +166,26 @@ DARK_CSS = """
     }
     /* Widget labels -> uppercase micro-labels, Lovable style */
     [data-testid="stWidgetLabel"] p {
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
-        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        font-size: 0.85rem;   /* UI-v2d: bumped from 0.72rem — form + Feedback labels were hard to read */
         color: #9aa4b2;
     }
+    /* v2.7: intake-form field titles in the indigo accent (per feedback).
+       Scoped to the sidebar (higher specificity beats the grey rule above) so
+       the Feedback form + metric labels in the main area stay grey. */
+    section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p { color: #818cf8; }
     /* Block B metrics -> match the hero stat numbers */
     [data-testid="stMetricValue"] {
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
         color: #818cf8;
     }
     [data-testid="stMetricLabel"] p {
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.1em;
         font-size: 0.72rem;
@@ -163,6 +196,10 @@ DARK_CSS = """
         color: #818cf8;
         background-color: #1b1e26;
     }
+    /* UI-v2h: hide Streamlit's "Press Enter to submit form" / "Press Enter to
+       apply" helper under text/number inputs — it's noise here, since the form
+       is submitted with the Generate button, not Enter. */
+    [data-testid="InputInstructions"] { display: none; }
     /* Dividers + alerts onto the panel palette */
     hr { border-color: #2b2f3a; }
     [data-testid="stAlert"] {
@@ -175,7 +212,8 @@ DARK_CSS = """
     }
     /* --- top bar --- */
     .aasa-brand {
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
         color: #e8e9ec;
         font-size: 1.05rem;
         letter-spacing: 0.08em;
@@ -186,7 +224,8 @@ DARK_CSS = """
         border: 1px solid #818cf8;
         color: #818cf8;
         padding: 3px 12px;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
         font-size: 0.72rem;
         letter-spacing: 0.12em;
     }
@@ -199,7 +238,8 @@ DARK_CSS = """
     }
     .aasa-eyebrow {
         color: #818cf8;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
         font-size: 0.75rem;
         letter-spacing: 0.18em;
     }
@@ -212,13 +252,14 @@ DARK_CSS = """
     .aasa-hero h1 .accent { color: #818cf8; }
     .aasa-hero p { color: #9aa4b2; max-width: 46em; }
     .aasa-stat-num {
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         font-size: 1.7rem;
         color: #f5f1ea;
-        font-weight: bold;
+        font-weight: 600;
     }
     .aasa-stat-label {
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
         font-size: 0.68rem;
         color: #6b7480;
         letter-spacing: 0.1em;
@@ -238,7 +279,8 @@ DARK_CSS = """
         color: #818cf8;
         padding: 2px 10px;
         margin: 0 6px 6px 0;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
         font-size: 0.72rem;
         letter-spacing: 0.06em;
     }
@@ -254,7 +296,8 @@ DARK_CSS = """
     }
     .aasa-banner b {
         color: #818cf8;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
         letter-spacing: 0.08em;
     }
     .aasa-stack-name {
@@ -262,19 +305,124 @@ DARK_CSS = """
         font-weight: 700;
         font-size: 1.05rem;
     }
+    /* UI-v2c: when the stack name is a link to the tool's site, keep it green
+       (Streamlit's default link colour would otherwise turn it blue) and only
+       underline on hover so it doesn't look like body-copy link text. */
+    a.aasa-stack-name, a.aasa-stack-name:link, a.aasa-stack-name:visited {
+        color: #5fb39c;
+        text-decoration: none;
+    }
+    a.aasa-stack-name:hover { text-decoration: underline; }
+    /* UI-v2c: pricing-model tag — orange + mono so it separates from the green
+       stack name. Own class (not the global `code` rule, which also styles the
+       .env scaffold + export code blocks) so the colour change stays scoped. */
+    .aasa-price-tag {
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
+        color: #e0872f;
+        background-color: #1b1e26;
+        padding: 1px 6px;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+    }
     .aasa-why {
         color: #818cf8;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
-        font-size: 0.85rem;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
+        font-size: 0.95rem;   /* UI-v2d: bumped from 0.85rem for legibility */
+    }
+    /* --- Blueprint tabs (UI-v2b) — more prominent per Week-3 tutor feedback.
+       Bigger, uppercase mono labels with clear spacing; the selected tab and
+       its underline go indigo so the current section is obvious. baseweb
+       selectors verified on the project's Streamlit build — re-check after any
+       Streamlit upgrade (same caveat as the button selectors above). The
+       Material icons themselves come from the tab labels in dashboard.py. */
+    button[data-baseweb="tab"] {
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.92rem;
+        font-weight: 700;
+        padding: 12px 18px;
+        color: #9aa4b2;
+    }
+    button[data-baseweb="tab"] * { font-size: 0.92rem; }   /* size the icon glyph with the label */
+    div[data-baseweb="tab-list"] { gap: 6px; border-bottom: 1px solid #2b2f3a; }
+    button[data-baseweb="tab"]:hover { color: #e8e9ec; }
+    button[data-baseweb="tab"][aria-selected="true"] { color: #818cf8; }
+    div[data-baseweb="tab-highlight"] { background-color: #818cf8; height: 3px; }
+    /* Ash3-update: cap the reading width of the prose-heavy tab sections so the
+       wide layout stays legible (long lines of body text are hard to read).
+       Block A (Stack) and Block B (Cost) are NOT wrapped, so their columns /
+       metrics keep the full page width. Keys set via st.container(key=...) in
+       dashboard.py -> Streamlit emits a matching .st-key-<key> class. */
+    .st-key-aasa_prose_summary, .st-key-aasa_prose_cases { max-width: 72ch; }
+    .st-key-aasa_prose_how { max-width: 52rem; }   /* wider: keeps the 3 "how" columns comfortable */
+    /* Ash3-update v2.2: we manage the sidebar open/closed ourselves (see below),
+       so hide Streamlit's native collapse (<<) and expand (>>) controls to keep
+       our state and the UI in sync. Our own "Blueprint Builder" button reopens
+       the sidebar when it's hidden. */
+    [data-testid="stSidebarCollapseButton"], [data-testid="stExpandSidebarButton"] {
+        display: none !important;
+    }
+    /* Style our custom sidebar controls (keyed st.buttons) — mono, top-left. */
+    .st-key-reopen_sidebar button, .st-key-collapse_sidebar button {
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-weight: 600;
+        letter-spacing: 0.04em;
     }
 </style>
 """
 st.markdown(DARK_CSS, unsafe_allow_html=True)
 
-# Icebox B.6 (Build Guide 27) — sidebar panel listing this session's saved
-# blueprints, with JSON export/import. Rendered on every rerun so loads work
-# from anywhere; the matching Save button lives in dashboard.py's action row.
-render_saved_panel()
+# --- Apply the sidebar open/closed state via CSS + a custom reopen control ---
+# DERIVE the effective open/closed state so Clear and Save reliably bring the
+# sidebar back (the raw flag alone proved flaky in testing). Force open when:
+#   - there's no blueprint (empty state — the form must be visible; covers Clear)
+#   - a save just happened (so the new saved blueprint is visible; covers Save)
+# Otherwise use the flag (Generate sets it False to collapse; the reopen button
+# and Clear/Save set it True).
+_sidebar_open = st.session_state.get("sidebar_open", True)
+# Force open (covers Clear -> empty state, and Save) UNLESS the user explicitly
+# clicked Collapse — that lets the ≪ Collapse button work even in the empty
+# state, where otherwise "no result" would force the sidebar back open.
+if not st.session_state.get("_user_collapsed", False):
+    if ("result" not in st.session_state) or st.session_state.get("_blueprint_just_saved"):
+        _sidebar_open = True
+st.session_state.sidebar_open = _sidebar_open
+
+if _sidebar_open:
+    # min-width (NOT a fixed width): Streamlit applies the sidebar width as an
+    # inline style from a resizable React component, so a fixed `width:!important`
+    # blocked dragging. min-width sets the open width but still lets the user drag
+    # the sidebar WIDER (it just can't be dragged narrower than this).
+    st.markdown(
+        f"<style>section[data-testid='stSidebar']{{min-width:{_SIDEBAR_WIDTH}px !important;}}</style>",
+        unsafe_allow_html=True,
+    )
+    # Our own collapse control (native << is hidden by DARK_CSS), top-left.
+    if st.button("≪  Collapse", key="collapse_sidebar"):
+        st.session_state.sidebar_open = False
+        st.session_state["_user_collapsed"] = True
+        st.rerun()
+else:
+    # Hide the whole sidebar; the main column reflows to full width. The reopen
+    # button below is the only way back in (native chevron is hidden by DARK_CSS).
+    st.markdown(
+        "<style>section[data-testid='stSidebar']{display:none !important;}</style>",
+        unsafe_allow_html=True,
+    )
+    if st.button("≫  Blueprint Builder", key="reopen_sidebar"):
+        st.session_state.sidebar_open = True
+        st.session_state["_user_collapsed"] = False
+        st.session_state["build_open"] = True   # reopening shows the form expanded
+        st.rerun()
+
+# Icebox B.6 (Build Guide 27) — the saved-blueprints panel is a sidebar panel.
+# Change 1 (UI-v2 · reduce-scroll) moved the intake form into the sidebar too,
+# so render_saved_panel() is now called *after* the form (further down) to keep
+# the form on top and the saved list beneath it. It still renders on every
+# rerun so loads work from anywhere.
 
 
 # --- Hero stats, computed at load (not hardcoded) ---------------------------
@@ -306,8 +454,13 @@ st.markdown(
 )
 
 # --- Hero / intro ---
-st.markdown(
-    f"""
+# Change 3 (UI-v2 · reduce-scroll): the full hero is ~one screen tall. Show it
+# only before a blueprint exists — once results are on screen the compact top
+# bar above is enough, and the user is no longer forced to scroll past the hero
+# to reach their own blueprint. The top bar (above) still renders on every run.
+if "result" not in st.session_state:
+    st.markdown(
+        f"""
     <div class="aasa-hero">
         <div class="aasa-eyebrow">CAPSTONE MVP · GROUNDED IN {_n_cases:,} REAL AI DEPLOYMENTS</div>
         <h1>Match your constraints to <span class="accent">what teams like yours
@@ -338,55 +491,89 @@ st.markdown(
         numbers below are directional, not advice.</div>
     </div>
     """,
-    unsafe_allow_html=True,
-)
-
-# Near the top of intake.py, before the form:
-if "form_start_time" not in st.session_state:
-    st.session_state.form_start_time = time.time()
-    log_event("form_start")
-
-# --- The 5-field form ---
-# Options now come from app/data/options.py — real Industry/Workflow values
-# derived from the case dataset (Card 2.1 Step 0), not hardcoded placeholders.
-with st.form("intake_form"):
-    workflow = st.selectbox("Target AI Workflow", WORKFLOWS)
-    industry = st.selectbox("Industry", INDUSTRIES)
-    org_size_key = st.selectbox(
-        "Organisation Size",
-        options=list(ORG_SIZES.keys()),
-        format_func=lambda k: ORG_SIZES[k],   # shows the friendly label, stores the short key
-    )
-    privacy_key = st.radio(
-        "Data-Privacy Posture",
-        options=list(PRIVACY_POSTURES.keys()),
-        format_func=lambda k: PRIVACY_POSTURES[k],
-        horizontal=True,
-        help="Regulated = you handle data subject to HIPAA/GDPR/financial "
-             "regulation and need governable, self-hostable tools.",
-    )
-    budget = st.number_input(
-        "Monthly Budget (€)",
-        min_value=0, step=50, value=800,
+        unsafe_allow_html=True,
     )
 
-    # Icebox B.5 (Build Guide 24) — both optional; deliberately NOT validated
-    # in validate_intake, so leaving them empty changes nothing.
-    with st.expander("Optional: project details"):
-        project_name = st.text_input(
-            "Project name",
-            max_chars=60,
-            help="Shown on your blueprint and export — useful if you save or share it. "
-                 "No need to enter personal or company-identifying information.",
-        )
-        exclude_tools = st.multiselect(
-            "Vendors to exclude",
-            options=sorted(PRICING.keys(), key=lambda k: PRICING[k]["label"]),
-            format_func=lambda k: PRICING[k]["label"],
-            help="Tools you can't or won't use. They'll be removed before ranking.",
-        )
+# --- Sidebar: intake form + saved blueprints -------------------------------
+# Change 1 (UI-v2 · reduce-scroll): the 5-field form now lives in the sidebar.
+# This frees the main column for the blueprint, so results are no longer stacked
+# beneath a full-width form and the user isn't forced to scroll past the intake
+# to reach (or re-read) their result. The form stays visible for re-runs.
+# render_saved_panel() is called at the END of this block so the saved list
+# sits beneath the form in the sidebar (it targets st.sidebar internally).
+with st.sidebar:
+    # form_start_time drives Card 3.3's time-to-results telemetry — set once
+    # per session, before the form renders.
+    if "form_start_time" not in st.session_state:
+        st.session_state.form_start_time = time.time()
+        log_event("form_start")
 
-    submitted = st.form_submit_button("Generate my blueprint")
+    # Ash3-update v2.4: the form now lives in a "Build a blueprint" expander, like
+    # the Saved-blueprints panel. build_open drives its expanded state — open by
+    # default, but auto-collapsed right after a Save (set in saved_blueprints.py)
+    # so the freshly-saved blueprint below becomes the focus. Reopen/Clear set it
+    # back open.
+    # Ash3-update v2.5: the expander key includes _build_open so it REMOUNTS when
+    # that flag flips — otherwise Streamlit ignores `expanded` changes on rerun
+    # and the "collapse on Save" wouldn't take effect.
+    # v2.6: widget keys are suffixed with a form_nonce. Clear bumps the nonce
+    # (dashboard.py) so the widgets get brand-new keys and reset to their
+    # DEFAULTS — deleting the old keys wasn't enough for widgets inside an
+    # st.form (the frontend retains their values). Reading the returned values
+    # (workflow, industry, ...) is unaffected; only the keys change.
+    _build_open = st.session_state.get("build_open", True)
+    _fn = st.session_state.get("form_nonce", 0)
+    with st.expander("Build a blueprint", expanded=_build_open, key=f"build_exp_{_build_open}"):
+        # Options come from app/data/options.py — real Industry/Workflow values
+        # derived from the case dataset (Card 2.1 Step 0), not hardcoded.
+        with st.form("intake_form"):
+            workflow = st.selectbox("Target AI Workflow", WORKFLOWS, key=f"in_workflow_{_fn}")
+            industry = st.selectbox("Industry", INDUSTRIES, key=f"in_industry_{_fn}")
+            org_size_key = st.selectbox(
+                "Organisation Size",
+                options=list(ORG_SIZES.keys()),
+                format_func=lambda k: ORG_SIZES[k],   # friendly label, stores the short key
+                key=f"in_org_size_{_fn}",
+            )
+            privacy_key = st.radio(
+                "Data-Privacy Posture",
+                options=list(PRIVACY_POSTURES.keys()),
+                format_func=lambda k: PRIVACY_POSTURES[k],
+                horizontal=True,
+                help="Regulated = you handle data subject to HIPAA/GDPR/financial "
+                     "regulation and need governable, self-hostable tools.",
+                key=f"in_privacy_{_fn}",
+            )
+            budget = st.number_input(
+                "Monthly Budget (€)",
+                min_value=0, step=50, value=800,
+                key=f"in_budget_{_fn}",
+            )
+
+            # Icebox B.5 (Build Guide 24) — both optional; deliberately NOT
+            # validated in validate_intake, so leaving them empty changes nothing.
+            # NB: rendered inline (not in a nested expander) — Streamlit forbids
+            # an expander inside the "Build a blueprint" expander above.
+            st.caption("Optional — leave blank to skip")
+            project_name = st.text_input(
+                "Project name",
+                max_chars=60,
+                help="Shown on your blueprint and export — useful if you save or share it. "
+                     "No need to enter personal or company-identifying information.",
+                key=f"in_project_name_{_fn}",
+            )
+            exclude_tools = st.multiselect(
+                "Vendors to exclude",
+                options=sorted(PRICING.keys(), key=lambda k: PRICING[k]["label"]),
+                format_func=lambda k: PRICING[k]["label"],
+                help="Tools you can't or won't use. They'll be removed before ranking.",
+                key=f"in_exclude_tools_{_fn}",
+            )
+
+            submitted = st.form_submit_button("Generate my blueprint")
+
+    # Saved-blueprints panel (B.6) — rendered beneath the form, still in sidebar.
+    render_saved_panel()
 
 if submitted:
     is_valid, error_message = validate_intake(
@@ -421,12 +608,22 @@ if submitted:
 # Card P.14's funnel rates by roughly half. Removed — log each event once.
         log_event("llm_summary_generated", **result["llm_metrics"])
         st.session_state.result = result  # persist across reruns — see note below
+        # Ash3-update v2.2: hide the sidebar so the fresh blueprint gets the whole
+        # screen; the "Blueprint Builder" button (top-left) reopens it.
+        st.session_state.sidebar_open = False
+        # UI-v2 fix: rerun immediately so the hero's "result not in
+        # st.session_state" gate (above) re-evaluates with the result now set.
+        # Without this, on the submit run the hero had already rendered before
+        # result existed, so it lingered beside the blueprint until the next
+        # interaction. The results_shown/llm_summary_generated events above are
+        # logged once, before this rerun, so telemetry is unaffected.
+        st.rerun()
 
 # Renders on every rerun as long as a result exists — not gated on `submitted`.
 # See Card 1.4's "Why not render inside if submitted:" note for why this matters:
 # Streamlit reruns the whole script on every interaction, and once Epic 3 adds
 # buttons inside the results view, those reruns would otherwise wipe the blueprint.
 if "result" in st.session_state:
-    st.success("Blueprint ready — see below.")
+    st.success("Blueprint ready — explore the tabs below.")
     render_blueprint(st.session_state.result)
     render_feedback_form()

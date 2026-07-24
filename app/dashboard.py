@@ -12,6 +12,18 @@ from app.survey_modal import render_copy_confirmation
 from app.saved_blueprints import render_save_button
 from app.analytics.tracker import log_event
 
+def _clear_blueprint():
+    """Clear's on_click callback. v2.6: bumps form_nonce so the intake widgets
+    (keyed in_<name>_<nonce> in intake.py) get fresh keys next run and reset to
+    their DEFAULTS — the reliable reset for widgets inside an st.form, where
+    simply deleting the keys doesn't work (the frontend retains the values).
+    Also drops the result and reopens the sidebar with the form expanded."""
+    st.session_state.pop("result", None)
+    st.session_state["form_nonce"] = st.session_state.get("form_nonce", 0) + 1
+    st.session_state["sidebar_open"] = True
+    st.session_state["_user_collapsed"] = False
+    st.session_state["build_open"] = True
+
 
 def render_blueprint(result: dict):
     # B.5 (Build Guide 24) — optional project name replaces the generic title.
@@ -19,27 +31,73 @@ def render_blueprint(result: dict):
     # Lovable-parity) — the theme carries the visual identity now.
     st.markdown(f"## {result.get('project_name') or 'Your AI Stack Blueprint'}")
 
+    # Status chips + directional banner stay ABOVE the tabs — they're the
+    # at-a-glance summary (matched-case count, regulated notice, budget fit) and
+    # should be visible no matter which tab is open. UI-v2f: chips row back on
+    # top, banner directly beneath it (order restored per feedback).
     _render_status_chips(result)
     _render_directional_banner(result)
 
-    _render_stack_block(result["recommended_stack"], result["matched_cases"], result["tool_costs"])
-    st.divider()
-    _render_cost_block(result["cost_forecast"])
-    st.divider()
-    _render_case_references_block(result["matched_cases"], result["recommended_stack"],
-                                  result.get("query", {}))
-    st.divider()
-    st.markdown("### Summary")
-    st.write(result["summary_text"])
-    st.divider()
-    st.markdown("### Export")
-    blueprint_text = blueprint_to_text(result)
-    st.caption("Hover the code block below and click the copy icon in the top-right corner.")
-    st.code(blueprint_text, language=None)
-    _render_action_row(result)
-    render_copy_confirmation()
-    st.divider()
-    _render_methodology_block()
+    # UI-v2e: Clear moved up here, right-aligned just above the tab bar (was in
+    # the Export action row). Popping "result" + rerun returns to the empty
+    # state. B.6 note: it pops "result" ONLY — it never touches
+    # st.session_state.saved_blueprints, so clearing the view keeps saved work.
+    _, clear_col = st.columns([5, 1])
+    with clear_col:
+        # Ash3-update v2.5: Clear now resets the intake form to defaults too, via
+        # an on_click callback (reliable widget-reset pattern — no st.rerun here).
+        st.button("Clear", key="clear_result", on_click=_clear_blueprint)
+
+    # Change 2 (UI-v2 · reduce-scroll): the blueprint used to be six sections
+    # stacked down one long column (Stack → Cost → Cases → Summary → Export →
+    # How it works), separated by dividers — the main cause of the "everything
+    # on one page / endless scrolling" tutor feedback. They're now tabs, so the
+    # whole blueprint fits one screen and the user picks what to look at.
+    # Nothing about the blocks themselves changed — each _render_* function is
+    # called exactly as before, just inside its tab. Remaining widget keys
+    # (case_count, clear_result, copy_confirm) are unchanged, so session state
+    # and the DARK_CSS class hooks keep working.
+    # UI-v2b: Material icons (Streamlit's built-in :material/: set — no emoji,
+    # consistent with the team's de-emoji styling) + prominence CSS in
+    # intake.py's DARK_CSS make the tab bar clearly the primary navigation.
+    # NOTE: :material/...: labels need a Streamlit build that renders Material
+    # Symbols in tab labels (the project's current build does). If they ever
+    # show as literal ":material/..." text, the Streamlit version is too old.
+    tab_stack, tab_cost, tab_cases, tab_summary, tab_export, tab_how = st.tabs(
+        [
+            ":material/layers: 1 · Stack",
+            ":material/payments: 2 · Cost",
+            ":material/library_books: 3 · Cases",
+            ":material/summarize: Summary",
+            ":material/download: Export",
+            ":material/help: How it works",
+        ]
+    )
+
+    with tab_stack:
+        _render_stack_block(result["recommended_stack"], result["matched_cases"],
+                            result["tool_costs"])
+    with tab_cost:
+        _render_cost_block(result["cost_forecast"])
+    with tab_cases:
+        # Ash3-update: keyed container caps the reading width (CSS in intake.py)
+        # so the case cards don't stretch full-bleed in wide layout.
+        with st.container(key="aasa_prose_cases"):
+            _render_case_references_block(result["matched_cases"], result["recommended_stack"],
+                                          result.get("query", {}))
+    with tab_summary:
+        with st.container(key="aasa_prose_summary"):
+            st.markdown("### Summary")
+            st.write(result["summary_text"])
+    with tab_export:
+        st.markdown("### Export")
+        blueprint_text = blueprint_to_text(result)
+        st.caption("Hover the code block below and click the copy icon in the top-right corner.")
+        st.code(blueprint_text, language=None)
+        _render_action_row(result)
+    with tab_how:
+        with st.container(key="aasa_prose_how"):
+            _render_methodology_block()
 
 
 # --- Lovable-parity UI round: status chips + banner -------------------------
@@ -78,15 +136,12 @@ def _render_directional_banner(result: dict):
     )
 
 
-# --- Lovable-parity UI round: action row (guides 25 + 26 + 27 + Clear) -------
-# B.6 note: Clear pops "result" only — it deliberately does NOT touch
-# st.session_state.saved_blueprints (clearing the current view must never
-# delete saved work).
+# --- Lovable-parity UI round: action row (guides 25 + 26 + 27) --------------
+# UI-v2e: four EQUAL columns for even spacing. Clear moved out (now above the
+# tabs); "I've copied my blueprint" moved in where Clear used to be.
 
 def _render_action_row(result: dict):
-    # [3,3,3,2] + the CSS nowrap rule: the earlier [2,2,2,1] left the Clear
-    # column so narrow its label wrapped mid-word ("Clea / r").
-    col0, col1, col2, col3 = st.columns([3, 3, 3, 2])
+    col0, col1, col2, col3 = st.columns(4)
     with col0:
         render_save_button(result)
     with col1:
@@ -108,9 +163,7 @@ def _render_action_row(result: dict):
             ):
                 log_event("scaffold_downloaded")
     with col3:
-        if st.button("Clear", key="clear_result"):
-            st.session_state.pop("result", None)
-            st.rerun()
+        render_copy_confirmation()
 
 
 # Update E — fallback text for the grey caption when a tool has no monthly_eur
@@ -122,17 +175,17 @@ _PRICE_FALLBACK_LABELS = {
     "free": "Free / Self-hosted",
 }
 
-# Toggle options for Block A (Update E) — maps the displayed pill label to the
-# PRICING "model" value it filters on. "Recommended" (the default) shows the
-# full ranked list, unfiltered, exactly as before this update.
-_STACK_FILTER_OPTIONS = {
-    "Recommended": None,
-    "Token": "token",
-    "Seat": "seat",
-    "Compute": "compute",
-    "Free": "free",
+# UI-v2c — display text for the orange pricing-model tag in Block A. Rendered
+# as one styled token (no separate "-priced" add-on). Team wording decision:
+# "open source" (not "free-priced") and "usage-based" (not "compute-priced");
+# token/seat keep the "-priced" form. Falls back to "<model>-priced" for any
+# unexpected model value.
+_PRICE_TAG_LABELS = {
+    "token": "token-priced",
+    "seat": "seat-priced",
+    "compute": "usage-based",
+    "free": "open source",
 }
-
 
 # Lovable-parity UI round — hand-written one-line rationales for the tools that
 # most often reach Block A (mirrors the prototype's per-tool "why:" line, e.g.
@@ -179,31 +232,20 @@ def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dic
                  "Try relaxing the privacy posture or broadening the workflow.")
         return
 
-    filter_label = st.radio(
-        "Filter by pricing type", list(_STACK_FILTER_OPTIONS.keys()),
-        horizontal=True, key="stack_filter", label_visibility="collapsed",
-    )
-    filter_model = _STACK_FILTER_OPTIONS[filter_label]
-
-    if filter_model is None:
-        visible_tools = ranked_tools
-    else:
-        visible_tools = [t for t in ranked_tools if PRICING.get(t, {}).get("model") == filter_model]
-
-    if not visible_tools:
-        st.info(f"None of the current recommendations are {filter_label.lower()}-priced. "
-                 "Try a different filter or \"Recommended\" for the full list.")
-        return
+    # UI-v2e: the pricing-type filter toggle (Recommended/Token/Seat/Compute/Free)
+    # was removed per feedback — always show the full ranked recommendation.
+    visible_tools = ranked_tools
 
     # Evidence count: how many matched cases mention each tool — this is the
-    # "evidence bar" the task card asks for. Denominator stays the total matched
-    # case count regardless of which filter is active, so the percentage always
-    # reflects real-world evidence, not just evidence within the filtered subset.
+    # "evidence bar" the task card asks for. Denominator is the total matched
+    # case count, so the percentage reflects real-world evidence.
     total_cases = max(len(matched_cases), 1)
     for rank, tool_id in enumerate(visible_tools, start=1):
         entry = PRICING.get(tool_id, {})
         label = entry.get("label", tool_id)
         pricing_model = entry.get("model", "unknown")
+        tool_url = entry.get("url")   # UI-v2c — official homepage, if known
+        price_tag = _PRICE_TAG_LABELS.get(pricing_model, f"{pricing_model}-priced")
         evidence_count = sum(1 for c in matched_cases if tool_id in c.get("canonical_tools", []))
         evidence_pct = int(100 * evidence_count / total_cases)
 
@@ -216,11 +258,19 @@ def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dic
 
         col1, col2 = st.columns([3, 1])
         with col1:
-            # Tool name in green (.aasa-stack-name, in intake.py's DARK_CSS);
-            # pricing-model tag stays as an indigo code span for contrast.
+            # Tool name in green (.aasa-stack-name). UI-v2c: the whole name is a
+            # hyperlink to the tool's official site when we have a URL (falls
+            # back to a plain span otherwise), and the pricing-model tag is now
+            # one orange .aasa-price-tag token ("seat-priced" / "token-priced" /
+            # "usage-based" / "open source" — single font, no split "-priced"
+            # add-on) so it reads as one unit and stands apart from the name.
+            if tool_url:
+                name_html = (f'<a class="aasa-stack-name" href="{tool_url}" '
+                             f'target="_blank" rel="noopener">{rank}. {label}</a>')
+            else:
+                name_html = f'<span class="aasa-stack-name">{rank}. {label}</span>'
             st.markdown(
-                f'<span class="aasa-stack-name">{rank}. {label}</span>'
-                f'  ·  <code>{pricing_model}</code>-priced',
+                f'{name_html}  ·  <span class="aasa-price-tag">{price_tag}</span>',
                 unsafe_allow_html=True,
             )
             # Lovable-parity UI round — per-tool "why:" rationale line.
