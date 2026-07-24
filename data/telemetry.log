@@ -207,3 +207,18 @@
 {"event": "llm_summary_generated", "timestamp": 1784828314.092361, "duration_seconds": 1.55, "prompt_tokens": 1093, "completion_tokens": 823, "tokens_per_second": 531.0}
 {"event": "blueprint_saved", "timestamp": 1784828329.809707}
 {"event": "form_start", "timestamp": 1784828758.911932}
+{"event": "form_start", "timestamp": 1784884388.6854038}
+{"event": "results_shown", "timestamp": 1784884572.738921, "elapsed_seconds": 184.1}
+{"event": "llm_summary_generated", "timestamp": 1784884572.739799, "duration_seconds": 2.33, "prompt_tokens": 1073, "completion_tokens": 1041, "tokens_per_second": 446.8}
+{"event": "form_start", "timestamp": 1784898420.618985}
+{"event": "results_shown", "timestamp": 1784898522.157208, "elapsed_seconds": 101.5}
+{"event": "llm_summary_generated", "timestamp": 1784898522.1584241, "duration_seconds": 3.34, "prompt_tokens": 1054, "completion_tokens": 1100, "tokens_per_second": 329.3}
+{"event": "blueprint_saved", "timestamp": 1784898689.6276999}
+{"event": "results_shown", "timestamp": 1784898739.2310028, "elapsed_seconds": 318.6}
+{"event": "llm_summary_generated", "timestamp": 1784898739.2332978, "duration_seconds": 2.61, "prompt_tokens": 1083, "completion_tokens": 2048, "tokens_per_second": 784.7}
+{"event": "results_shown", "timestamp": 1784902076.302689, "elapsed_seconds": 3655.7}
+{"event": "llm_summary_generated", "timestamp": 1784902076.304063, "duration_seconds": 1.57, "prompt_tokens": 1102, "completion_tokens": 359, "tokens_per_second": 228.7}
+{"event": "blueprint_saved", "timestamp": 1784902122.072685}
+{"event": "results_shown", "timestamp": 1784902170.6166751, "elapsed_seconds": 3750.0}
+{"event": "llm_summary_generated", "timestamp": 1784902170.619236, "duration_seconds": 1.04, "prompt_tokens": 1080, "completion_tokens": 547, "tokens_per_second": 526.0}
+{"event": "form_start", "timestamp": 1784902214.8281112}
