@@ -17,7 +17,11 @@ def render_copy_confirmation():
     # Restyle round: emojis dropped (team decision, Lovable-parity).
     # key gives the container a .st-key-copy_confirm CSS class, which
     # intake.py's DARK_CSS uses to color this button green.
-    if st.button("I've copied my blueprint", key="copy_confirm"):
+    # UI-v2f: shortened from "I've copied my blueprint" — the longer label
+    # overflowed the button in the four-equal-column action row. UI-v2g: added
+    # a trailing checkmark (a plain Unicode glyph, not an emoji — consistent
+    # with the team's de-emoji decision) so the confirmed state reads clearly.
+    if st.button("Blueprint copied ✓", key="copy_confirm"):
         log_event("export_clicked")
         st.success("Noted — thanks!")
 

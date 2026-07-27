@@ -3,6 +3,7 @@ streamlit
 chromadb
 sentence-transformers
 scikit-learn
+scipy
 matplotlib
 openai
 python-dotenv
