@@ -18,7 +18,7 @@ Notes, field by field:
 
 - **`workflow`** — `st.selectbox("Target AI Workflow", WORKFLOWS)` (`app/intake.py:60`). The dropdown label *is* the stored value — no separate short key. Full option set: 18 canonical domains derived from the real case dataset, plus `"Any workflow"` (`app/data/options.py:57–76`).
 - **`industry`** — `st.selectbox("Industry", INDUSTRIES)` (`intake.py:61`). Same pattern: label is the value. 24 real dataset values + `"Any industry"` (`options.py:26–51`).
-- **`org_size`** — `st.selectbox(..., options=list(ORG_SIZES.keys()), format_func=lambda k: ORG_SIZES[k])` (`intake.py:62–66`). The UI shows a friendly label ("Startup (5–20 people)") but the form stores the short key (`"startup"`). Full key→label mapping in `options.py:11–17`.
+- **`org_size`** — `st.selectbox(..., options=list(ORG_SIZES.keys()), format_func=lambda k: ORG_SIZES[k])` (`intake.py:62–66`). The UI shows a friendly label ("Startup (11-100 people)") but the form stores the short key (`"startup"`). Full key→label mapping in `options.py:11–17`.
 - **`privacy`** — `st.radio(..., options=list(PRIVACY_POSTURES.keys()), ...)` (`intake.py:67–74`). Validated to be exactly `"standard"` or `"regulated"`, nothing else (`app/validators.py:17`).
 - **`budget`** — `st.number_input("Monthly Budget (€)", min_value=0, step=50, value=800)` (`intake.py:75–78`). **Gotcha:** the widget's own `min_value=0` allows 0, but `validate_intake()` separately requires `budget_value > 0` and rejects exactly 0 (`validators.py:20–27`) — so "0" passes the widget but fails validation with "Monthly budget must be greater than zero."
 

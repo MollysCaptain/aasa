@@ -540,8 +540,23 @@ with st.sidebar:
                 options=list(PRIVACY_POSTURES.keys()),
                 format_func=lambda k: PRIVACY_POSTURES[k],
                 horizontal=True,
-                help="Regulated = you handle data subject to HIPAA/GDPR/financial "
-                     "regulation and need governable, self-hostable tools.",
+                # Reworded 2026-07-27 after the first real user-test session:
+                # the old text defined "Regulated" only, leaving the reader to
+                # infer "Standard" by elimination, and never said what actually
+                # changes in the output. Both options are now defined, and the
+                # consequence is stated so the choice is informed.
+                help=(
+                    "**Standard** — normal business data, no sector-specific rules. "
+                    "All tools in the library stay eligible.\n\n"
+                    "**Regulated** — you handle data covered by HIPAA, GDPR or "
+                    "financial regulation (patient records, EU personal data, "
+                    "payment or account data). Tools we could not classify as "
+                    "governable — self-hostable, or offering enterprise data "
+                    "controls — are filtered out before ranking, so you may see "
+                    "fewer recommendations.\n\n"
+                    "This is a directional shortlist, not a compliance "
+                    "certification. Verify with your own legal review."
+                ),
                 key=f"in_privacy_{_fn}",
             )
             budget = st.number_input(
