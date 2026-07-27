@@ -1,12 +1,12 @@
 # 34 — Build Guide: Icebox B.8 — PDF blueprint download
 
 **Card:** B.8 · **Owner:** Person B (Ash) · **Branch:** `Ash3-update`
-**Status: ✅ IMPLEMENTED 2026-07-27 — using reportlab, not fpdf2.**
+**Status: ✅ IMPLEMENTED 2026-07-27 — using `fpdf2`.**
 Built with the team's decisions (sanitise in the PDF path only; one "Download"
-popover holding both formats), first on fpdf2 and then **switched to reportlab
-at the team's request to compare**. reportlab won on output quality — see
-"Library comparison" and "Implementation notes" at the end. **Read those if you
-touch this code.**
+popover holding both formats). Both libraries were implemented and rendered:
+fpdf2 first, then reportlab for comparison, then **reverted to fpdf2 as the
+team's final choice**. The comparison and both sets of gotchas are kept at the
+end of this guide — **read those if you touch this code.**
 **Depends on:** nothing new — reuses `app/export.py`'s existing text builder.
 
 ## Goal in plain language
@@ -27,20 +27,22 @@ render of the blueprint the user already has on screen.
 
 ## Step 1 — Choose the library (decision, then `requirements.txt`)
 
-**Chosen: `reportlab`** (`pip install reportlab`). fpdf2 was built first and
-worked, but rendered noticeably less of our content — see the comparison at the
-end of this guide.
+**Chosen: `fpdf2`** (`pip install fpdf2`, imported as `from fpdf import FPDF`).
+reportlab was trialled and renders more characters natively, but the team chose
+fpdf2 — it's the lighter dependency and its output was judged good enough. The
+trade-off is documented in the comparison at the end: fpdf2 needs 15 character
+substitutions where reportlab needed 4.
 
 | Option | Why / why not |
 |---|---|
-| **`reportlab`** ✅ | Pure Python, no system libraries. Heavier API than fpdf2, but renders far more of our characters correctly (comparison at the end). |
-| `fpdf2` | Also pure Python and tiny; built first and worked, but raised on `€`, em-dashes, bullets, arrows and ticks — 15 characters needed replacing. |
+| **`fpdf2`** ✅ | Pure Python, no system libraries, tiny. Raises on `€`, em-dashes, bullets, arrows and ticks, so 15 characters are substituted (see `_pdf_safe`). Chosen: lighter dependency, output judged good enough. |
+| `reportlab` | Also pure Python; renders far more of our characters natively (only 4 substitutions) and nicer typography, but a heavier dependency. Trialled, then reverted. |
 | `weasyprint` | Best HTML→PDF fidelity, but needs system libs (cairo/pango) — likely to break a cloud deploy. **Avoid for this MVP.** |
 
 Add to `requirements.txt`:
 
 ```
-reportlab
+fpdf2
 ```
 
 ## Step 2 — Add the PDF builder to `app/export.py`
@@ -50,56 +52,49 @@ Return **bytes**, because `st.download_button` needs bytes for a binary file.
 
 ```python
 def blueprint_to_pdf(result: dict) -> bytes:
-    """Icebox B.8 — render the blueprint as a shareable PDF via reportlab."""
-    import io, textwrap
-    from reportlab.lib.pagesizes import A4
-    from reportlab.lib.units import mm
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.pdfbase.pdfmetrics import stringWidth
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Preformatted, Spacer
+    """Icebox B.8 — render the blueprint as a shareable PDF via fpdf2."""
+    from fpdf import FPDF                     # local import: only cost it if used
+    from fpdf.enums import XPos, YPos
 
     body = _pdf_safe(blueprint_to_text(result))
-    heading = _pdf_safe(result.get("project_name") or "Your AI Stack Blueprint")
+    title = _pdf_safe(result.get("project_name") or "Your AI Stack Blueprint")
 
-    buf = io.BytesIO()
-    doc = SimpleDocTemplate(buf, pagesize=A4,
-                            leftMargin=15*mm, rightMargin=15*mm,
-                            topMargin=15*mm, bottomMargin=15*mm,
-                            title=f"AASA Blueprint — {heading}", author="AASA")
-    mono = ParagraphStyle("aasa_mono", fontName="Courier", fontSize=8.5, leading=11.5)
-    h1   = ParagraphStyle("aasa_h1", fontName="Helvetica-Bold", fontSize=14,
-                          leading=18, spaceAfter=8)
-    note = ParagraphStyle("aasa_note", fontName="Helvetica-Oblique", fontSize=8,
-                          leading=11, textColor="#555555")
+    pdf = FPDF(format="A4", unit="mm")
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    pdf.set_margins(15, 15, 15)
 
-    # Preformatted does NOT wrap — pre-wrap or the long case URLs run off the page.
-    max_chars = max(20, int(doc.width / stringWidth("M", "Courier", 8.5)))
-    wrapped = []
+    pdf.set_font("Helvetica", "B", 14)
+    pdf.multi_cell(0, 8, title, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln(2)
+
+    # Courier keeps the ranked list and cost columns aligned, like the on-screen
+    # code block. multi_cell wraps the long case URLs for us.
+    pdf.set_font("Courier", size=9)
     for line in body.split("\n"):
-        wrapped.extend(textwrap.wrap(line, max_chars, subsequent_indent="    ",
-                       break_long_words=True, break_on_hyphens=False) or [""])
+        pdf.multi_cell(0, 4.5, line if line.strip() else " ",
+                       new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
-    doc.build([Paragraph(heading, h1),
-               Preformatted("\n".join(wrapped), mono),
-               Spacer(1, 10),
-               Paragraph("Directional only. Pricing is illustrative and may be out "
-                         "of date; compliance filtering is a shortlist, not "
-                         "certification. Generated by AASA, a 4-week student "
-                         "prototype.", note)])
-    return buf.getvalue()
+    pdf.ln(4)
+    pdf.set_font("Helvetica", "I", 8)
+    pdf.multi_cell(0, 4,
+        "Directional only. Pricing is illustrative and may be out of date; "
+        "compliance filtering is a shortlist, not certification. "
+        "Generated by AASA, a 4-week student prototype.",
+        new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    return bytes(pdf.output())
 ```
 
-**Character handling (`_pdf_safe`).** reportlab renders `—`, `–`, `·`, `•`, `→`
-and `✓` correctly, so they're left alone. Only four substitutions are needed, and
-both were found by *rendering and looking*, not by catching exceptions:
-
-- **`€` → `EUR `** — the base-14 Courier/Helvetica metrics have no Euro glyph, so
-  reportlab **silently drops it**; a cost line rendered as "Primary API: 875.00/mo".
-- **`‑` (U+2011) → `-`** — draws as a black box; the LLM summary emits it.
-- `≪`/`≫` → `<<`/`>>`, `⚠` → `!` (defensive; not currently emitted into the text export).
+**Character handling (`_pdf_safe`).** fpdf2's core fonts are Latin-1 only, and
+this was verified by testing, not assumed — `€`, `—`, `–`, `→`, `•`, `✓` and the
+U+2011 non-breaking hyphen all raise `FPDFUnicodeEncodingException`; only `·`
+survives. So all of them are substituted (`€` → `EUR `, dashes → `-`, `•` → `*`,
+`→` → `->`, `✓` → `(done)`, smart quotes → plain), with a
+`.encode("latin-1", "replace")` backstop so an unexpected glyph degrades to `?`
+instead of breaking the download.
 
 Applied to the **PDF path only** — the copy block, the `.md` export and the saved
-JSON keep the original characters.
+JSON keep the original characters (verified).
 
 ## Step 3 — Wire the download button in `app/dashboard.py`
 
@@ -122,7 +117,7 @@ dependency replaced the entire results page with a traceback):
             try:
                 pdf_bytes = blueprint_to_pdf(result)
             except ModuleNotFoundError:
-                pdf_bytes, pdf_error = None, ("PDF export needs the `reportlab` "
+                pdf_bytes, pdf_error = None, ("PDF export needs the `fpdf2` "
                     "package. Run `pip install -r requirements.txt`, then restart.")
             except Exception as exc:
                 pdf_bytes, pdf_error = None, f"PDF could not be generated ({type(exc).__name__})."
@@ -166,7 +161,7 @@ two places that enumerate events so the docs don't drift:
 
 ## How to verify this card is done
 
-- [ ] `pip install -r requirements.txt` in a clean venv succeeds (reportlab resolves).
+- [ ] `pip install -r requirements.txt` in a clean venv succeeds (fpdf2 resolves).
 - [ ] Generate a blueprint → Export tab → **Download (.pdf)** produces a file that
       opens in a PDF viewer.
 - [ ] The PDF shows: project name (or the default title), the ranked stack, the
@@ -279,9 +274,14 @@ to images to compare. This is what actually differs:
 | Cursor gotcha | `multi_cell` needs `new_x=LMARGIN, new_y=NEXT` or the 2nd full-width cell raises "Not enough horizontal space" | none |
 | Typography | serviceable | noticeably better leading/greys |
 
-**Verdict: reportlab.** It preserves the em-dashes, bullets, arrows and ticks
-that fpdf2 refused, so the PDF reads much closer to the on-screen blueprint —
-only 4 characters need substituting instead of 15.
+**On output quality: reportlab wins** — it preserves the em-dashes, bullets,
+arrows and ticks that fpdf2 refuses, needing only 4 substitutions instead of 15.
+
+**Final decision: `fpdf2`** (team call, 2026-07-27, after seeing both rendered).
+It's the lighter dependency and the substituted output was judged good enough for
+a blueprint whose content is already plain monospaced text. The cost of that
+choice, stated plainly: the PDF shows `EUR` not `€`, `-` not `—`, `*` not `•`,
+`->` not `→`. Nothing is lost or wrong — it's just plainer than the screen.
 
 **The lesson worth keeping:** reportlab raised **no exception** for any of our
 characters, yet visibly dropped the `€` and drew a black box for U+2011. An

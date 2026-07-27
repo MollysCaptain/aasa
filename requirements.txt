@@ -1,7 +1,7 @@
 pandas
 streamlit
 chromadb
-reportlab
+fpdf2
 sentence-transformers
 scikit-learn
 scipy

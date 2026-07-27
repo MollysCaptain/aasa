@@ -4,30 +4,28 @@ Icebox B.8 (Build Guide 34) adds a PDF render of the same content.
 """
 from app.logic.pricing import PRICING
 
-# B.8 — character handling for the PDF path. Switched from fpdf2 to reportlab
-# (2026-07-27); reportlab needs far less replacing, verified by rendering:
-#   - It draws "—", "–", "·", "•", "✓" and "→" correctly (fpdf2 raised on all
-#     of those except "·"), so they're left alone.
-#   - Its base-14 Courier/Helvetica metrics have NO Euro glyph, so "€" is
-#     silently DROPPED — worse than an error, because a cost line would read
-#     "Primary API: 875.00/mo". Hence "€" -> "EUR ".
-#   - Codepoints it can't map render as a black box (seen with the U+2011
-#     non-breaking hyphen the LLM summary sometimes emits), so those are mapped.
-# Applied to the PDF path ONLY — the on-screen copy block, the .md export and
-# the saved JSON keep the original characters.
+# B.8 — fpdf2's built-in fonts are Latin-1 only, and our blueprint really does
+# contain characters outside it. Verified empirically: "€", "—", "→" and "•" all
+# raise FPDFUnicodeEncodingException with the core fonts, while "·" is fine.
+# Per the team decision we sanitise in the PDF path ONLY — the on-screen copy
+# block, the .md export and the saved JSON keep the original characters.
 _PDF_CHAR_MAP = {
     "€": "EUR ",
-    "‑": "-",              # U+2011 non-breaking hyphen -> black box in reportlab
-    "≪": "<<", "≫": ">>",
-    "⚠": "!",
+    "—": "-", "–": "-", "‑": "-",   # em-dash, en-dash, non-breaking hyphen
+    "→": "->", "≪": "<<", "≫": ">>",
+    "✓": "(done)", "⚠": "!",
+    "•": "*",
+    "’": "'", "‘": "'", "“": '"', "”": '"', "…": "...",
 }
 
 
 def _pdf_safe(text: str) -> str:
-    """Replace only the characters reportlab's standard fonts can't draw."""
+    """Make text renderable by fpdf2's core fonts. Maps the characters we know
+    we emit, then drops anything else non-Latin-1 rather than crashing the
+    download (a '?' in one line beats no PDF at all)."""
     for bad, good in _PDF_CHAR_MAP.items():
         text = text.replace(bad, good)
-    return text
+    return text.encode("latin-1", "replace").decode("latin-1")
 
 
 def blueprint_to_text(result: dict) -> str:
@@ -119,57 +117,46 @@ def blueprint_to_markdown(result: dict) -> str:
 
 def blueprint_to_pdf(result: dict) -> bytes:
     """
-    Icebox B.8 (Build Guide 34) — the blueprint as a shareable PDF, via reportlab.
+    Icebox B.8 (Build Guide 34) — the blueprint as a shareable PDF.
 
     Deliberately a plain monospaced layout: the same content as
     blueprint_to_text(), in a container a non-technical stakeholder can forward
     or drop into a board pack. Returns raw bytes for st.download_button.
 
-    Uses platypus (SimpleDocTemplate) so page breaks are handled for us, and
-    Preformatted so the ranked list and cost columns stay aligned like the
-    on-screen code block. Lines are hard-wrapped to the frame width first —
-    Preformatted does NOT wrap, and the case-reference URLs are long enough to
-    run off the page otherwise.
+    NOTE on multi_cell: fpdf2 leaves the cursor at the RIGHT edge by default,
+    which makes the next full-width cell raise "Not enough horizontal space".
+    Every call below therefore passes new_x=LMARGIN, new_y=NEXT.
     """
-    import io
-    import textwrap
-    from reportlab.lib.pagesizes import A4
-    from reportlab.lib.units import mm
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.pdfbase.pdfmetrics import stringWidth
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Preformatted, Spacer
+    from fpdf import FPDF                     # local import: only cost it if used
+    from fpdf.enums import XPos, YPos
 
     body = _pdf_safe(blueprint_to_text(result))
-    heading = _pdf_safe(result.get("project_name") or "Your AI Stack Blueprint")
+    title = _pdf_safe(result.get("project_name") or "Your AI Stack Blueprint")
 
-    buf = io.BytesIO()
-    doc = SimpleDocTemplate(
-        buf, pagesize=A4,
-        leftMargin=15 * mm, rightMargin=15 * mm,
-        topMargin=15 * mm, bottomMargin=15 * mm,
-        title=f"AASA Blueprint — {heading}", author="AASA",
-    )
-    mono = ParagraphStyle("aasa_mono", fontName="Courier", fontSize=8.5, leading=11.5)
-    h1 = ParagraphStyle("aasa_h1", fontName="Helvetica-Bold", fontSize=14,
-                        leading=18, spaceAfter=8)
-    note = ParagraphStyle("aasa_note", fontName="Helvetica-Oblique", fontSize=8,
-                          leading=11, textColor="#555555")
+    pdf = FPDF(format="A4", unit="mm")
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    pdf.set_margins(15, 15, 15)
 
-    max_chars = max(20, int(doc.width / stringWidth("M", "Courier", 8.5)))
-    wrapped = []
+    pdf.set_font("Helvetica", "B", 14)
+    pdf.multi_cell(0, 8, title, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln(2)
+
+    # Courier keeps the ranked list and cost columns aligned, like the on-screen
+    # code block. Blank source lines become a single space so they still advance.
+    pdf.set_font("Courier", size=9)
     for line in body.split("\n"):
-        wrapped.extend(
-            textwrap.wrap(line, max_chars, subsequent_indent="    ",
-                          break_long_words=True, break_on_hyphens=False) or [""]
-        )
+        pdf.multi_cell(0, 4.5, line if line.strip() else " ",
+                       new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
-    doc.build([
-        Paragraph(heading, h1),
-        Preformatted("\n".join(wrapped), mono),
-        Spacer(1, 10),
-        # Footer disclaimer — mirrors the in-app honesty line. Keep it.
-        Paragraph("Directional only. Pricing is illustrative and may be out of date; "
-                  "compliance filtering is a shortlist, not certification. "
-                  "Generated by AASA, a 4-week student prototype.", note),
-    ])
-    return buf.getvalue()
+    # Footer disclaimer — mirrors the in-app honesty line. Keep it.
+    pdf.ln(4)
+    pdf.set_font("Helvetica", "I", 8)
+    pdf.multi_cell(
+        0, 4,
+        "Directional only. Pricing is illustrative and may be out of date; "
+        "compliance filtering is a shortlist, not certification. "
+        "Generated by AASA, a 4-week student prototype.",
+        new_x=XPos.LMARGIN, new_y=YPos.NEXT,
+    )
+    return bytes(pdf.output())
