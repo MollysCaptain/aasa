@@ -480,7 +480,7 @@ if "result" not in st.session_state:
                 <div class="aasa-stat-num">{_n_industries}</div>
                 <div class="aasa-stat-label">INDUSTRIES COVERED</div></td>
             <td style="border: none;">
-                <div class="aasa-stat-num">~2 min</div>
+                <div class="aasa-stat-num">~5 min</div>
                 <div class="aasa-stat-label">TO BLUEPRINT</div></td>
         </tr></table>
         <div class="aasa-scope">Honest scope: this is a 4-week student prototype.

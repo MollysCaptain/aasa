@@ -83,7 +83,7 @@ We inspected the source repo (`abbasmahdi-ai/ai-use-cases-library`) directly rat
 5. **Cost**: for each recommended tool, apply the pricing table — **per-token** (input/output €/M tokens × assumed volume) or **per-seat** (€/seat × team size) or **compute-billed** (shown, not costed). Estimate one primary API + one assistant, not the sum of everything.
 6. **Summarise**: the LLM writes prose only; it never invents tools or prices. Few-shot prompt fixes the output template.
 
-**Pricing table:** hand-built, 24 tools, each tagged `token | seat | compute | free`, marked **illustrative / verify on vendor page**. No live scraping in the MVP.
+**Pricing table:** hand-built, 41 tools, each tagged `token | seat | compute | free`, marked **illustrative / verify on vendor page**. No live scraping in the MVP.
 
 ---
 

@@ -23,7 +23,7 @@
 We inspected the source repository directly rather than assuming its shape:
 - **`abbasmahdi-ai/ai-use-cases-library`** is one clean CSV of **3,023 fully-populated rows** (not "3,000+ raw markdown files" as we first assumed). Every case has a description, outcome, industry, tool list, and source URL.
 - The real data-engineering effort is **tool-name normalisation**: the raw data contains 2,511 distinct tool strings for 3,023 rows (e.g. "Gemini", "Gemini in Docs", "Gemini for Google Workspace" all mean one thing). We built a 24-tool canonical alias map.
-- **We add a small, hand-built pricing table ourselves** (24 tools), since the repo has no pricing data. It distinguishes **per-token APIs** (OpenAI, Anthropic, Gemini APIs) from **per-seat SaaS** (Microsoft 365 Copilot, ChatGPT Enterprise) — treating these the same, as our original pitch implicitly did, would produce nonsense cost estimates.
+- **We add a small, hand-built pricing table ourselves** (41 tools), since the repo has no pricing data. It distinguishes **per-token APIs** (OpenAI, Anthropic, Gemini APIs) from **per-seat SaaS** (Microsoft 365 Copilot, ChatGPT Enterprise) — treating these the same, as our original pitch implicitly did, would produce nonsense cost estimates.
 - **Optionally**, Stack Overflow Developer Survey data (`AIModelsHaveWorkedWith`, `OrgSize`, `Industry`) can add *population-level* usage-by-company-size context. There is no shared key to the case library, so this cannot filter individual cases — only inform general commentary ("X% of similarly-sized orgs report using Y").
 
 ## Why This

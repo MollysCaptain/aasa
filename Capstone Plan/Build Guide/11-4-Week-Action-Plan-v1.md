@@ -55,7 +55,7 @@
 |---|---|---|---|
 | 22 | Compile final metrics: trust-score median, net-value %, export rate, compliance pass rate. | Freeze feature scope — no more changes except critical bug fixes. | — |
 | 23 | Write up dataset limitations (enterprise-productivity skew, no org-size join key). | Write up product limitations (illustrative pricing, directional-not-certified compliance). | Consolidate into a "Known Limitations" section (roadmap items, not MVP promises). |
-| 24 | Prepare architecture slide content (pipeline steps, dataset stats: 3,023 cases, 24 tools, alias-map coverage). | Draft 10-slide pitch outline: Problem → Solution → Architecture → Real Test Results → Risk Management → Roadmap. | — |
+| 24 | Prepare architecture slide content (pipeline steps, dataset stats: 3,023 cases, 41 tools, alias-map coverage). | Draft 10-slide pitch outline: Problem → Solution → Architecture → Real Test Results → Risk Management → Roadmap. | — |
 | 25 | Build architecture + results slides. | Build problem/solution/roadmap slides. | Assemble into one deck; sanity-check numbers match the metrics doc. |
 | 26 | Final **responsible-AI checklist** — confirm no fabricated trust signals anywhere in the prototype or deck. | Same checklist, deck side. | Ethics checkpoint (Owner: both). |
 | 27 | Full pitch rehearsal — timing run-through. | Full pitch rehearsal — timing run-through. | Tighten narrative based on rehearsal feedback. |

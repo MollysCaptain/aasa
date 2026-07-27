@@ -1,9 +1,11 @@
 # 34 — Build Guide: Icebox B.8 — PDF blueprint download
 
-**Card:** B.8 (new) · **Owner:** Person B (Ash) · **Branch:** `Ash3-update`
-**Status:** specified, not implemented — this is the *last* feature before the
-Card P.15 freeze. If it isn't working by the end of Day 23, Icebox it and freeze
-without it (see "Go / no-go" at the end).
+**Card:** B.8 · **Owner:** Person B (Ash) · **Branch:** `Ash3-update`
+**Status: ✅ IMPLEMENTED 2026-07-27** — the last feature before the Card P.15
+freeze. Built exactly as specified below, with the team's three decisions:
+fpdf2, sanitise in the PDF path only, and a single "Download" popover holding
+both formats. Two findings from actually building it are recorded in
+"Implementation notes" at the end — **read those if you touch this code.**
 **Depends on:** nothing new — reuses `app/export.py`'s existing text builder.
 
 ## Goal in plain language
@@ -171,3 +173,63 @@ one.
 Self-contained: one new function in `app/export.py`, one button + import in
 `app/dashboard.py`, one line in `requirements.txt`. Reverting the commit removes
 the feature with no effect on the existing exports.
+
+---
+
+## Implementation notes (what actually happened — 2026-07-27)
+
+Two things only surfaced by building and running it. Both are now handled in the
+committed code; this section exists so nobody re-discovers them the hard way.
+
+### 1. The encoding caveat was real — sanitisation is required, not optional
+
+Tested against fpdf2 2.8.7's core fonts:
+
+| Character | Result |
+|---|---|
+| `€` (U+20AC) | **FAILS** — `FPDFUnicodeEncodingException` |
+| `—` em-dash (U+2014) | **FAILS** |
+| `→` (U+2192) | **FAILS** |
+| `•` bullet, `‑` non-breaking hyphen, `✓` | **FAILS** |
+| `·` middle dot (U+00B7) | OK (it's inside Latin-1) |
+
+So option 1 from step 2 was taken: `_pdf_safe()` in `app/export.py` maps the
+characters we actually emit (`€` → `EUR `, dashes → `-`, `•` → `*`, smart quotes
+→ plain, etc.) and then `.encode("latin-1", "replace")` as a backstop so an
+unexpected glyph degrades to `?` instead of breaking the download. **The
+sanitiser is applied in the PDF path only** — the on-screen copy block, the `.md`
+export and the saved JSON still contain the real `€` and em-dashes (verified).
+
+### 2. fpdf2's `multi_cell` cursor trap (this one is easy to miss)
+
+By default `multi_cell` leaves the cursor at the **right** edge of the cell, so
+the *second* full-width (`w=0`) call raises:
+
+```
+FPDFException: Not enough horizontal space to render a single character
+```
+
+The first line renders fine, then it dies — which looks like a content problem
+but isn't. Fix, used on every call in `blueprint_to_pdf()`:
+
+```python
+from fpdf.enums import XPos, YPos
+pdf.multi_cell(0, 4.5, line, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+```
+
+### 3. Verified output
+
+Generated from a **real** saved blueprint (`data/aasa-saved-blueprints.json`):
+a valid 1-page PDF (`%PDF-` header, ~2.2 KB) containing the title, the ranked
+5-tool stack, both cost lines as `EUR 43.75/mo` / `EUR 2240.00/mo`, all four
+case references with their full URLs intact, the summary paragraph and the
+footer disclaimer.
+
+### Still needs a human (live-app QA)
+
+- [ ] Click **Download → PDF (.pdf)** in the running app and open the file.
+- [ ] Confirm the popover interaction feels right at the 440px sidebar width and
+      with the sidebar collapsed.
+- [ ] Confirm `data/telemetry.log` gains one `pdf_downloaded` line per download.
+- [ ] Check a **regulated-posture** blueprint and a **`compute`-priced** stack
+      (where `monthly_eur` is `None`) both render sensibly.

@@ -7,7 +7,7 @@ Block C: Real case references (source-linked)
 import streamlit as st
 from app.logic.pricing import PRICING
 from app.logic.scaffold import build_scaffold
-from app.export import blueprint_to_text, blueprint_to_markdown
+from app.export import blueprint_to_text, blueprint_to_markdown, blueprint_to_pdf
 from app.survey_modal import render_copy_confirmation
 from app.saved_blueprints import render_save_button
 from app.analytics.tracker import log_event
@@ -145,13 +145,25 @@ def _render_action_row(result: dict):
     with col0:
         render_save_button(result)
     with col1:
-        if st.download_button(
-            "Download (.md)",
-            blueprint_to_markdown(result),
-            file_name="aasa-cost-onepager.md",
-            mime="text/markdown",
-        ):
-            log_event("onepager_downloaded")
+        # B.8: one "Download" popover holding both formats, so adding the PDF
+        # didn't need a 5th column (the labels are already tight at the 440px
+        # sidebar width).
+        with st.popover("Download"):
+            st.caption("Same blueprint, two formats.")
+            if st.download_button(
+                "Markdown (.md)",
+                blueprint_to_markdown(result),
+                file_name="aasa-cost-onepager.md",
+                mime="text/markdown",
+            ):
+                log_event("onepager_downloaded")
+            if st.download_button(
+                "PDF (.pdf)",
+                blueprint_to_pdf(result),
+                file_name="aasa-blueprint.pdf",
+                mime="application/pdf",
+            ):
+                log_event("pdf_downloaded")
     with col2:
         with st.popover(".env scaffold"):
             scaffold_text = build_scaffold(result["recommended_stack"])

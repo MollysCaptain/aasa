@@ -208,7 +208,7 @@ Before touching slide design, decide what each slide is *for* in one sentence. A
    real AI-stack advice and default to scattered forum research.
 3. Solution — AASA in one sentence + a screenshot of the 3-block output.
 4. How it works (Architecture) — the Card P.5 pipeline diagram.
-5. Data foundation — 3,023 real deployments, the normalisation challenge (2,511 → 24 tools), honestly labelled as a retrieval corpus, not a compliance authority.
+5. Data foundation — 3,023 real deployments, the normalisation challenge (2,511 → 41 tools), honestly labelled as a retrieval corpus, not a compliance authority.
 6. Real test results — the Card P.14 metrics table.
 7. What we heard (qualitative) — 2-3 real, anonymised quotes from testing.
 8. Risk management — the top 2-3 risks you actually mitigated (e.g. dropping Flowise to remove webhook risk; the privacy filter running before the LLM).

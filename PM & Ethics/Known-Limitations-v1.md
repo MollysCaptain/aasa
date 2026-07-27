@@ -46,7 +46,7 @@ skew" expander in the *How it works* tab. This document is the fuller version.
 | **B.3 — Periodic pricing sync** | Needs a scraping/monitoring layer — too large for the remaining time (guide 30). | Directly fixes the "pricing is illustrative" limitation above. |
 | **B.4 — Mainstream-validation overlay** | Data recovered (`technology_landscape.csv`) but the feature was gated out on feasibility (guide 29). | Would add a "how mainstream is this choice" signal. |
 | **B.7 — Seat-fraction cost scoping** | Specified in proposal doc 31; not built. | Fixes the population-level seat assumption above. |
-| **B.8 — PDF blueprint export** | Specified in build guide 34 as the last pre-freeze addition; ships only if it passes verification in time. | Small, self-contained; easy first win post-capstone. |
+| ~~**B.8 — PDF blueprint export**~~ | **Shipped** 2026-07-27 (build guide 34) — the last pre-freeze addition. Not a limitation any more. | Done: available from the Export tab's **Download** popover alongside the `.md`. |
 | **Mobile / responsive polish** | Only ever tested on desktop; Streamlit gives limited responsive control. | Tracked as its own QA card — needs a real device pass before any public release. |
 
 ## What we are *not* claiming
