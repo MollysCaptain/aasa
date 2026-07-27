@@ -255,10 +255,25 @@
 {"event": "form_start", "timestamp": 1785159855.1845179}
 {"event": "results_shown", "timestamp": 1785159942.296315, "elapsed_seconds": 87.1}
 {"event": "llm_summary_generated", "timestamp": 1785159942.297622, "duration_seconds": 1.39, "prompt_tokens": 1098, "completion_tokens": 621, "tokens_per_second": 446.8}
+{"event": "form_start", "timestamp": 1785160083.7332206}
+{"event": "form_start", "timestamp": 1785160083.7341042}
+{"event": "results_shown", "timestamp": 1785160137.153881, "elapsed_seconds": 53.4}
+{"event": "llm_summary_generated", "timestamp": 1785160137.154388, "duration_seconds": 1.76, "prompt_tokens": 1083, "completion_tokens": 936, "tokens_per_second": 531.8}
+{"event": "results_shown", "timestamp": 1785160194.8080778, "elapsed_seconds": 111.1}
+{"event": "llm_summary_generated", "timestamp": 1785160194.8084164, "duration_seconds": 0.9, "prompt_tokens": 1083, "completion_tokens": 584, "tokens_per_second": 648.9}
+{"event": "survey_submitted", "timestamp": 1785160224.0832393, "trust_score": 4, "net_value": "Yes"}
 {"event": "form_start", "timestamp": 1785160423.7293189}
 {"event": "results_shown", "timestamp": 1785160450.820631, "elapsed_seconds": 27.1}
 {"event": "llm_summary_generated", "timestamp": 1785160450.82153, "duration_seconds": 1.33, "prompt_tokens": 1086, "completion_tokens": 625, "tokens_per_second": 469.9}
 {"event": "pdf_downloaded", "timestamp": 1785160465.972136}
+{"event": "form_start", "timestamp": 1785160617.3301234}
+{"event": "results_shown", "timestamp": 1785160672.5652122, "elapsed_seconds": 55.2}
+{"event": "llm_summary_generated", "timestamp": 1785160672.565587, "duration_seconds": 1.11, "prompt_tokens": 955, "completion_tokens": 559, "tokens_per_second": 503.6}
+{"event": "export_clicked", "timestamp": 1785160803.626011}
+{"event": "blueprint_saved", "timestamp": 1785160818.3830326}
+{"event": "survey_submitted", "timestamp": 1785160827.1636438, "trust_score": 4, "net_value": "Yes"}
+{"event": "results_shown", "timestamp": 1785160932.1078649, "elapsed_seconds": 314.8}
+{"event": "llm_summary_generated", "timestamp": 1785160932.1081884, "duration_seconds": 1.89, "prompt_tokens": 1109, "completion_tokens": 615, "tokens_per_second": 325.4}
 {"event": "form_start", "timestamp": 1785161612.429468}
 {"event": "results_shown", "timestamp": 1785161618.397142, "elapsed_seconds": 6.0}
 {"event": "llm_summary_generated", "timestamp": 1785161618.39793, "duration_seconds": 1.23, "prompt_tokens": 1073, "completion_tokens": 709, "tokens_per_second": 576.4}

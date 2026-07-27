@@ -21,6 +21,23 @@ _embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
 _chroma_client = chromadb.PersistentClient(path="./chroma_store")
 _collection = _chroma_client.get_collection("aasa_cases", embedding_function=_embedding_fn)
 
+# Relevance threshold (Card P.16 roadmap fix — retrieval previously had no
+# cutoff at all, so an obscure workflow/industry combo would still claim
+# "15 real deployments matched" regardless of true relevance).
+#
+# Chroma's default distance metric is L2 (no hnsw:space set at collection
+# creation — see scripts/embed_cases.py), so this value is calibrated
+# against REAL measured distances (tests/distancecheck.py), not a guess:
+#   - 4 plausible workflow/industry queries topped out at 0.384-0.504
+#   - 3 of 4 deliberately absurd queries never got below 0.62
+#   - one absurd query ("competitive yodeling championship logistics") had
+#     a single coincidentally-close chunk at 0.476 — an accepted edge case;
+#     a hard global cutoff can't perfectly separate every possible nonsense
+#     query from real ones, but it correctly returns few-to-no matches for
+#     the large majority. 0.52 sits just above the highest observed
+#     plausible value (0.504) so genuine matches are never false-rejected.
+RELEVANCE_THRESHOLD = 0.52
+
 
 def _to_label(canonical_id: str) -> str:
     """canonical_id -> its human-readable PRICING label, or the id itself if unknown."""
@@ -49,7 +66,11 @@ def run_pipeline(inputs: dict) -> dict:
     # below just because it happened to produce multiple matching chunks.
     seen_case_ids = set()
     matched_cases = []
-    for meta in results["metadatas"][0]:
+    for meta, dist in zip(results["metadatas"][0], results["distances"][0]):
+        # Relevance filter — skip anything past RELEVANCE_THRESHOLD before it
+        # ever reaches ranking, cost, or the LLM summary.
+        if dist > RELEVANCE_THRESHOLD:
+            continue
         case_id = meta["case_id"]
         if case_id in seen_case_ids:
             continue
@@ -62,6 +83,8 @@ def run_pipeline(inputs: dict) -> dict:
             "source_url": meta["source_url"],
             "canonical_tools": meta["canonical_tools"].split(",") if meta["canonical_tools"] else [],
             "outcomes": meta["outcomes"],   # NEW — bullet-pointed prose, ready for Epic 3 to render
+            "distance": round(dist, 3),    # NEW — raw relevance score, carried through in case a
+                                            # future card wants to surface it (e.g. Block C's "why:" line)
         })
 
     # Step 2: privacy filter + user vendor exclusions (B.5) + rank.
