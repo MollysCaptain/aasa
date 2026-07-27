@@ -57,8 +57,9 @@ a prepared fallback reads as competence, fumbling does not.
 
 | Likely question | Honest answer |
 |---|---|
-| "Isn't 5 testers far too small to claim anything?" | Yes — that's why we report credible intervals and make **no** comparative claim. Point at the CI column on slide 6. |
-| "Trust score was 3/5 — isn't that bad?" | It missed our ≥4 target and we've said so. Our read: the tool is credible on evidence but the *cost* numbers are the trust bottleneck, which is exactly what the pricing-sync roadmap item addresses. |
+| "Isn't 8 testers far too small to claim anything?" | Yes — that's why we report credible intervals and make **no** comparative claim. 100% net value sounds absolute; its interval is 72–99%, and one changed answer moves the rate 12.5 points. Point at the CI column. |
+| **"All four targets met — isn't that a bit convenient?"** | Fair challenge, and the honest answer is that we can't take credit for it cleanly. The earlier round scored trust 3/5 and missed. Between rounds *both* the build and the participants changed, so we don't claim our fixes caused the improvement — that would need the same people testing both builds. The earlier miss is still in the P.14 write-up. |
+| **"Who were your testers?"** | 8 practitioners at 7 real companies — SumUp, BMG, CoachHub, Delivery Hero, AUTODOC, Plan A, Ordio — 5 of them non-native English speakers, 5 choosing the regulated posture. All recruited through our own networks, which is convenience sampling and plausibly inflates trust. Disclosed in Known-Limitations. |
 | "How do you know the LLM isn't making the tools up?" | It can't — retrieval, filtering, ranking and costing are deterministic Python; the model receives an already-final list and only writes the summary paragraph. Slide 5. |
 | "Is the compliance filter safe to rely on?" | No, and we never claim it is — it's a directional shortlist, labelled as such in-product. |
 | "Why is it always the big cloud vendors?" | Because that's what the real evidence contains. We disclose the skew (~45% of mentions from 5 tools) rather than hide it — model card, slide 8. |
@@ -67,7 +68,8 @@ a prepared fallback reads as competence, fumbling does not.
 
 - Numbers on slides must be **copy-pasted from the P.14 output**, never retyped
   from memory (Card P.21 checks this).
-- Keep credible intervals visible — "80% (4/5), 90% CI 42–94%" beats a bare "80%".
+- Keep credible intervals visible — "100% (8/8), 90% CI 72–99%" beats a bare "100%",
+  and matters more now that every target is met: a bare 100% invites disbelief.
 - No fabricated trust signals of any kind (Card P.19's standing check).
 - Reuse the product's own visual language (dark theme, indigo accent, mono
   labels) so the deck and the demo feel like one thing.

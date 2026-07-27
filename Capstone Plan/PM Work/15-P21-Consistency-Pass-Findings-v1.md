@@ -65,9 +65,16 @@ one-line pointer to the canonical file.
 - [x] **Dataset figures are consistent** where they matter: 3,023 cases / 24
       industries / 88.7% alias coverage agree across the model card, the app's
       hero (computed live), the methodology block and the P.14 write-up.
-- [x] **P.14 metrics agree between the script output and the write-up** — 14
-      sessions, 50% export rate, 80% net value, CIs 42–94% / 30–70%, trust median
-      3, avg LLM 1.51s. Re-verified by running the scripts.
+- [x] **P.14 metrics agree between the script output and the write-up** —
+      re-verified 2026-07-28 against the final real-user round (n=8): 12 sessions,
+      83% export rate, 100% net value, CIs 59–93% / 72–99%, trust median 5, avg
+      LLM 1.34s. Figures are windowed to the round via
+      `--since "2026-07-27 23:00"` and the boundary was stress-tested — moving it
+      back an hour leaves every reported count identical.
+      *Superseded:* the earlier round's 14 sessions / 50% / 80% / CIs 42–94% and
+      30–70% / trust median 3 are retained in the P.14 write-up as a prior
+      iteration, deliberately not pooled with the final round because the build
+      differed.
 - [x] **Known-limitations wording is consistent** across the app's How-it-works
       tab, `docs/model-card.md` and the new `Known-Limitations-v1.md`.
 - [x] **`requirements.txt` matches what the code imports**, including `scipy` for

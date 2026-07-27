@@ -82,16 +82,34 @@ This was a real flaw in our first build, so it's checked explicitly every time.
 - [x] **Credible intervals reported alongside every small-sample rate** (P.14).
 - [x] **No comparative claim** ("A beat B") anywhere — explicitly ruled out in the
       P.14 write-up as needing a powered study.
-- [x] **The missed target is stated as missed** — trust score median 3/5 against a
-      ≥4/5 target, not reworded.
-- [x] **"Sessions ≠ distinct people" caveat recorded** (telemetry has no user id).
-- [ ] ⚠️ **Gabi to confirm the telemetry dataset is final** — the P.14 doc notes
-      Card P.11 was still in progress when metrics were compiled.
+- [x] **All four targets are now met, and the *reason* is not overstated** — the
+      final round (n=8) scored trust median 5/5 against the ≥4/5 target, up from
+      the earlier round's 3/5 miss. Both the build and the participants changed
+      between rounds, so no causal claim is made about our fixes raising it. The
+      earlier miss stays on the record in the P.14 write-up rather than being
+      deleted now that it is no longer current.
+- [x] **"Sessions ≠ distinct people" caveat recorded** (telemetry has no user id) —
+      and for this round the 8 responses are corroborated participant-by-participant
+      against the recorded session sheet, in order.
+- [x] **Recruitment bias disclosed** — all 8 participants are professional contacts
+      of the team, which plausibly inflates trust scores. Stated in P.14 and
+      Known-Limitations rather than left for a marker to notice.
+- [x] **Telemetry dataset is final** — real-user testing completed 2026-07-28 with
+      8 participants; figures are windowed to that round and reproducible via
+      `scripts/telemetry_funnel.py --since "2026-07-27 23:00"`.
 
 ## Accessibility & inclusion (Card P.13 overlap)
 
+- [x] **Non-native English speakers included in real testing** — 5 of the 8 final-round
+      participants (Card P.13's ask was at least one). Two of their findings were
+      acted on the same night: the privacy-posture tooltip previously defined only
+      "Regulated" and left "Standard" to be inferred, and the org-size bands left a
+      gap testers didn't see themselves in.
 - [ ] ⚠️ **Jargon pass completed with both personas** (non-technical founder,
       non-native speaker) — shortlist prepared in `13-P13-Clarity-Jargon-Shortlist-v1.md`.
+      Partially superseded: the tooltip and band fixes above came from real
+      non-native speakers rather than the prepared shortlist, but the shortlist
+      itself was never worked through item by item.
 - [ ] ⚠️ **Colour-contrast check** on the dark theme's green/orange/indigo accents.
 - [ ] ⚠️ **Mobile/responsive check** — never tested on a phone; tracked as its own
       QA card.

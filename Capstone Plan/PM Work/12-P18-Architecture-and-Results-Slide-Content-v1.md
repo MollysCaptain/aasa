@@ -46,33 +46,41 @@ the single most dangerous thing this product could do."
 
 **Slide headline:** *Real testers, honest numbers, intervals included.*
 
-**Source:** `Capstone Plan/Build Guide/P14-Validation-Metrics-Final-v1.md`,
-computed by `scripts/telemetry_funnel.py` + `scripts/credible_interval.py` from
+**Source:** `PM & Ethics/P14-Validation-Metrics-Final-v1.md`, computed by
+`scripts/telemetry_funnel.py --since "2026-07-27 23:00"` +
+`scripts/credible_interval.py --since "2026-07-27 23:00"` from
 `data/telemetry.log`. **Do not retype these — copy them.**
+
+Updated 2026-07-28 for the final real-user round (8 participants). The `--since`
+window matters: run bare, the scripts pool our own development runs and three
+earlier builds and report 18 responses over 100 sessions, which measures nothing.
 
 | Metric | Target | Actual | 90% credible interval | Met? |
 |---|---|---|---|---|
-| Net value ("saved me research time") | ≥70% | **80%** (4/5) | 42%–94% | Yes (point estimate) |
-| Blueprint export rate | ≥40% | **50%** (7/14) | 30%–70% | Yes (point estimate) |
+| Net value ("saved me research time") | ≥70% | **100%** (8/8) | 72%–99% | Yes |
+| Blueprint export rate | ≥40% | **83%** (10/12) | 59%–93% | Yes |
 | Compliance-rule pass rate | 100% | **100%** (2/2 regulated profiles) | — (deterministic) | Yes |
-| Trust score (median) | ≥4/5 | **3/5** | — (ordinal) | **No** |
-| Avg. LLM latency | — | **1.51s** (14 calls) | min 0.82 / max 3.29 | — |
-| Sample size | 5–8 testers | 14 sessions / 5 survey responses | not powered for comparative claims | — |
+| Trust score (median) | ≥4/5 | **5/5** | — (ordinal) | Yes |
+| Avg. LLM latency | — | **1.34s** (12 calls) | min 0.57 / max 2.62 | — |
+| Sample size | 5–8 testers | 8 participants / 12 sessions | not powered for comparative claims | Yes |
 
 **Funnel (read as a sequence, not three independent stats):**
 
-> **14** viewed a blueprint → **7** exported it (50% of viewers) → **5** answered
-> the survey, **4** of whom said it saved them research time (80% of respondents).
+> **12** viewed a blueprint → **10** exported it (83% of viewers) → **8** answered
+> the survey, **8** of whom said it saved them research time (100% of respondents).
 
 ### The three things this slide must communicate
 
 1. **We tested with real people and computed the numbers from logged behaviour**,
-   not impressions.
-2. **Two of four targets met, one clearly missed** — the trust score is stated as
-   a miss, not massaged. That honesty is the credibility play.
-3. **The intervals are wide and we say so.** At n=5, one person changing their
-   answer swings the rate ~20 points. We report Beta(1,1) 90% credible intervals
-   and make **no** comparative claim.
+   not impressions — and each of the 8 responses ties to a named participant, in
+   order, cross-checked against the recorded session sheet.
+2. **All four targets met — and we don't claim credit for the improvement.** The
+   earlier round missed on trust (3/5). Between rounds the build changed *and* the
+   participants changed, so the jump to 5/5 is not a measured before/after. Say
+   this out loud; it is more convincing than the result itself.
+3. **The intervals matter more now, not less.** A bare "100%" invites disbelief;
+   its 90% interval is 72–99%, and one changed answer moves the rate 12.5 points.
+   Report Beta(1,1) intervals and make **no** comparative claim.
 
 ### Visual guidance
 
@@ -83,13 +91,19 @@ interval must stay visible (a whisker or the range printed next to the bar).
 
 ### Honesty footnotes for the slide (small text, but present)
 
-- "14 sessions" ≠ 14 distinct people — telemetry has no user identifier by
-  design (privacy choice), so someone can submit more than once. The 5 survey
-  responses are the best proxy for distinct testers.
+- "12 sessions" ≠ 12 distinct people — telemetry has no user identifier by
+  design (privacy choice), and several participants generated more than one
+  blueprint. **8 survey responses = 8 participants**, corroborated against the
+  session sheet.
 - Compliance pass rate is drawn from the recorded P.9 dry-run output, checked
-  against the full `GOVERNABLE_FOR_REGULATED` allowlist.
-- Card P.11 (real-user testing) was still in progress when these were compiled —
-  **Gabi to confirm this is the final dataset before the deck is locked.**
+  against the full `GOVERNABLE_FOR_REGULATED` allowlist. Note 5 of 8 participants
+  chose the regulated posture, so real users exercised that path more than our dry
+  run did — those live runs weren't individually audited, and the 100% is scoped to
+  the two recorded profiles.
+- All 8 participants are professional contacts of the team — convenience sampling,
+  which plausibly inflates trust scores. Disclosed in Known-Limitations.
+- Card P.11 (real-user testing) is **complete** as of 2026-07-28: 8 participants,
+  all with real `survey_submitted` telemetry.
 
 ## How to verify this card is done
 

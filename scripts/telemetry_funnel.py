@@ -8,16 +8,35 @@ of re-typed from a one-off terminal paste.
 
 Run from the repo root:
     python3 scripts/telemetry_funnel.py
+    python3 scripts/telemetry_funnel.py --since "2026-07-27 23:00"
+
+WHY --since EXISTS (added 2026-07-28)
+The log is append-only and spans the whole project, so it mixes our own
+development runs with real test sessions, across several different builds. Run
+bare, it answers "everything that ever happened", which measures nothing
+cleanly. The final real-user round (8 participants, the build we submitted) is
+isolated with --since; the boundary is defensible because a 5-hour gap separates
+that round from the previous activity. Every figure in
+PM & Ethics/P14-Validation-Metrics-Final-v1.md is reproducible with the exact
+command quoted at the top of that file.
 """
+import argparse
 import json
+import statistics
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
 
 LOG_PATH = Path("data/telemetry.log")
 
 
-def load_events(path: Path = LOG_PATH) -> list[dict]:
-    return [json.loads(line) for line in path.open() if line.strip()]
+def load_events(path: Path = LOG_PATH, since: str | None = None) -> list[dict]:
+    events = [json.loads(line) for line in path.open() if line.strip()]
+    events.sort(key=lambda e: e["timestamp"])
+    if since:
+        cutoff = datetime.fromisoformat(since).timestamp()
+        events = [e for e in events if e["timestamp"] >= cutoff]
+    return events
 
 
 def headline_metrics(events: list[dict]) -> dict:
@@ -27,7 +46,14 @@ def headline_metrics(events: list[dict]) -> dict:
     shows = [e for e in events if e["event"] == "results_shown"]
     llm_calls = [e for e in events if e["event"] == "llm_summary_generated"]
 
-    median_trust = scores[len(scores) // 2] if scores else None
+    # Was scores[len(scores)//2], which returns the UPPER of the two middle values
+    # at even n rather than the median. It happened to agree at n=5 and at the
+    # final round's n=8 (both middle values are 5), but it would have been wrong
+    # the moment the two middles differed. statistics.median averages them;
+    # displayed as an int when the result is whole, since trust is a 1-5 ordinal.
+    median_trust = statistics.median(scores) if scores else None
+    if median_trust is not None and float(median_trust).is_integer():
+        median_trust = int(median_trust)
     avg_time_to_results = (sum(e["elapsed_seconds"] for e in shows) / len(shows)
                             if shows else None)
     durations = [e["duration_seconds"] for e in llm_calls]
@@ -65,10 +91,18 @@ def funnel(events: list[dict]) -> dict:
 
 
 def main():
-    events = load_events()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--since", metavar="'YYYY-MM-DD HH:MM'",
+                    help="only count events at or after this local time — use to "
+                         "isolate one test round from development runs")
+    args = ap.parse_args()
+
+    events = load_events(since=args.since)
     hm = headline_metrics(events)
     fn = funnel(events)
 
+    if args.since:
+        print(f"[window: events from {args.since} onwards — {len(events)} events]")
     print(f"{hm['trust_scores']} -> trust-score median: {hm['trust_score_median']}"
           f" ({len(hm['trust_scores'])} responses)")
     print(f"{hm['completed_sessions']} completed sessions, "
