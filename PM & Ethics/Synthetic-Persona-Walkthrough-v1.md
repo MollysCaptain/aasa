@@ -183,9 +183,25 @@ a corner of the dataset with little evidence.
 | Vendors to exclude | *(none)* |
 
 **Why this profile — run this one first.** It is exactly **P.9 Profile 3**, the
-combination whose best distance was **0.504** against a **0.52** threshold. This
-is the single most likely query in the whole app to now return **nothing**. If
-Ash4's no-match path is going to be seen by a real user, it will be here.
+sparsest combination in the P.9 set.
+
+> ### ✅ TESTED 2026-07-27 — and my prediction was WRONG
+>
+> Ash ran this exact profile in the live app. It returned **15 MATCHED CASES** —
+> the relevance threshold filtered **nothing**. Result: Microsoft Azure, AWS,
+> Azure OpenAI, Amazon Bedrock, Google Cloud; Primary API €8.75/mo;
+> **WITHIN BUDGET**; REGULATED POSTURE chip shown correctly.
+>
+> **My error:** I read Gabi's note that plausible queries "topped out at
+> 0.384–0.504" as meaning 0.504 was the *nearest* (minimum) distance for this
+> query, and concluded it was on the edge of rejection. "Topped out" means the
+> **maximum**. So for this query *all 15* chunks sit at or below 0.504 — i.e.
+> comfortably inside the 0.52 cutoff. Nothing was ever going to be rejected.
+>
+> **What that actually means:** for a query to return nothing, its **nearest**
+> case must exceed 0.52. Observed plausible minima are far below that, so the
+> no-match path is much harder to reach than I claimed — good news for demo
+> safety. See "Correction" at the end of this document for the consequences.
 
 ### 8. David Whitmore — solicitor, reads disclaimers professionally
 **Characteristics:** 56, partner at a 60-person law firm. Non-technical but
@@ -221,7 +237,7 @@ behaviour.** Use it as a "what to watch for" list while running the profiles.
 | 4 | Jan | After excluding two tools, nothing in the UI confirms the exclusion was applied to the result | P.12 |
 | 5 | Fiona | €80 budget vs any seat-priced tool → large OVER BUDGET; may conclude the tool isn't for her | P.13 / P.16 |
 | 6 | Marcus | 25-seat ceiling at a 4,000-person company will look wrong to him — it's a documented assumption, but he'll query it | P.16 |
-| 7 | Sofia | **May get the new no-match state.** Check the message reads as a deliberate limit, not a failure | Ash4 gate |
+| 7 | Sofia | ~~May get the new no-match state~~ — **tested: returned 15/15 cases, threshold was a no-op.** Prediction wrong, see correction below | Ash4 gate |
 | 8 | David | Will cross-check the compliance disclaimer against the "REGULATED POSTURE" chip wording for consistency | P.19 |
 
 ## Simulated feedback answers — hypotheses, NOT data
@@ -325,3 +341,53 @@ Bucketed as the card asks. **Sources are marked**, because provenance matters:
    metrics.** They stay at 5 real respondents.
 5. **In the submission, cite this as** "internal expert review against synthetic
    personas (8 profiles)" — never as user testing.
+
+
+---
+
+## Correction — what the Sofia test changed (2026-07-27)
+
+Ash ran persona 7 live. It returned **15 matched cases**, not zero. My prediction
+was wrong, and the reason matters more than the error.
+
+**The misreading.** Gabi's calibration note says plausible queries "topped out at
+0.384–0.504". I treated 0.504 as the *closest* distance for the sparsest query and
+called it "0.016 from rejection". It is the *furthest* distance. So plausible
+queries have **every one of their 15 chunks inside the cutoff** — the threshold
+does nothing to them, which is exactly what it should do.
+
+**The consequence I had backwards.** For a real query to return nothing, its
+**nearest** case must be worse than 0.52. Observed plausible minima are far below
+that, so:
+
+- The **risk** I raised — real users getting an empty result — is **much lower**
+  than I said. Demo-day risk from this change is small.
+- The **benefit** is also narrower than it first appears. The threshold trims
+  far-off tail chunks and rejects genuinely unrelated queries; it does not change
+  well-populated queries at all.
+
+**The structural point neither of us had noticed.** The query sent to Chroma is
+built only from the two dropdowns:
+
+```python
+query_text = f"{inputs['workflow']} in the {inputs['industry']} industry"
+```
+
+Both are **fixed lists drawn from the corpus** — a user cannot type free text into
+the retrieval query at all (the project-name field is cosmetic and never reaches
+it). So the "quantum toaster" class of query that motivated the threshold **cannot
+be produced through the UI**. Gabi's nonsense queries only reach the pipeline via
+the test script.
+
+That doesn't make the threshold pointless — it is still correct defence-in-depth,
+it protects the script/API path, and it trims weak tail evidence so
+"15 matched cases" stops being a fixed number regardless of fit. But it does mean
+**the honesty problem it fixes is smaller in the shipped UI than it looked**, and
+that's the accurate way to describe it in the submission. Don't claim it stops
+users getting irrelevant results if users can't ask an irrelevant question.
+
+**Still worth verifying, and now harder to trigger naturally:** the no-match UI
+path. To see it, temporarily set `RELEVANCE_THRESHOLD = 0.3` in `app/pipeline.py`,
+run any query, confirm the NO EVIDENCE MATCH banner and the honest Block A
+message appear with no invented summary — then set it back to `0.52`. That is the
+only practical way to exercise the guard now.

@@ -91,14 +91,20 @@ no `GROQ_API_KEY`). **Both must pass before `Ash4` merges to main.**
       does, raise the threshold above the reported worst value, or add a floor
       (always keep the top-k nearest chunks) rather than shipping a cutoff that
       silently returns nothing for real inputs.
-- [ ] **`python scripts/backend_dry_run.py`** — re-run the three P.9 profiles.
-      Profile 3 ("Facilities & EHS / Agriculture / solo / regulated") is
-      deliberately the sparse case and is the most likely to now come back empty.
-      If matched-case counts changed, `P9-Backend-Dry-Run-Results-v1.md` and
-      `P14-Validation-Metrics-Final-v1.md` quote the old numbers.
-- [ ] **Try one nonsense query in the live app** and confirm you get the
-      NO EVIDENCE MATCH banner and the honest Block A message — no invented
-      summary, no crash.
+- [x] **P.9 Profile 3 tested live (2026-07-27)** — "Facilities & EHS / Agriculture
+      / solo / regulated" returned **15 matched cases, threshold filtered nothing**
+      (Azure, AWS, Azure OpenAI, Bedrock, Google Cloud; €8.75/mo; WITHIN BUDGET;
+      regulated chip correct). **My prediction that this would return empty was
+      wrong — see the correction below.**
+- [ ] **`python scripts/backend_dry_run.py`** — still worth re-running all three
+      P.9 profiles to confirm matched-case counts, since
+      `P9-Backend-Dry-Run-Results-v1.md` and `P14-Validation-Metrics-Final-v1.md`
+      quote the pre-threshold numbers.
+- [ ] **Exercise the no-match UI.** A nonsense query **cannot be entered through
+      the app** (see correction below — both retrieval inputs are fixed dropdowns),
+      so to see this path temporarily set `RELEVANCE_THRESHOLD = 0.3`, run any
+      query, confirm the NO EVIDENCE MATCH banner and the honest Block A message
+      appear with no invented summary, then set it back to `0.52`.
 
 ## Knock-on effects to watch
 
@@ -146,3 +152,43 @@ The threshold is one constant. Setting `RELEVANCE_THRESHOLD` to a large number
 (e.g. `99`) disables the filter without touching anything else — the no-match
 guard and messages simply never trigger. Reverting the merge drops Gabi's work
 wholesale, which is the heavier option.
+
+
+---
+
+## Correction (2026-07-27) — I misread the calibration numbers
+
+**What I claimed:** P.9 Profile 3's best distance was 0.504 against a 0.52 cutoff,
+leaving "a 0.016 margin", making it the query most likely to return nothing.
+
+**What is actually true:** Gabi's note says plausible queries "topped **out** at
+0.384–0.504" — that is the **maximum** distance among the 15 chunks, not the
+minimum. So for these queries *every* chunk is at or below 0.504, i.e. inside the
+cutoff. Tested live: Profile 3 kept **15 of 15** cases. Nothing was ever going to
+be rejected.
+
+**Consequences — both directions:**
+
+- **Lower risk than I said.** For a real query to return nothing, its *nearest*
+  case must exceed 0.52. Observed plausible minima sit far below that. Demo-day
+  risk from an unexpected empty result is small. The no-match guard is still worth
+  having (it's cheap, and it protects the script/API path), but it is unlikely to
+  fire in normal use.
+- **Narrower benefit than it appears.** The threshold trims far-off tail chunks
+  and would reject a genuinely unrelated query; it does not change
+  well-populated queries at all.
+- **The structural point neither of us spotted:** the retrieval query is built
+  only from the two dropdowns —
+  `query_text = f"{workflow} in the {industry} industry"` — and both lists come
+  from the corpus. **A user cannot submit free text into retrieval at all** (the
+  project-name field never reaches it). So the "quantum toaster" class of query
+  that motivated the threshold is unreachable through the UI; it only arrives via
+  the test script.
+
+**How to describe this honestly in the submission:** the threshold is correct
+defence-in-depth and it stops "15 matched cases" being a fixed number regardless
+of fit — but do **not** claim it prevents users from receiving irrelevant results,
+because users cannot ask an irrelevant question through the dropdowns. The
+`distancecheck.py --full` sweep is still worth running: it tells you whether any
+real combination's *nearest* case exceeds 0.52, which is the only way a real user
+sees the empty state.
