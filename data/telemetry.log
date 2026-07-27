@@ -222,3 +222,23 @@
 {"event": "results_shown", "timestamp": 1784902170.6166751, "elapsed_seconds": 3750.0}
 {"event": "llm_summary_generated", "timestamp": 1784902170.619236, "duration_seconds": 1.04, "prompt_tokens": 1080, "completion_tokens": 547, "tokens_per_second": 526.0}
 {"event": "form_start", "timestamp": 1784902214.8281112}
+{"event": "form_start", "timestamp": 1784904986.592152}
+{"event": "results_shown", "timestamp": 1784904992.675484, "elapsed_seconds": 6.1}
+{"event": "llm_summary_generated", "timestamp": 1784904992.676576, "duration_seconds": 1.72, "prompt_tokens": 1073, "completion_tokens": 1260, "tokens_per_second": 732.6}
+{"event": "results_shown", "timestamp": 1784905013.9714072, "elapsed_seconds": 27.4}
+{"event": "llm_summary_generated", "timestamp": 1784905013.972151, "duration_seconds": 2.88, "prompt_tokens": 1076, "completion_tokens": 2048, "tokens_per_second": 711.1}
+{"event": "results_shown", "timestamp": 1784905035.7132318, "elapsed_seconds": 49.1}
+{"event": "llm_summary_generated", "timestamp": 1784905035.714844, "duration_seconds": 2.55, "prompt_tokens": 1084, "completion_tokens": 2048, "tokens_per_second": 803.1}
+{"event": "form_start", "timestamp": 1784905046.0371819}
+{"event": "form_start", "timestamp": 1784905095.114948}
+{"event": "results_shown", "timestamp": 1784905106.707264, "elapsed_seconds": 11.6}
+{"event": "llm_summary_generated", "timestamp": 1784905106.708291, "duration_seconds": 1.04, "prompt_tokens": 1084, "completion_tokens": 533, "tokens_per_second": 512.5}
+{"event": "form_start", "timestamp": 1784906176.839544}
+{"event": "form_start", "timestamp": 1784906196.6780019}
+{"event": "form_start", "timestamp": 1784906298.732904}
+{"event": "results_shown", "timestamp": 1784906310.074899, "elapsed_seconds": 11.3}
+{"event": "llm_summary_generated", "timestamp": 1784906310.0765162, "duration_seconds": 1.71, "prompt_tokens": 1073, "completion_tokens": 1028, "tokens_per_second": 601.2}
+{"event": "results_shown", "timestamp": 1784906332.193069, "elapsed_seconds": 33.5}
+{"event": "llm_summary_generated", "timestamp": 1784906332.194651, "duration_seconds": 1.17, "prompt_tokens": 1041, "completion_tokens": 655, "tokens_per_second": 559.8}
+{"event": "results_shown", "timestamp": 1784906365.6978428, "elapsed_seconds": 67.0}
+{"event": "llm_summary_generated", "timestamp": 1784906365.69841, "duration_seconds": 1.08, "prompt_tokens": 1100, "completion_tokens": 380, "tokens_per_second": 351.9}
