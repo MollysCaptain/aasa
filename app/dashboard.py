@@ -136,15 +136,50 @@ def _render_directional_banner(result: dict):
             unsafe_allow_html=True,
         )
         return
-    context = ""
-    if query.get("industry") and query.get("workflow"):
-        context = f"{n} real {query['industry']} {query['workflow']} deployments matched. "
+    # Ash4 (post-sweep): this line used to read "{n} real {industry} {workflow}
+    # deployments matched" unconditionally. Retrieval is semantic, so it always
+    # returns the nearest cases — and a full sweep of all 432 dropdown
+    # combinations found 205 of them (47%) have ZERO cases in the corpus. For
+    # those the sentence was simply false: it named an industry/workflow pair
+    # that has no deployments at all. Returning the closest comparable evidence
+    # is still useful, so we keep doing it — but we say which one it is.
+    context = _evidence_sentence(query, n, result.get("exact_match_count"))
     st.markdown(
         f'<div class="aasa-banner"><b>DIRECTIONAL ONLY</b> — {context}'
         "Pricing is illustrative and compliance filtering is a shortlist, not "
         "certification. Verify before you commit budget.</div>",
         unsafe_allow_html=True,
     )
+
+
+def _evidence_sentence(query: dict, n: int, exact: int | None) -> str:
+    """
+    One honest sentence about what the N matched cases actually are.
+
+    exact is None only for blueprints saved before this field existed — in that
+    case we say nothing rather than guess, because the old claim may be wrong.
+    """
+    industry, workflow = query.get("industry"), query.get("workflow")
+    if not (industry and workflow):
+        return ""
+    ind_any = str(industry).lower().startswith("any")
+    wf_any = str(workflow).lower().startswith("any")
+
+    if exact is None:
+        return f"{n} comparable deployments matched. "
+
+    # No constraint given, so "exact match" is not a meaningful claim.
+    if ind_any and wf_any:
+        return f"{n} deployments matched from across the whole case library. "
+    scope = (f"{industry} " if not ind_any else "") + ("" if wf_any else f"{workflow} ")
+
+    if exact == 0:
+        return (f"No direct {scope}deployments in the library — showing the "
+                f"{n} closest comparable deployments from adjacent industries. ")
+    if exact < n:
+        return (f"{exact} real {scope}deployments matched, plus {n - exact} "
+                "closest comparable from adjacent industries. ")
+    return f"{n} real {scope}deployments matched. "
 
 
 # --- Lovable-parity UI round: action row (guides 25 + 26 + 27) --------------

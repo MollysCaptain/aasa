@@ -44,6 +44,37 @@ def _to_label(canonical_id: str) -> str:
     return PRICING.get(canonical_id, {}).get("label", canonical_id)
 
 
+def count_exact_matches(cases: list, workflow: str, industry: str) -> int:
+    """
+    How many of these cases are *actually* the requested industry + workflow?
+
+    Why this exists: retrieval is semantic, so it always returns the nearest
+    cases whether or not any case truly matches the request. A full sweep of all
+    432 dropdown combinations against the corpus found that 205 of them (47%)
+    have ZERO real cases — e.g. there is no "Procurement in Education" deployment
+    in the library at all. For those, the pipeline still returns 15 neighbours
+    from other industries, which is a defensible design ("here is the closest
+    comparable evidence") but only if the UI says so. It previously claimed
+    "15 real Education Procurement deployments matched", which was false.
+
+    "Any workflow"/"Any industry" mean no preference, so they impose no
+    constraint and cannot make a case a mismatch.
+    """
+    wf = str(workflow or "").strip().lower()
+    ind = str(industry or "").strip().lower()
+    wf_any = not wf or wf.startswith("any")
+    ind_any = not ind or ind.startswith("any")
+    if wf_any and ind_any:
+        return len(cases)          # nothing was asked for, so nothing can mismatch
+    n = 0
+    for c in cases:
+        ind_ok = ind_any or str(c.get("industry", "")).strip().lower() == ind
+        wf_ok = wf_any or str(c.get("domain", "")).strip().lower() == wf
+        if ind_ok and wf_ok:
+            n += 1
+    return n
+
+
 def run_pipeline(inputs: dict) -> dict:
     """
     inputs: {"workflow": str, "industry": str, "org_size": str,
@@ -58,7 +89,21 @@ def run_pipeline(inputs: dict) -> dict:
     # more results than we need (15, not 5) so that after de-duplicating down
     # to unique cases below, we still have a healthy number of distinct cases
     # to rank tools and pull "social proof" references from.
-    query_text = f"{inputs['workflow']} in the {inputs['industry']} industry"
+    # "Any workflow"/"Any industry" are UI conveniences meaning "no preference" —
+    # they are NOT values in the corpus. Interpolating them raw produced the
+    # literal query "Any workflow in the Any industry industry", which is what the
+    # default form state sent before this fix. Drop the unspecified half instead,
+    # and fall back to a neutral corpus-wide phrase if the user specified neither.
+    _wf = "" if str(inputs["workflow"]).lower().startswith("any") else inputs["workflow"]
+    _ind = "" if str(inputs["industry"]).lower().startswith("any") else inputs["industry"]
+    if _wf and _ind:
+        query_text = f"{_wf} in the {_ind} industry"
+    elif _wf:
+        query_text = _wf
+    elif _ind:
+        query_text = f"AI adoption in the {_ind} industry"
+    else:
+        query_text = "enterprise AI adoption"
     results = _collection.query(query_texts=[query_text], n_results=15)
 
     # De-duplicate by case_id: keep only the first (best-ranked) chunk per
@@ -80,6 +125,10 @@ def run_pipeline(inputs: dict) -> dict:
             "organization": meta["organization"],
             "title": meta["title"],
             "industry": meta["industry"],
+            "domain": meta.get("domain", ""),   # NEW — needed to tell a true
+                                                # industry+workflow match from a
+                                                # nearest-neighbour one (see
+                                                # count_exact_matches below)
             "source_url": meta["source_url"],
             "canonical_tools": meta["canonical_tools"].split(",") if meta["canonical_tools"] else [],
             "outcomes": meta["outcomes"],   # NEW — bullet-pointed prose, ready for Epic 3 to render
@@ -132,6 +181,8 @@ def run_pipeline(inputs: dict) -> dict:
             # blaming the privacy filter for a relevance miss.
             "no_match_reason": ("privacy_filter" if matched_cases and not filtered_cases
                                 else "no_relevant_cases"),
+            "exact_match_count": count_exact_matches(
+                filtered_cases, inputs["workflow"], inputs["industry"]),
         }
 
     # Step 3: cost
@@ -189,6 +240,12 @@ def run_pipeline(inputs: dict) -> dict:
         "project_name": inputs.get("project_name", ""),
         # Ash4: present on both paths so the UI can branch on one key.
         "no_match": False,
+        # Ash4 (post-sweep): how many of matched_cases are TRULY this industry +
+        # workflow, as opposed to nearest-neighbour cases from elsewhere. 205 of
+        # the 432 dropdown combinations have no real cases at all, so the banner
+        # must not claim "N real X Y deployments" without checking this first.
+        "exact_match_count": count_exact_matches(
+            filtered_cases, inputs["workflow"], inputs["industry"]),
         # Card 3.3 logs this to telemetry once tracker.py exists — see that card.
         "llm_metrics": {
             "duration_seconds": summary["duration_seconds"],

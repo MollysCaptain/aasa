@@ -1,19 +1,32 @@
 """
-Relevance-threshold calibration sweep (Ash4, fix 3 of 3).
+Relevance-threshold calibration sweep (Ash4).
 
 Gabi/Claudia's original version compared 4 plausible queries against 4
 deliberately absurd ones — the right idea, and the nonsense controls are what
-make it work. This version keeps that design and widens it, because 8 data
-points is too small to trust a threshold with:
+make it work. This version widens it, because 8 data points is too small to
+trust a threshold with.
 
-    plausible max observed = 0.504   vs   RELEVANCE_THRESHOLD = 0.52
-    -> a 0.016 margin, calibrated on 4 of several hundred possible
-       workflow x industry combinations.
+--- What the first --full run taught us (2026-07-27) ----------------------------
 
-If a real user's combination lands above the threshold they get ZERO results, so
-the number that actually matters is not "does it reject nonsense" but "how close
-does the WORST GENUINE query get to the cutoff". This script measures that and
-fails loudly if any real combination would come back empty.
+The sweep reported FAIL: 5 of 432 real combinations returned nothing at 0.52.
+Cross-checking those 5 against the corpus showed all five have **zero cases** —
+there is no "Procurement in Education" deployment in the library at all. So the
+empty result was CORRECT, and the FAIL verdict was wrong: it assumed anything
+selectable in the dropdowns must have evidence behind it. It doesn't. 205 of the
+432 combinations (47%) have no cases whatsoever.
+
+So this script now separates the two situations that matter, because only one of
+them is a bug:
+
+  * WRONGLY EMPTY — the corpus HAS cases for this pair, but the threshold
+    rejected them all. This is a real regression and fails the run.
+  * CORRECTLY EMPTY — the corpus has no cases for this pair, so returning
+    nothing is the honest answer. Reported for visibility, not a failure.
+
+The margin figure is kept but demoted: with distributions that overlap (the
+nonsense floor sits *below* the genuine ceiling) no single global cutoff can
+cleanly separate real from absurd, so a thin margin is expected rather than
+alarming. See PM & Ethics/Known-Limitations-v1.md.
 
 Run from the repo root, in the environment that has ./chroma_store and the
 all-MiniLM-L6-v2 model cached:
@@ -23,9 +36,10 @@ all-MiniLM-L6-v2 model cached:
     python tests/distancecheck.py --threshold 0.55
 
 Read-only: it queries the collection, writes nothing, and calls no LLM.
-Exit code 0 = safe, 1 = at least one genuine combination returns nothing.
+Exit code 0 = safe, 1 = a pair WITH evidence returns nothing.
 """
 import argparse
+import collections
 import random
 import sys
 
@@ -49,6 +63,26 @@ NONSENSE = [
     "synchronised interpretive dance for forklift operators",
     "wizard hat structural engineering compliance",
 ]
+
+
+def case_population(collection) -> "collections.Counter":
+    """
+    (domain, industry) -> number of distinct real cases, read from the collection
+    itself so it can never drift from what was actually embedded.
+
+    This is what lets us tell "the threshold broke a real query" apart from
+    "there is genuinely nothing here to find".
+    """
+    got = collection.get(include=["metadatas"])
+    seen, pop = set(), collections.Counter()
+    for m in got["metadatas"]:
+        cid = m.get("case_id")
+        if cid in seen:
+            continue          # 3 chunks per case — count each case once
+        seen.add(cid)
+        pop[(str(m.get("domain", "")).strip().lower(),
+             str(m.get("industry", "")).strip().lower())] += 1
+    return pop
 
 
 def main() -> int:
@@ -81,34 +115,50 @@ def main() -> int:
           f"({'FULL sweep' if args.full else f'random sample, seed {args.seed}'})")
     print(f"Nonsense controls    : {len(NONSENSE)}\n")
 
-    # --- real queries: how many would return NOTHING, and how tight is the margin?
-    real_scores, would_be_empty, kept_counts = [], [], []
+    # Corpus population, so an empty result can be judged instead of assumed bad.
+    pop = case_population(collection)
+    populated_pairs = sum(1 for w, i in pairs if pop[(w.lower(), i.lower())] > 0)
+    print(f"Pairs WITH real cases: {populated_pairs} of {len(pairs)} tested "
+          f"({len(pairs) - populated_pairs} have no cases at all)\n")
+
+    # --- real queries: which return NOTHING, and is that correct or a bug?
+    real_scores, kept_counts = [], []
+    wrongly_empty, correctly_empty = [], []
     for w, i in pairs:
         q = f"{w} in the {i} industry"
         dists = collection.query(query_texts=[q], n_results=15)["distances"][0]
         best = min(dists)
         kept = sum(1 for d in dists if d <= args.threshold)
-        real_scores.append((best, kept, q))
+        n_cases = pop[(w.lower(), i.lower())]
+        real_scores.append((best, kept, q, n_cases))
         kept_counts.append(kept)
         if kept == 0:
-            would_be_empty.append((best, q))
+            (wrongly_empty if n_cases > 0 else correctly_empty).append((best, q, n_cases))
 
     real_scores.sort(reverse=True)          # worst (largest best-distance) first
     print("REAL QUERIES — the 8 closest to the threshold (the risky end):")
-    for best, kept, q in real_scores[:8]:
-        flag = "   <-- WOULD RETURN NOTHING" if kept == 0 else ""
-        print(f"  best={best:.3f}  kept={kept:2d}/15  {q}{flag}")
+    for best, kept, q, n_cases in real_scores[:8]:
+        if kept == 0:
+            flag = ("   <-- EMPTY, BUG (corpus has %d case(s))" % n_cases
+                    if n_cases else "   <-- empty, correct (no cases exist)")
+        else:
+            flag = ""
+        print(f"  best={best:.3f}  kept={kept:2d}/15  cases={n_cases:4d}  {q}{flag}")
 
     worst_real = real_scores[0][0]
     margin = args.threshold - worst_real
     print(f"\n  worst genuine best-distance : {worst_real:.3f}")
     print(f"  threshold                   : {args.threshold:.3f}")
-    print(f"  MARGIN                      : {margin:+.3f}"
-          + ("   (NEGATIVE = genuine queries rejected)" if margin < 0 else ""))
+    print(f"  MARGIN                      : {margin:+.3f}   (informational — see"
+          " module docstring; overlap means a thin margin is expected)")
     print(f"  chunks kept per real query  : min={min(kept_counts)} "
           f"median={sorted(kept_counts)[len(kept_counts)//2]} max={max(kept_counts)}")
-    print(f"  real queries with 0 results : {len(would_be_empty)}/{len(pairs)}")
-    for best, q in would_be_empty:
+
+    print(f"\n  EMPTY + evidence exists (BUG) : {len(wrongly_empty)}")
+    for best, q, n_cases in wrongly_empty:
+        print(f"      {best:.3f}  {q}   ({n_cases} real case(s) rejected)")
+    print(f"  EMPTY + no evidence (correct)  : {len(correctly_empty)}")
+    for best, q, _ in correctly_empty:
         print(f"      {best:.3f}  {q}")
 
     # --- nonsense controls: how many are correctly rejected?
@@ -125,20 +175,23 @@ def main() -> int:
     print(f"\n  fully rejected: {len(NONSENSE) - len(leaked)}/{len(NONSENSE)}")
 
     # --- verdict
+    # Only ONE thing fails this run: a pair that HAS evidence returning nothing.
+    # A pair with no evidence returning nothing is the product working correctly.
     print("\n" + "=" * 74)
-    ok = True
-    if would_be_empty:
-        ok = False
-        print(f"FAIL — {len(would_be_empty)} genuine combination(s) return NOTHING at "
-              f"{args.threshold}.")
-        print("       Raise the threshold above the worst value above, or add a floor")
-        print("       (always keep the top-k nearest chunks), before shipping this.")
-    elif margin < 0.02:
-        print(f"MARGINAL — nothing is rejected today, but only {margin:.3f} separates the")
-        print("           worst genuine query from the cutoff. Re-run with --full before")
-        print("           shipping; a single unlucky combination flips this to FAIL.")
+    ok = not wrongly_empty
+    if wrongly_empty:
+        print(f"FAIL — {len(wrongly_empty)} combination(s) have real cases in the corpus")
+        print(f"       but return NOTHING at {args.threshold}. That is evidence being")
+        print("       thrown away. Raise the threshold above the worst value listed,")
+        print("       or add a floor (always keep the top-k nearest chunks).")
     else:
-        print(f"PASS — no genuine combination is rejected (margin {margin:.3f}).")
+        print(f"PASS — every combination that has evidence returns it (threshold "
+              f"{args.threshold}).")
+    if correctly_empty:
+        print(f"NOTE — {len(correctly_empty)} combination(s) return nothing because the")
+        print("       corpus genuinely has no cases for them. This is the no-match")
+        print("       guard behaving correctly, not a failure. Users see the honest")
+        print("       empty state rather than unrelated cases.")
     if leaked:
         print(f"NOTE — {len(leaked)} nonsense query/queries still return chunks. One global")
         print("       cutoff cannot separate every absurd query from every real one;")

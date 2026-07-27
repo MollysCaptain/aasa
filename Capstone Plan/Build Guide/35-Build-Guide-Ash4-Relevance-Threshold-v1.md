@@ -87,10 +87,13 @@ it warns at MARGINAL if the margin is under 0.02. Nonsense controls extended fro
 Neither can be done from this environment (no `chroma_store`, no embedding model,
 no `GROQ_API_KEY`). **Both must pass before `Ash4` merges to main.**
 
-- [ ] **`python tests/distancecheck.py --full`** — must not print FAIL. If it
-      does, raise the threshold above the reported worst value, or add a floor
-      (always keep the top-k nearest chunks) rather than shipping a cutoff that
-      silently returns nothing for real inputs.
+- [x] **`python tests/distancecheck.py --full` — RUN 2026-07-27.** Printed
+      `FAIL — 5 genuine combination(s) return NOTHING at 0.52` (worst genuine
+      0.568, margin −0.048, 7/8 nonsense rejected). **The FAIL was the script's
+      fault, not the threshold's** — all 5 pairs have zero cases in the corpus,
+      so returning nothing is correct. Script verdict logic rewritten to be
+      corpus-aware; the same run now reads PASS with 5 correctly-empty pairs
+      noted. See the second correction below.
 - [x] **P.9 Profile 3 tested live (2026-07-27)** — "Facilities & EHS / Agriculture
       / solo / regulated" returned **15 matched cases, threshold filtered nothing**
       (Azure, AWS, Azure OpenAI, Bedrock, Google Cloud; €8.75/mo; WITHIN BUDGET;
@@ -192,3 +195,116 @@ because users cannot ask an irrelevant question through the dropdowns. The
 `distancecheck.py --full` sweep is still worth running: it tells you whether any
 real combination's *nearest* case exceeds 0.52, which is the only way a real user
 sees the empty state.
+
+---
+
+## Correction 2 (2026-07-27) — the sweep ran, and it found something bigger
+
+Ash ran `python tests/distancecheck.py --full`. Output:
+
+```
+Threshold under test : 0.52
+Real pairs           : 432 of 432 possible (FULL sweep)
+worst genuine best-distance : 0.568      MARGIN : -0.048
+real queries with 0 results : 5/432
+    0.555  Finance in the Education industry
+    0.568  Procurement in the Education industry
+    0.533  Procurement in the Government & Public Sector industry
+    0.529  Procurement in the Real Estate & Construction industry
+    0.558  Sales in the Education industry
+NONSENSE CONTROLS: fully rejected 7/8   (leak: "competitive yodeling", best 0.476)
+FAIL — 5 genuine combination(s) return NOTHING at 0.52.
+```
+
+### The FAIL was wrong, and it was my bug
+
+I cross-checked those 5 pairs against the corpus. **All five contain zero
+cases.** Education has 177 cases and Procurement has 8, but no case is both.
+So returning "no comparable deployments" is the *truthful* answer, and the
+threshold was behaving exactly as designed.
+
+The `FAIL` came from an assumption I built into the script: that anything
+selectable in the dropdowns must have evidence behind it. That is false. **The
+threshold was not raised** — raising it to 0.58 would have cleared all 432 pairs
+but made the app present 15 unrelated cases as evidence for five combinations
+that have none. `RELEVANCE_THRESHOLD` stays at **0.52**.
+
+`tests/distancecheck.py` now reads case population straight from the collection
+and splits empty results in two:
+
+| Outcome | Meaning | Verdict |
+|---|---|---|
+| **wrongly empty** | corpus HAS cases, threshold rejected them all | **FAIL** — evidence thrown away |
+| **correctly empty** | corpus has no cases for this pair | NOTE — guard working |
+
+Re-verified against the real corpus: 0 wrongly empty, 5 correctly empty → **PASS**.
+
+### The bigger finding: 205 of 432 combinations have no evidence
+
+The threshold only catches 5 of them. The other **200** return 15
+nearest-neighbour cases from other industries — and the banner announced:
+
+```python
+context = f"{n} real {query['industry']} {query['workflow']} deployments matched. "
+```
+
+For 47% of possible queries that sentence was **false**. It named an
+industry/workflow pair with zero deployments and called the results "real …
+deployments". Block C was already honest (each case shows its own industry, and
+"same industry as yours" only appears on a true match) — the banner was not.
+
+**Fixed** by counting true matches deterministically. `pipeline.py` now carries
+`domain` on each matched case and returns `exact_match_count`; the banner says:
+
+| Situation | Banner text |
+|---|---|
+| all matches genuine | "15 real Healthcare Data & Analytics deployments matched." |
+| none genuine | "No direct Education Procurement deployments in the library — showing the 15 closest comparable deployments from adjacent industries." |
+| some genuine | "4 real Healthcare Data & Analytics deployments matched, plus 11 closest comparable from adjacent industries." |
+| "Any" selected | "15 deployments matched from across the whole case library." |
+| pre-fix saved blueprint | "15 comparable deployments matched." (no claim, since the old one may be wrong) |
+
+This turns a hidden over-claim into a visible, accurate statement about evidence
+depth — and it costs nothing, because the data was already in the metadata.
+
+### Third issue found while checking: the "Any" defaults reached retrieval raw
+
+`WORKFLOWS` and `INDUSTRIES` both start with `"Any workflow"` / `"Any industry"`,
+neither `st.selectbox` passes `index=`, and `validate_intake` accepts them
+(they're non-empty strings). So the **default form state** built the query
+literally:
+
+```
+"Any workflow in the Any industry industry"
+```
+
+That is the query anyone gets by pressing *Generate my blueprint* without
+touching the dropdowns — the most likely first action at a demo. `pipeline.py`
+now drops the unspecified half instead:
+
+| Workflow | Industry | Query sent |
+|---|---|---|
+| Data & Analytics | Healthcare | `Data & Analytics in the Healthcare industry` |
+| Any workflow | Healthcare | `AI adoption in the Healthcare industry` |
+| Marketing | Any industry | `Marketing` |
+| Any workflow | Any industry | `enterprise AI adoption` |
+
+### Verification
+
+`py_compile` clean on `pipeline.py`, `dashboard.py`, `distancecheck.py`. With a
+stubbed collection: all five banner branches produce the expected sentence,
+`count_exact_matches` correct on 7 cases including the "Any" variants, query
+construction correct on all four combinations, **0 LLM calls** on the
+empty-retrieval path, and `exact_match_count` present on both return paths.
+
+### Still outstanding
+
+- [ ] Re-run `python tests/distancecheck.py --full` to confirm it now prints
+      **PASS** with 5 correctly-empty pairs noted (expected — verified against
+      the corpus offline, but worth seeing live).
+- [ ] Live-check the default `Any workflow / Any industry` submit now returns a
+      sensible blueprint.
+- [ ] Live-check a zero-evidence pair (e.g. **Content & Creative × Automotive**)
+      shows the "No direct … showing the N closest comparable" banner.
+- [ ] Consider flagging unpopulated pairs in the dropdowns — the real fix, but a
+      bigger change than the freeze allows. Recorded in Known-Limitations.

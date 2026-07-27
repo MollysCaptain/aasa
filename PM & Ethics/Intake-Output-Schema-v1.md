@@ -125,6 +125,19 @@ Worked example (startup, `["openai-api", "chatgpt", "langchain"]`, budget €120
   `"privacy_filter"` (cases matched, but none of their tools are governable for a
   regulated posture). The UI uses this to explain the real cause instead of
   always blaming the privacy filter.
+- **`domain`** (`str`, inside each `matched_cases` entry — new in Ash4) — the
+  case's own workflow/domain, copied from chunk metadata. Added so the UI can
+  tell a case that genuinely matches the requested workflow from a
+  nearest-neighbour case retrieved from elsewhere. `""` if absent from metadata.
+- **`exact_match_count`** (`int`, new in Ash4, present on both paths) — how many
+  of `matched_cases` have **both** `industry` and `domain` equal to what the user
+  asked for. Retrieval is semantic, so it always returns the nearest cases: a
+  full 432-pair sweep found **205 combinations (47%) have zero real cases**, and
+  for those the banner previously claimed "N real X Y deployments matched" — a
+  false statement. The banner now branches on this count (all / some / none
+  genuine). `"Any workflow"`/`"Any industry"` impose no constraint, so they can't
+  make a case a mismatch and the count equals `len(matched_cases)`. Blueprints
+  saved before Ash4 lack this key; the UI treats absent as "make no claim".
 - **`project_name`** (`str`, new in Icebox B.5 / Build Guide 24) — optional, cosmetic; empty string when the user leaves the field blank. Echoed in the dashboard heading, the plain-text export header, the board one-pager title (guide 26), and B.6's default save-name. Kept top-level, deliberately NOT inside `query` (that key is strictly the 5 validated pipeline inputs).
 
 **Inputs (B.5 additions):** `run_pipeline`'s `inputs` dict also accepts two optional keys — `project_name` (str, cosmetic, above) and `exclude_tools` (list of canonical tool ids). Exclusions are applied by `apply_vendor_exclusions()` in `app/logic/filter.py` **after** the privacy filter and before ranking: privacy is a hard compliance rule that always sees the full case list; exclusions are a user preference layered on top. Neither field is validated by `validate_intake` — empty values are a no-op by design.
@@ -140,9 +153,24 @@ Full return shape:
     "summary_text": "...",
     "query": {...},               # intake echo, display-only (UI-parity round)
     "project_name": "...",        # optional cosmetic name (B.5), "" if unset
+    "no_match": False,            # Ash4 — True only on the short-circuit path
+    "exact_match_count": 0,       # Ash4 — true industry+workflow matches
     "llm_metrics": {...},
 }
 ```
+
+**Note on the retrieval query string (Ash4).** `query_text` is built from the two
+dropdowns only — the project name never reaches retrieval. `"Any workflow"` /
+`"Any industry"` are UI conveniences, not corpus values, so the unspecified half
+is dropped rather than interpolated (which previously produced the literal query
+`"Any workflow in the Any industry industry"` from the default form state):
+
+| Workflow | Industry | Query sent |
+|---|---|---|
+| specified | specified | `{workflow} in the {industry} industry` |
+| Any | specified | `AI adoption in the {industry} industry` |
+| specified | Any | `{workflow}` |
+| Any | Any | `enterprise AI adoption` |
 
 ---
 
