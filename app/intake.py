@@ -39,7 +39,7 @@ st.set_page_config(
 # on reruns (confirmed live — two attempts via the API left the sidebar tiny and
 # never collapsed/expanded on Generate/Save). So we manage open/closed ourselves:
 # a session flag decides whether CSS shows the sidebar (fixed width) or hides it
-# (display:none), and we render our own "Blueprint Builder" control to reopen it
+# (display:none), and we render our own "Edit Builder" control to reopen it
 # (Streamlit's native >> chevron only appears for its own collapse state, which
 # we don't use). This is CSS — the same mechanism that reliably set the sidebar
 # width earlier in the project.
@@ -357,10 +357,23 @@ DARK_CSS = """
        metrics keep the full page width. Keys set via st.container(key=...) in
        dashboard.py -> Streamlit emits a matching .st-key-<key> class. */
     .st-key-aasa_prose_summary, .st-key-aasa_prose_cases { max-width: 72ch; }
+    /* First-real-user feedback: the Cost tab prices only ONE primary API + ONE
+       assistant, so most recommendations show no figure there and testers read
+       that as inconsistent. These two rows in the Stack tab get a subtle lift off
+       the page background (plus an "in cost forecast" caption, since colour alone
+       is not an accessible signal). Substring match on the key so it applies to
+       whichever ranks happen to be the costed ones. */
+    [class*="st-key-aasa_costed_row_"] {
+        background: #181B22;
+        border-left: none;
+        border-radius: 8px;
+        padding: 0.6rem 0.8rem;
+        margin-bottom: 0.35rem;
+    }
     .st-key-aasa_prose_how { max-width: 52rem; }   /* wider: keeps the 3 "how" columns comfortable */
     /* Ash3-update v2.2: we manage the sidebar open/closed ourselves (see below),
        so hide Streamlit's native collapse (<<) and expand (>>) controls to keep
-       our state and the UI in sync. Our own "Blueprint Builder" button reopens
+       our state and the UI in sync. Our own "Edit Builder" button reopens
        the sidebar when it's hidden. */
     [data-testid="stSidebarCollapseButton"], [data-testid="stExpandSidebarButton"] {
         display: none !important;
@@ -412,7 +425,7 @@ else:
         "<style>section[data-testid='stSidebar']{display:none !important;}</style>",
         unsafe_allow_html=True,
     )
-    if st.button("≫  Blueprint Builder", key="reopen_sidebar"):
+    if st.button("≫  Edit Builder", key="reopen_sidebar"):
         st.session_state.sidebar_open = True
         st.session_state["_user_collapsed"] = False
         st.session_state["build_open"] = True   # reopening shows the form expanded
@@ -624,7 +637,7 @@ if submitted:
         log_event("llm_summary_generated", **result["llm_metrics"])
         st.session_state.result = result  # persist across reruns — see note below
         # Ash3-update v2.2: hide the sidebar so the fresh blueprint gets the whole
-        # screen; the "Blueprint Builder" button (top-left) reopens it.
+        # screen; the "Edit Builder" button (top-left) reopens it.
         st.session_state.sidebar_open = False
         # UI-v2 fix: rerun immediately so the hero's "result not in
         # st.session_state" gate (above) re-evaluates with the result now set.

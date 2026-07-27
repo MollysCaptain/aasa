@@ -63,32 +63,39 @@ def render_blueprint(result: dict):
     # NOTE: :material/...: labels need a Streamlit build that renders Material
     # Symbols in tab labels (the project's current build does). If they ever
     # show as literal ":material/..." text, the Streamlit version is too old.
-    tab_stack, tab_cost, tab_cases, tab_summary, tab_export, tab_how = st.tabs(
+    # Order and labels revised 2026-07-27 on first-real-user feedback: Summary
+    # leads (the reader wants the answer in prose before the detail), then Cost —
+    # the tester's next question was always "what does it cost" — then Stack,
+    # Cases, Export, How it works. The "1 · / 2 · / 3 ·" numbering is gone from
+    # both the tabs and the section headings: it implied a fixed reading order
+    # that no longer matches the layout, and read as steps to complete.
+    tab_summary, tab_cost, tab_stack, tab_cases, tab_export, tab_how = st.tabs(
         [
-            ":material/layers: 1 · Stack",
-            ":material/payments: 2 · Cost",
-            ":material/library_books: 3 · Cases",
             ":material/summarize: Summary",
+            ":material/payments: Cost",
+            ":material/layers: Stack",
+            ":material/library_books: Cases",
             ":material/download: Export",
             ":material/help: How it works",
         ]
     )
 
-    with tab_stack:
-        _render_stack_block(result["recommended_stack"], result["matched_cases"],
-                            result["tool_costs"], result.get("no_match_reason"))
+    with tab_summary:
+        with st.container(key="aasa_prose_summary"):
+            st.markdown("### Summary")
+            st.write(result["summary_text"])
     with tab_cost:
         _render_cost_block(result["cost_forecast"])
+    with tab_stack:
+        _render_stack_block(result["recommended_stack"], result["matched_cases"],
+                            result["tool_costs"], result.get("no_match_reason"),
+                            result.get("cost_forecast"))
     with tab_cases:
         # Ash3-update: keyed container caps the reading width (CSS in intake.py)
         # so the case cards don't stretch full-bleed in wide layout.
         with st.container(key="aasa_prose_cases"):
             _render_case_references_block(result["matched_cases"], result["recommended_stack"],
                                           result.get("query", {}))
-    with tab_summary:
-        with st.container(key="aasa_prose_summary"):
-            st.markdown("### Summary")
-            st.write(result["summary_text"])
     with tab_export:
         st.markdown("### Export")
         blueprint_text = blueprint_to_text(result)
@@ -304,9 +311,30 @@ def _why_for_tool(tool_id: str, evidence_count: int, total_cases: int) -> str:
             "in your matched cases.")
 
 
+def _costed_tool_ids(cost_forecast: dict | None) -> set:
+    """
+    Which tool ids actually appear in the Cost tab.
+
+    The cost block deliberately prices ONE primary API + ONE assistant, never the
+    whole stack — so most recommended tools carry no figure there. Testers read
+    that as an inconsistency ("why is this priced and that isn't?"), so Block A
+    now marks the two that are. Ids here are canonical (pipeline builds the
+    label-ified copies separately, only for the LLM prompt).
+    """
+    if not cost_forecast:
+        return set()
+    ids = set()
+    for slot in ("primary_api", "assistant"):
+        entry = cost_forecast.get(slot)
+        if entry and entry.get("tool"):
+            ids.add(entry["tool"])
+    return ids
+
+
 def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dict,
-                        no_match_reason: str | None = None):
-    st.markdown("### 1 · Recommended AI Stack")
+                        no_match_reason: str | None = None,
+                        cost_forecast: dict | None = None):
+    st.markdown("### Recommended AI Stack")
     if not ranked_tools:
         # Ash4 (fix 2 of 3): say the RIGHT reason. This used to always blame the
         # privacy filter, which became actively misleading once the relevance
@@ -337,6 +365,7 @@ def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dic
     # "evidence bar" the task card asks for. Denominator is the total matched
     # case count, so the percentage reflects real-world evidence.
     total_cases = max(len(matched_cases), 1)
+    costed_ids = _costed_tool_ids(cost_forecast)
     for rank, tool_id in enumerate(visible_tools, start=1):
         entry = PRICING.get(tool_id, {})
         label = entry.get("label", tool_id)
@@ -353,36 +382,89 @@ def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dic
         else:
             price_label = _PRICE_FALLBACK_LABELS.get(pricing_model, "Pricing unavailable")
 
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            # Tool name in green (.aasa-stack-name). UI-v2c: the whole name is a
-            # hyperlink to the tool's official site when we have a URL (falls
-            # back to a plain span otherwise), and the pricing-model tag is now
-            # one orange .aasa-price-tag token ("seat-priced" / "token-priced" /
-            # "usage-based" / "open source" — single font, no split "-priced"
-            # add-on) so it reads as one unit and stands apart from the name.
-            if tool_url:
-                name_html = (f'<a class="aasa-stack-name" href="{tool_url}" '
-                             f'target="_blank" rel="noopener">{rank}. {label}</a>')
-            else:
-                name_html = f'<span class="aasa-stack-name">{rank}. {label}</span>'
-            st.markdown(
-                f'{name_html}  ·  <span class="aasa-price-tag">{price_tag}</span>',
-                unsafe_allow_html=True,
-            )
-            # Lovable-parity UI round — per-tool "why:" rationale line.
-            st.markdown(
-                f'<span class="aasa-why">why:</span> '
-                f'{_why_for_tool(tool_id, evidence_count, total_cases)}',
-                unsafe_allow_html=True,
-            )
-            st.progress(evidence_pct / 100, text=f"Seen in {evidence_count}/{total_cases} matched cases")
-        with col2:
-            st.caption(price_label)
+        # The two tools carried into the Cost tab get a tinted row. Keyed
+        # container -> CSS in intake.py's DARK_CSS (same .st-key- mechanism the
+        # prose-width caps use). A text marker goes alongside the tint, because
+        # a background colour alone is invisible to anyone not distinguishing it.
+        is_costed = tool_id in costed_ids
+        row = st.container(key=f"aasa_costed_row_{rank}") if is_costed else st.container()
+        with row:
+            _render_stack_row(rank, tool_id, label, tool_url, price_tag, price_label,
+                              evidence_count, total_cases, matched_cases, is_costed)
+
+
+def _render_stack_row(rank, tool_id, label, tool_url, price_tag, price_label,
+                      evidence_count, total_cases, matched_cases, is_costed):
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        # Tool name in green (.aasa-stack-name). UI-v2c: the whole name is a
+        # hyperlink to the tool's official site when we have a URL (falls
+        # back to a plain span otherwise), and the pricing-model tag is now
+        # one orange .aasa-price-tag token ("seat-priced" / "token-priced" /
+        # "usage-based" / "open source" — single font, no split "-priced"
+        # add-on) so it reads as one unit and stands apart from the name.
+        if tool_url:
+            name_html = (f'<a class="aasa-stack-name" href="{tool_url}" '
+                         f'target="_blank" rel="noopener">{rank}. {label}</a>')
+        else:
+            name_html = f'<span class="aasa-stack-name">{rank}. {label}</span>'
+        st.markdown(
+            f'{name_html}  ·  <span class="aasa-price-tag">{price_tag}</span>',
+            unsafe_allow_html=True,
+        )
+        # Lovable-parity UI round — per-tool "why:" rationale line.
+        st.markdown(
+            f'<span class="aasa-why">why:</span> '
+            f'{_why_for_tool(tool_id, evidence_count, total_cases)}',
+            unsafe_allow_html=True,
+        )
+        # Was a static st.progress bar reading "Seen in N/M matched cases".
+        # First-real-user feedback: the count invites the obvious next
+        # question — WHICH cases? — and the bar couldn't answer it. Now an
+        # expander that names them, with the source link for each, so the
+        # evidence is one click away instead of a tab away. (Clicking through
+        # to the Cases tab isn't possible: st.tabs has no programmatic
+        # selection, so the cases are listed here in full instead.)
+        _render_evidence_dropdown(tool_id, label, evidence_count, total_cases,
+                                  matched_cases)
+    with col2:
+        st.caption(price_label)
+        if is_costed:
+            st.caption("↑ in cost forecast")
+
+
+def _render_evidence_dropdown(tool_id: str, label: str, evidence_count: int,
+                              total_cases: int, matched_cases: list):
+    """The cases behind one recommendation, named rather than just counted."""
+    pct = int(100 * evidence_count / max(total_cases, 1))
+    if not evidence_count:
+        # Can happen under a regulated posture: the tool is ranked from the
+        # unfiltered set but every case citing it had its tools stripped.
+        st.caption(f"Seen in 0/{total_cases} matched cases")
+        return
+
+    # Sorted, not just filtered — the caption below promises "best match first",
+    # so the order has to be guaranteed here rather than inherited from upstream.
+    using = sorted((c for c in matched_cases if tool_id in c.get("canonical_tools", [])),
+                   key=lambda c: c.get("distance", float("inf")))
+    with st.expander(f"Seen in {evidence_count}/{total_cases} matched cases  ·  {pct}%"):
+        st.progress(pct / 100)
+        st.caption(f"The deployments below are the evidence for recommending {label}. "
+                   "Best match first.")
+        for case in using:
+            org = case.get("organization", "Unknown organisation")
+            title = case.get("title", "")
+            industry = case.get("industry", "")
+            url = case.get("source_url", "")
+            line = f"**{org}** — {title}" if title else f"**{org}**"
+            st.markdown(line)
+            bits = [b for b in (industry, f"[source]({url})" if url else "") if b]
+            if bits:
+                st.caption("  ·  ".join(bits))
 
 
 def _render_cost_block(cost_forecast: dict):
-    st.markdown("### 2 · Cost Forecast")
+    st.markdown("### Cost Forecast")
     st.caption(cost_forecast.get("disclaimer", ""))
 
     primary = cost_forecast.get("primary_api")
@@ -414,7 +496,7 @@ _CASE_COUNT_OPTIONS = {"4": 4, "8": 8, "All": None}
 
 
 def _render_case_references_block(matched_cases: list, ranked_tools: list, query: dict):
-    st.markdown("### 3 · Real Case References")
+    st.markdown("### Real Case References")
     if not matched_cases:
         st.info("No comparable cases matched — this can happen with very narrow inputs.")
         return
@@ -424,7 +506,16 @@ def _render_case_references_block(matched_cases: list, ranked_tools: list, query
         horizontal=True, key="case_count", label_visibility="collapsed",
     )
     limit = _CASE_COUNT_OPTIONS[count_label]
-    visible_cases = matched_cases if limit is None else matched_cases[:limit]
+
+    # Best-match first, explicitly. Retrieval already returns nearest-first and
+    # every downstream step preserves that order, so this changes nothing today —
+    # it makes the guarantee the UI depends on impossible to break by accident,
+    # e.g. if a future filter rebuilds the list. Blueprints saved before the
+    # `distance` field existed sort last rather than crashing.
+    ordered_cases = sorted(matched_cases,
+                           key=lambda c: c.get("distance", float("inf")))
+    visible_cases = ordered_cases if limit is None else ordered_cases[:limit]
+    st.caption("Ordered by closeness of match — best first.")
 
     for case in visible_cases:
         org = case.get("organization", "Unknown organisation")
