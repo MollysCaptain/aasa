@@ -94,6 +94,46 @@ def run_pipeline(inputs: dict) -> dict:
     filtered_cases = apply_vendor_exclusions(filtered_cases, inputs.get("exclude_tools", []))
     ranked_tools = rank_tools_by_frequency(filtered_cases, top_n=5)
 
+    # --- No-match guard (Ash4, fix 1 of 3 for the relevance threshold) --------
+    # RELEVANCE_THRESHOLD can legitimately filter EVERYTHING out — that's the
+    # point for a nonsense query. Without this guard the run continued with an
+    # empty stack and still called the LLM with "Matched cases: 0", i.e. asked a
+    # model to write a recommendation with no evidence behind it. That is the
+    # exact failure mode this architecture exists to prevent (deterministic
+    # first, model last, never inventing), so we short-circuit instead: return a
+    # fully-formed result with no_match=True, no LLM call, and a plain factual
+    # sentence written by us. The UI renders an honest empty state from this.
+    if not ranked_tools:
+        return {
+            "recommended_stack": [],
+            "cost_forecast": estimate_cost([], inputs["org_size"], inputs["budget"]),
+            "tool_costs": {},
+            "matched_cases": filtered_cases,   # may be non-empty but tool-less
+            "summary_text": (
+                "No comparable deployments in the case library were close enough "
+                "to this combination of workflow and industry, so there is no "
+                "evidence-backed stack to recommend. Try a broader workflow or a "
+                "related industry — this is a deliberate limit, not an error: "
+                "AASA only recommends tools it can point to real deployments for."
+            ),
+            "query": {
+                "workflow": inputs["workflow"],
+                "industry": inputs["industry"],
+                "org_size": inputs["org_size"],
+                "privacy": inputs["privacy"],
+            },
+            "project_name": inputs.get("project_name", ""),
+            # No model was called, so there are no real metrics to report. Zeros
+            # (not fabricated numbers) keep Card 3.3's telemetry schema intact.
+            "llm_metrics": {"duration_seconds": 0.0, "prompt_tokens": 0,
+                            "completion_tokens": 0, "tokens_per_second": None},
+            "no_match": True,
+            # Why it was empty — lets the UI explain the real cause rather than
+            # blaming the privacy filter for a relevance miss.
+            "no_match_reason": ("privacy_filter" if matched_cases and not filtered_cases
+                                else "no_relevant_cases"),
+        }
+
     # Step 3: cost
     # Update D: budget is now actually passed through — previously it was
     # captured on the intake form and validated but never read again, so the
@@ -147,6 +187,8 @@ def run_pipeline(inputs: dict) -> dict:
         # Icebox B.5 — kept top-level (NOT inside query: query is strictly the
         # 5 validated pipeline inputs; this is a display-only cosmetic field).
         "project_name": inputs.get("project_name", ""),
+        # Ash4: present on both paths so the UI can branch on one key.
+        "no_match": False,
         # Card 3.3 logs this to telemetry once tracker.py exists — see that card.
         "llm_metrics": {
             "duration_seconds": summary["duration_seconds"],

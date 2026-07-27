@@ -29,6 +29,8 @@ skew" expander in the *How it works* tab. This document is the fuller version.
 | **The LLM writes the summary paragraph only** | By design: retrieval, filtering, ranking and costing are deterministic code; the model never invents tools or prices. This is a *strength*, but it means the summary's prose quality varies run to run. | Prompt is pinned at temperature 0 with an eval set (Card 2.6). Ongoing prompt tuning post-capstone. |
 | **Session-only persistence — nothing is stored** | No accounts, no server-side storage, by deliberate data-minimisation choice (Card P.4). A hard refresh clears saved blueprints. | Honest trade-off, not a bug: users export JSON to keep their work. Accounts would mean holding personal data we chose not to hold. |
 
+| **Relevance cutoff is a single global threshold** | Retrieval now drops chunks past `RELEVANCE_THRESHOLD` (0.52) so an unrelated query no longer claims "15 real deployments matched". One global number can't perfectly separate every absurd query from every real one — in calibration, 1 of 8 nonsense queries still had a single coincidentally-close chunk. | Per-industry or adaptive thresholds; or surface the distance to the user. Re-derive with `tests/distancecheck.py` if the embedding model or distance metric changes. |
+
 ## Validation limitations
 
 | Limitation | Why it exists | Roadmap fix |

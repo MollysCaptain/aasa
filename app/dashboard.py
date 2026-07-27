@@ -76,7 +76,7 @@ def render_blueprint(result: dict):
 
     with tab_stack:
         _render_stack_block(result["recommended_stack"], result["matched_cases"],
-                            result["tool_costs"])
+                            result["tool_costs"], result.get("no_match_reason"))
     with tab_cost:
         _render_cost_block(result["cost_forecast"])
     with tab_cases:
@@ -125,6 +125,17 @@ def _render_status_chips(result: dict):
 def _render_directional_banner(result: dict):
     query = result.get("query", {})
     n = len(result["matched_cases"])
+    # Ash4: don't announce "0 real X Y deployments matched" as if it were a
+    # finding — on the no-match path the banner explains the limit instead.
+    if result.get("no_match"):
+        st.markdown(
+            '<div class="aasa-banner"><b>NO EVIDENCE MATCH</b> — nothing in the '
+            "case library was close enough to these inputs, so no stack is "
+            "recommended. AASA only recommends tools it can trace to real "
+            "deployments.</div>",
+            unsafe_allow_html=True,
+        )
+        return
     context = ""
     if query.get("industry") and query.get("workflow"):
         context = f"{n} real {query['industry']} {query['workflow']} deployments matched. "
@@ -258,11 +269,29 @@ def _why_for_tool(tool_id: str, evidence_count: int, total_cases: int) -> str:
             "in your matched cases.")
 
 
-def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dict):
+def _render_stack_block(ranked_tools: list, matched_cases: list, tool_costs: dict,
+                        no_match_reason: str | None = None):
     st.markdown("### 1 · Recommended AI Stack")
     if not ranked_tools:
-        st.info("No tools cleared the privacy filter for this combination of inputs. "
-                 "Try relaxing the privacy posture or broadening the workflow.")
+        # Ash4 (fix 2 of 3): say the RIGHT reason. This used to always blame the
+        # privacy filter, which became actively misleading once the relevance
+        # threshold could empty the list for a completely different reason.
+        if no_match_reason == "no_relevant_cases":
+            st.info("No deployments in the case library were close enough to this "
+                    "combination of workflow and industry, so there is no "
+                    "evidence-backed stack to show. Try a broader workflow or a "
+                    "related industry.\n\n"
+                    "This is a deliberate limit: AASA only recommends tools it can "
+                    "point to real deployments for.")
+        elif no_match_reason == "privacy_filter":
+            st.info("Comparable deployments were found, but none of their tools are "
+                    "governable enough for a regulated posture — so nothing cleared "
+                    "the privacy filter. Try the standard posture to see what those "
+                    "teams actually used.")
+        else:
+            st.info("No tools are available for this combination of inputs. Try "
+                    "relaxing the privacy posture, removing a vendor exclusion, or "
+                    "broadening the workflow.")
         return
 
     # UI-v2e: the pricing-type filter toggle (Recommended/Token/Seat/Compute/Free)
