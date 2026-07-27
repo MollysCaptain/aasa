@@ -242,3 +242,10 @@
 {"event": "llm_summary_generated", "timestamp": 1784906332.194651, "duration_seconds": 1.17, "prompt_tokens": 1041, "completion_tokens": 655, "tokens_per_second": 559.8}
 {"event": "results_shown", "timestamp": 1784906365.6978428, "elapsed_seconds": 67.0}
 {"event": "llm_summary_generated", "timestamp": 1784906365.69841, "duration_seconds": 1.08, "prompt_tokens": 1100, "completion_tokens": 380, "tokens_per_second": 351.9}
+{"event": "form_start", "timestamp": 1785160083.7332206}
+{"event": "form_start", "timestamp": 1785160083.7341042}
+{"event": "results_shown", "timestamp": 1785160137.153881, "elapsed_seconds": 53.4}
+{"event": "llm_summary_generated", "timestamp": 1785160137.154388, "duration_seconds": 1.76, "prompt_tokens": 1083, "completion_tokens": 936, "tokens_per_second": 531.8}
+{"event": "results_shown", "timestamp": 1785160194.8080778, "elapsed_seconds": 111.1}
+{"event": "llm_summary_generated", "timestamp": 1785160194.8084164, "duration_seconds": 0.9, "prompt_tokens": 1083, "completion_tokens": 584, "tokens_per_second": 648.9}
+{"event": "survey_submitted", "timestamp": 1785160224.0832393, "trust_score": 4, "net_value": "Yes"}

@@ -171,6 +171,11 @@ Turn every gap you already know about into an honestly-labelled "Known Limitatio
    - The dataset skews toward enterprise-productivity tools (Card P.8's model card).
    - There's no organisation-size join key in the case data — Org Size is a separate, user-stated taxonomy.
    - Validation sample size is 5–8 real testers, not a statistically representative study.
+   - Trust score explicitly missed its target (median 3/5 vs. ≥4/5) — call this out plainly on its own, per Card P.14's honesty standard, rather than folding it into the general small-sample caveat.
+   - Telemetry (Card 3.3) has no user/session identifier — session counts in `data/telemetry.log` can't be mapped to distinct testers, so "14 completed sessions" and "5 survey responses" aren't necessarily 14 and 5 different people.
+   - Retrieval (Card 2.2) has no relevance threshold — Chroma's query always returns the nearest 15 cases (`n_results=15` in `app/pipeline.py`) regardless of how semantically distant they actually are, so an obscure workflow/industry combo will still show "15 real deployments matched," which can overstate evidence quality for niche queries.
+   - The `project_name` field (Icebox B.5, `app/intake.py`) is a free-text input the UI asks users not to put PII into but doesn't enforce; anything typed there (or into the blueprint "Name" field) can end up in `data/aasa-saved-blueprints.json` (Icebox B.6), which is git-tracked and not gitignored.
+   - Card P.11 (real user testing) may still be "In Progress" rather than fully complete as of this writing — Card P.14's telemetry may reflect partial, not complete, real-user testing.
    - Any Minor issues deliberately deferred back in Card P.12.
 2. **Write each one as: what it is → why it exists → what would fix it (roadmap item).** This structure shows judgement, not just a list of flaws.
 3. **Put a visible version of this in the product itself** (a "Known limitations" note near the results, in plain language) — not just buried in a project document only graders will read.
@@ -187,6 +192,11 @@ Turn every gap you already know about into an honestly-labelled "Known Limitatio
 | Dataset skews toward enterprise productivity tools | Reflects real-world case frequency in the source library | Document transparently (done — see model card); could diversify sources later |
 | No org-size join to case data | Source dataset has no such field | Would require a different/joined dataset |
 | Small sample validation (5-8 testers) | Realistic for a 2-person, 4-week team | Larger N in a post-capstone iteration. Rates are reported with credible intervals (Card P.14), and no comparative ("A beat B") claim is made, since that would require a properly powered study this team size/timeline can't run. |
+| Trust score missed target (3/5 vs. ≥4/5) | Real median across 5 survey responses (Card P.14) | Stated plainly, not reworded to sound like it passed; investigate in a post-capstone iteration with a larger sample |
+| Telemetry has no user/session identifier | Card 3.3's schema logs events, not people | Add an anonymous per-browser-session token if finer-grained analysis is ever needed |
+| Retrieval has no relevance threshold | Chroma's query always returns the nearest 15 cases (`n_results=15`), with no similarity cutoff | Add a minimum-similarity cutoff so an obscure query can honestly return "few/no comparable cases" instead of always 15 |
+| `project_name` free-text field is unvalidated; its output file is git-tracked | Icebox B.5/B.6 added a `st.text_input` with a PII warning but no enforcement, feeding into `data/aasa-saved-blueprints.json` | Add gitignore + a lightweight scrub/warning before commit, or move the file to a git-ignored location |
+| Card P.11 (real user testing) may still be in progress | Board status as of this writing | Confirm testing is complete before treating Card P.14's telemetry as final; re-run metrics if more sessions land |
 ```
 
 ### How to verify this card is done
