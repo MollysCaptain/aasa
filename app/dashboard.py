@@ -495,6 +495,31 @@ def _render_cost_block(cost_forecast: dict):
 _CASE_COUNT_OPTIONS = {"4": 4, "8": 8, "All": None}
 
 
+def _no_overlap_reason(case_tools: list, query: dict) -> str:
+    """
+    Why this case shows no "Stack used:" line — stated, not left blank.
+
+    A case can be the closest semantic match and still share no tool with the
+    recommendation, for three different reasons. The first user test showed that
+    leaving this implicit reads as "this is a poor match", which is wrong: the
+    case is still real evidence that comparable deployments exist.
+
+    We can detect whether any tools survive, and whether the posture is
+    regulated. We cannot tell a privacy-stripped case from a vendor-excluded one
+    here (exclusions aren't echoed in `query`), so the wording covers both rather
+    than guessing at one.
+    """
+    if case_tools:
+        # Tools survived, they're just not in the top five.
+        return ("Used different tools to the recommendation — matched on workflow "
+                "and industry.")
+    if query.get("privacy") == "regulated":
+        return ("Its tools were filtered out by your regulated posture, so it "
+                "doesn't feed the ranking — still a real comparable deployment.")
+    return ("No tool in this case maps to our priced catalogue, so it doesn't feed "
+            "the ranking — still a real comparable deployment.")
+
+
 def _render_case_references_block(matched_cases: list, ranked_tools: list, query: dict):
     st.markdown("### Real Case References")
     if not matched_cases:
@@ -507,15 +532,30 @@ def _render_case_references_block(matched_cases: list, ranked_tools: list, query
     )
     limit = _CASE_COUNT_OPTIONS[count_label]
 
-    # Best-match first, explicitly. Retrieval already returns nearest-first and
-    # every downstream step preserves that order, so this changes nothing today —
-    # it makes the guarantee the UI depends on impossible to break by accident,
-    # e.g. if a future filter rebuilds the list. Blueprints saved before the
-    # `distance` field existed sort last rather than crashing.
-    ordered_cases = sorted(matched_cases,
-                           key=lambda c: c.get("distance", float("inf")))
+    # Two-tier ordering, added after the first real user-test session.
+    #
+    # Distance alone was already correct — retrieval returns nearest-first and
+    # every downstream step preserves it — but the tester read the top case as a
+    # POOR match because it carried no "Stack used:" line. That line only appears
+    # when a case shares a tool with the recommended stack, and a case can be the
+    # closest semantic match while sharing nothing: its tools may have been
+    # stripped by the privacy filter or a vendor exclusion, may not resolve to our
+    # priced catalogue at all (tool-name coverage is 88.7%), or may simply be
+    # different tools to the top five.
+    #
+    # So: cases that actually evidence the recommendation come first, each tier
+    # still sorted nearest-first. The silent gap that caused the misreading is
+    # also now filled in — every case without the line says why (see below).
+    # Sorting alone would have hidden the information; the explanation is the
+    # part that fixes the misreading.
+    def _order_key(case):
+        backs_recommendation = any(t in case.get("canonical_tools", []) for t in ranked_tools)
+        return (0 if backs_recommendation else 1, case.get("distance", float("inf")))
+
+    ordered_cases = sorted(matched_cases, key=_order_key)
     visible_cases = ordered_cases if limit is None else ordered_cases[:limit]
-    st.caption("Ordered by closeness of match — best first.")
+    st.caption("Closest matches first, with cases that back the recommended stack above "
+               "those that don't.")
 
     for case in visible_cases:
         org = case.get("organization", "Unknown organisation")
@@ -546,6 +586,11 @@ def _render_case_references_block(matched_cases: list, ranked_tools: list, query
             if used_tools:
                 used_labels = ", ".join(PRICING.get(t, {}).get("label", t) for t in used_tools)
                 st.caption(f"Stack used: {used_labels}")
+            else:
+                # The gap that caused the misreading in the first user test. An
+                # absent "Stack used:" line looked like a bad match, when it
+                # actually means one of three specific things — so say which.
+                st.caption(_no_overlap_reason(case_tools, query))
             # Lovable-parity UI round — per-case "why:" line explaining what this
             # case has in common with the query. Built only from facts we can
             # verify (industry equality, stack overlap); the semantic-match
