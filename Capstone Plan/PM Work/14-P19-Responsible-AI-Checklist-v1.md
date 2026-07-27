@@ -6,7 +6,9 @@ or decide. Do not tick those without doing them; the whole point of this card is
 that it's a real check, not a formality.*
 
 **Prepared by:** Claude (code + doc audit of `Ash3-update`) · **Date:** 2026-07-27
-**Sign-off owners:** Joint (Ash + Gabi) · **Status:** draft — awaiting the human items
+**Sign-off owners:** Joint (Ash + Gabi) · **Status:** P.14 signed off by Gabi
+2026-07-28 after the 8-participant round; remaining open items are the mobile,
+colour-contrast and jargon-shortlist passes
 
 ---
 

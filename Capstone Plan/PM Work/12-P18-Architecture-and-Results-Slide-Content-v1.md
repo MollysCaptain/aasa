@@ -111,4 +111,6 @@ interval must stay visible (a whisker or the range printed next to the bar).
 - [ ] Slide 6's numbers **copy-pasted** from the P.14 file, not retyped.
 - [ ] Credible intervals present on the slide, not just in this doc.
 - [ ] The trust-score miss is visible on the slide, not hidden in speaker notes.
-- [ ] Gabi has confirmed the telemetry dataset is final (open item above).
+- [x] Gabi has confirmed the telemetry dataset is final (2026-07-28, after the
+      8-participant round completed). Card P.14 is signed off; the figures are
+      windowed to that round and reproducible via the two scripts.

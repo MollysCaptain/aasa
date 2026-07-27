@@ -89,7 +89,7 @@ one-line pointer to the canonical file.
 | # | Action | Owner | Why I can't do it |
 |---|---|---|---|
 | 1 | **Declare + date the feature freeze** (P.15) and Icebox the unfinished Could-Haves (B.1 #38) | Joint | A decision, not a fact. I can write the changelog line once you decide. |
-| 2 | **Confirm the telemetry dataset is final** (P.11 status) | Gabi | Only she knows whether more testing is coming. |
+| 2 | ~~Confirm the telemetry dataset is final~~ **Done 2026-07-28** — Gabi confirmed after the 8-participant round; P.14 signed off. | Gabi | Closed. |
 | 3 | **Click every source link** in the demo path and the deck | Human | Requires actually visiting pages. |
 | 4 | **Colour-contrast + mobile checks** | Human | Needs eyes on a real screen/device. |
 | 5 | **Two timed rehearsals + outside feedback** (P.20, SP.5) | Joint | Performance, not a document. |
@@ -102,7 +102,10 @@ one-line pointer to the canonical file.
 1. Freeze decision + Icebox B.1 (30 min) — unblocks everything.
 2. Decide on B.8 PDF export: build it (guide 34, 45–90 min) or Icebox it.
 3. Fix findings 1–3 above (15 min) — I can do these on your say-so.
-4. Gabi signs off P.14; Ash runs the P.13 jargon pass (both ~45 min).
+4. ~~Gabi signs off P.14~~ **done 2026-07-28**. P.13 is now partly covered by real
+   testing — 5 of the 8 participants were non-native English speakers, and two of
+   their findings were fixed the same night (privacy-posture tooltip, org-size
+   bands) — but the prepared jargon shortlist was never worked through item by item.
 5. Build the deck from the P.17 outline + P.18 content (I can draft; needs your
    screenshots of the final UI).
 6. P.19 checklist — work the ⚠️ items, including clicking links.
