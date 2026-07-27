@@ -87,13 +87,13 @@ it warns at MARGINAL if the margin is under 0.02. Nonsense controls extended fro
 Neither can be done from this environment (no `chroma_store`, no embedding model,
 no `GROQ_API_KEY`). **Both must pass before `Ash4` merges to main.**
 
-- [x] **`python tests/distancecheck.py --full` — RUN 2026-07-27.** Printed
-      `FAIL — 5 genuine combination(s) return NOTHING at 0.52` (worst genuine
-      0.568, margin −0.048, 7/8 nonsense rejected). **The FAIL was the script's
-      fault, not the threshold's** — all 5 pairs have zero cases in the corpus,
-      so returning nothing is correct. Script verdict logic rewritten to be
-      corpus-aware; the same run now reads PASS with 5 correctly-empty pairs
-      noted. See the second correction below.
+- [x] **`python tests/distancecheck.py --full` — RUN AND PASSED 2026-07-27.**
+      First run printed `FAIL — 5 genuine combination(s) return NOTHING at 0.52`
+      (worst genuine 0.568, margin −0.048, 7/8 nonsense rejected). **The FAIL was
+      the script's fault, not the threshold's** — all 5 pairs have zero cases in
+      the corpus, so returning nothing is correct. Verdict logic rewritten to be
+      corpus-aware; re-run confirms **PASS, 0 pairs with evidence returning
+      nothing**. Threshold unchanged at 0.52. See correction 2 below.
 - [x] **P.9 Profile 3 tested live (2026-07-27)** — "Facilities & EHS / Agriculture
       / solo / regulated" returned **15 matched cases, threshold filtered nothing**
       (Azure, AWS, Azure OpenAI, Bedrock, Google Cloud; €8.75/mo; WITHIN BUDGET;
@@ -297,14 +297,50 @@ stubbed collection: all five banner branches produce the expected sentence,
 construction correct on all four combinations, **0 LLM calls** on the
 empty-retrieval path, and `exact_match_count` present on both return paths.
 
+### Confirmed live — `distancecheck.py --full`, re-run 2026-07-27
+
+```
+Pairs WITH real cases: 227 of 432 tested (205 have no cases at all)
+worst genuine best-distance : 0.568     MARGIN : -0.048 (informational)
+chunks kept per real query  : min=0 median=15 max=15
+EMPTY + evidence exists (BUG) : 0
+EMPTY + no evidence (correct)  : 5
+NONSENSE CONTROLS: fully rejected 7/8   (leak: "competitive yodeling", 0.476)
+PASS — every combination that has evidence returns it (threshold 0.52).
+```
+
+Matches the offline corpus check exactly. **The threshold discards no real
+evidence anywhere in the 432-pair space.** `RELEVANCE_THRESHOLD = 0.52` is now
+verified rather than assumed, and this is a repeatable regression test: if anyone
+rebuilds the store, changes the embedding model, or edits the dropdown lists,
+re-running this will catch evidence being thrown away.
+
+### Thin-evidence pairs — the weakest output the app can produce
+
+The run exposed a third category, visible in the "risky end" table: pairs with
+**zero real cases that still keep only 1–2 chunks**.
+
+| Pair | kept | real cases |
+|---|---|---|
+| Legal & Compliance × Hospitality & Travel | 1/15 | 0 |
+| Finance × Real Estate & Construction | 2/15 | 0 |
+| Procurement × Automotive | 2/15 | 0 |
+
+These produce a full ranked stack, cost forecast and summary from **one or two
+cases belonging to a different industry**. Not a bug — it's the honest edge of an
+evidence-based approach — but it is the thinnest the product ever gets, and the
+new banner is what keeps it truthful ("No direct … showing the N closest
+comparable deployments from adjacent industries"). Block A's "Seen in N/M cases"
+bars will read 1/1 or 2/2, which is accurate but looks stronger than it is;
+worth a glance before the freeze.
+
 ### Still outstanding
 
-- [ ] Re-run `python tests/distancecheck.py --full` to confirm it now prints
-      **PASS** with 5 correctly-empty pairs noted (expected — verified against
-      the corpus offline, but worth seeing live).
-- [ ] Live-check the default `Any workflow / Any industry` submit now returns a
-      sensible blueprint.
-- [ ] Live-check a zero-evidence pair (e.g. **Content & Creative × Automotive**)
-      shows the "No direct … showing the N closest comparable" banner.
+- [ ] **Live-check `Procurement × Automotive`** (solo / standard / any budget).
+      Best single test of the banner fix: zero real cases *and* only 2 chunks, so
+      it exercises the "no direct deployments" wording and the thin-stack case at
+      once. Expect the DIRECTIONAL ONLY banner to name no false pairing.
+- [ ] Live-check the default `Any workflow / Any industry` submit returns a
+      sensible blueprint (it now queries `enterprise AI adoption`).
 - [ ] Consider flagging unpopulated pairs in the dropdowns — the real fix, but a
       bigger change than the freeze allows. Recorded in Known-Limitations.
