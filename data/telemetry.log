@@ -278,3 +278,7 @@
 {"event": "results_shown", "timestamp": 1785161618.397142, "elapsed_seconds": 6.0}
 {"event": "llm_summary_generated", "timestamp": 1785161618.39793, "duration_seconds": 1.23, "prompt_tokens": 1073, "completion_tokens": 709, "tokens_per_second": 576.4}
 {"event": "pdf_downloaded", "timestamp": 1785161625.374633}
+{"event": "form_start", "timestamp": 1785164545.993758}
+{"event": "results_shown", "timestamp": 1785164552.996087, "elapsed_seconds": 7.0}
+{"event": "llm_summary_generated", "timestamp": 1785164552.996419, "duration_seconds": 1.19, "prompt_tokens": 1073, "completion_tokens": 627, "tokens_per_second": 526.9}
+{"event": "form_start", "timestamp": 1785164566.900531}
