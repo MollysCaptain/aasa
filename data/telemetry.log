@@ -242,3 +242,6 @@
 {"event": "llm_summary_generated", "timestamp": 1784906332.194651, "duration_seconds": 1.17, "prompt_tokens": 1041, "completion_tokens": 655, "tokens_per_second": 559.8}
 {"event": "results_shown", "timestamp": 1784906365.6978428, "elapsed_seconds": 67.0}
 {"event": "llm_summary_generated", "timestamp": 1784906365.69841, "duration_seconds": 1.08, "prompt_tokens": 1100, "completion_tokens": 380, "tokens_per_second": 351.9}
+{"event": "form_start", "timestamp": 1785160439.4631274}
+{"event": "results_shown", "timestamp": 1785160477.4646065, "elapsed_seconds": 38.0}
+{"event": "llm_summary_generated", "timestamp": 1785160477.4650538, "duration_seconds": 2.96, "prompt_tokens": 1086, "completion_tokens": 2048, "tokens_per_second": 691.9}
