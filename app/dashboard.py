@@ -160,7 +160,7 @@ def _render_action_row(result: dict):
 
             # B.8 hardening: st.download_button needs its bytes up-front, so the
             # PDF is built on every rerun — which means ANY failure in there
-            # (fpdf2 not installed, an odd character, a bad result dict) would
+            # (reportlab not installed, an odd character, a bad result dict) would
             # otherwise crash the whole blueprint view, not just this button.
             # Degrade to a disabled button + a reason instead. The .md export
             # above is unaffected either way.
@@ -168,7 +168,7 @@ def _render_action_row(result: dict):
                 pdf_bytes = blueprint_to_pdf(result)
             except ModuleNotFoundError:
                 pdf_bytes, pdf_error = None, (
-                    "PDF export needs the `fpdf2` package. Run "
+                    "PDF export needs the `reportlab` package. Run "
                     "`pip install -r requirements.txt`, then restart the app."
                 )
             except Exception as exc:                     # noqa: BLE001 - see comment above

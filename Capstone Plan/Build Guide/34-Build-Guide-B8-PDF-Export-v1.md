@@ -1,11 +1,12 @@
 # 34 — Build Guide: Icebox B.8 — PDF blueprint download
 
 **Card:** B.8 · **Owner:** Person B (Ash) · **Branch:** `Ash3-update`
-**Status: ✅ IMPLEMENTED 2026-07-27** — the last feature before the Card P.15
-freeze. Built exactly as specified below, with the team's three decisions:
-fpdf2, sanitise in the PDF path only, and a single "Download" popover holding
-both formats. Two findings from actually building it are recorded in
-"Implementation notes" at the end — **read those if you touch this code.**
+**Status: ✅ IMPLEMENTED 2026-07-27 — using reportlab, not fpdf2.**
+Built with the team's decisions (sanitise in the PDF path only; one "Download"
+popover holding both formats), first on fpdf2 and then **switched to reportlab
+at the team's request to compare**. reportlab won on output quality — see
+"Library comparison" and "Implementation notes" at the end. **Read those if you
+touch this code.**
 **Depends on:** nothing new — reuses `app/export.py`'s existing text builder.
 
 ## Goal in plain language
@@ -26,7 +27,9 @@ render of the blueprint the user already has on screen.
 
 ## Step 1 — Choose the library (decision, then `requirements.txt`)
 
-Recommended: **`fpdf2`** (`pip install fpdf2`, imported as `from fpdf import FPDF`).
+**Chosen: `reportlab`** (`pip install reportlab`). fpdf2 was built first and
+worked, but rendered noticeably less of our content — see the comparison at the
+end of this guide.
 
 | Option | Why / why not |
 |---|---|
@@ -34,10 +37,10 @@ Recommended: **`fpdf2`** (`pip install fpdf2`, imported as `from fpdf import FPD
 | `reportlab` | Also pure Python and very capable, but a heavier API for what is essentially monospaced text on a page. |
 | `weasyprint` | Best HTML→PDF fidelity, but needs system libs (cairo/pango) — likely to break a cloud deploy. **Avoid for this MVP.** |
 
-Add to `requirements.txt` (alphabetically near the top, next to `pandas`):
+Add to `requirements.txt`:
 
 ```
-fpdf2
+reportlab
 ```
 
 ## Step 2 — Add the PDF builder to `app/export.py`
@@ -233,3 +236,47 @@ footer disclaimer.
 - [ ] Confirm `data/telemetry.log` gains one `pdf_downloaded` line per download.
 - [ ] Check a **regulated-posture** blueprint and a **`compute`-priced** stack
       (where `monthly_eur` is `None`) both render sensibly.
+
+---
+
+## Library comparison — fpdf2 vs reportlab (both built and rendered, 2026-07-27)
+
+Both were implemented against the same `blueprint_to_text()` output and rendered
+to images to compare. This is what actually differs:
+
+| | fpdf2 2.8.7 | reportlab 4.5.1 |
+|---|---|---|
+| `€` | **Raises** `FPDFUnicodeEncodingException` | **Silently dropped** (cost line read "Primary API: 875.00/mo") — worse failure mode; fixed by mapping to `EUR ` |
+| `—` em-dash, `–` en-dash | Raises | Renders correctly |
+| `•` bullet | Raises | Renders correctly |
+| `→` arrow | Raises | Renders correctly |
+| `✓` check | Raises | Renders correctly |
+| `·` middle dot | Renders | Renders |
+| `‑` U+2011 non-breaking hyphen | Raises | **Black box** — fixed by mapping to `-` |
+| Characters needing replacement | 15 | **4** |
+| Long-URL wrapping | `multi_cell` wraps automatically | `Preformatted` does **not** wrap — we pre-wrap with `textwrap` to the frame width |
+| Page breaks | `set_auto_page_break` | `SimpleDocTemplate` handles it |
+| Cursor gotcha | `multi_cell` needs `new_x=LMARGIN, new_y=NEXT` or the 2nd full-width cell raises "Not enough horizontal space" | none |
+| Typography | serviceable | noticeably better leading/greys |
+
+**Verdict: reportlab.** It preserves the em-dashes, bullets, arrows and ticks
+that fpdf2 refused, so the PDF reads much closer to the on-screen blueprint —
+only 4 characters need substituting instead of 15.
+
+**The lesson worth keeping:** reportlab raised **no exception** for any of our
+characters, yet visibly dropped the `€` and drew a black box for U+2011. An
+"it didn't crash" test would have shipped a cost document with the currency
+symbol missing. Both libraries had to be *rendered and looked at*.
+
+### reportlab-specific notes
+
+- `Preformatted` preserves the monospaced alignment of the ranked list and cost
+  columns but **does not wrap** — the case-reference URLs (~100+ chars) would
+  run off the page, so lines are hard-wrapped with `textwrap` to
+  `doc.width / stringWidth("M", "Courier", 8.5)` characters first.
+- The base-14 Courier/Helvetica AFM metrics have no Euro glyph. Embedding a
+  Unicode TTF would fix it properly, but that means vendoring a font binary and
+  checking its licence — deliberately not done for a 4-week MVP.
+- Verified against a real saved blueprint: 2,881-byte valid PDF, full 5-tool
+  stack, both cost lines as `EUR 43.75/mo` / `EUR 2240.00/mo`, all four case
+  URLs wrapped and intact, summary, footer disclaimer.
