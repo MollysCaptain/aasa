@@ -9,8 +9,18 @@ python3 scripts/telemetry_funnel.py   --since "2026-07-27 23:00"
 python3 scripts/credible_interval.py  --since "2026-07-27 23:00"
 ```
 
-Participant details are recorded separately in
-`PM & Ethics/AI-Assisted Stack Architect User Testing.xlsx`.
+Participant details are recorded in
+`PM & Ethics/AI-Assisted Stack Architect User Testing (pseudonymised).xlsx`.
+
+> **Note on participant privacy.** Participants agreed to test the product, not to
+> be named in a submitted document, so the committed record uses **P1–P8** and
+> withholds employer names. The unredacted sheet is held locally by the team and is
+> git-ignored. This is **pseudonymisation, not anonymisation** — the free-text
+> requirement comments describe each participant's business context closely enough
+> that someone who knows the team could plausibly re-identify individuals. They are
+> kept because they are the substance of the feedback; the residual risk is stated
+> rather than hidden. Nothing in the analysis depends on identity: the telemetry
+> cross-check below runs on trust scores and ordering alone.
 
 ## Why the numbers are windowed
 
@@ -24,7 +34,7 @@ defects, and it counts our own testing as if it were user testing.
 The `--since "2026-07-27 23:00"` boundary isolates the final round. Two checks
 make it defensible rather than arbitrary:
 
-1. **Every survey inside the window maps to a named participant**, in order, with
+1. **Every survey inside the window maps to one recorded participant**, in order, with
    no gaps and no extras (cross-check below). Eight events, eight people.
 2. **The boundary does not change any published figure.** The last event before
    it is a `form_start` at 22:41 and the first inside is a `form_start` at 23:06
@@ -50,7 +60,7 @@ Net value:             100% (8/8),  90% credible interval: 72%-99%
 Blueprint export rate:  83% (10/12), 90% credible interval: 59%-93%
 ```
 
-### Provenance — every response ties to a named participant
+### Provenance — every response ties to one recorded participant
 
 Trust scores in the spreadsheet match the telemetry events **in order**, with no
 gaps and no extras. This is the check that makes the dataset auditable rather
@@ -58,14 +68,14 @@ than asserted:
 
 | # | Participant | Role | Telemetry `trust_score` | Time |
 |---|---|---|---|---|
-| 1 | Marina Le Franc | Head of Customer Success | 5 | 23:45:31 |
-| 2 | Jay Skelly | Head of Global IT | 5 | 00:40:15 |
-| 3 | Graham Coogan | IT Technology Specialist | 4 | 00:43:50 |
-| 4 | Dan Matthews | Talent Acquisition Lead | 5 | 00:48:32 |
-| 5 | Monica Kochenburger | Senior Customer Success Manager | 4 | 00:52:02 |
-| 6 | Kets Robel | Recruiter | 3 | 01:02:00 |
-| 7 | Shradha Shastry Kallaje | Software Test Developer | 5 | 01:14:13 |
-| 8 | Lorenzo Di Marcello | Customer Feedback Specialist | 5 | 01:30:41 |
+| 1 | P1 | Head of Customer Success | 5 | 23:45:31 |
+| 2 | P2 | Head of Global IT | 5 | 00:40:15 |
+| 3 | P3 | IT Technology Specialist | 4 | 00:43:50 |
+| 4 | P4 | Talent Acquisition Lead | 5 | 00:48:32 |
+| 5 | P5 | Senior Customer Success Manager | 4 | 00:52:02 |
+| 6 | P6 | Recruiter | 3 | 01:02:00 |
+| 7 | P7 | Software Test Developer | 5 | 01:14:13 |
+| 8 | P8 | Customer Feedback Specialist | 5 | 01:30:41 |
 
 **8 survey events in the window, 8 participants, all aligned.** Card P.11's
 requirement — *"real `survey_submitted` entries with actual `trust_score` values
@@ -76,14 +86,14 @@ from real people, not test data"* — is satisfied and independently checkable.
 Drawn from the recorded session sheet, because who tested matters as much as the
 scores:
 
-- **Organisations:** Plan A, SumUp, BMG, Ordio, CoachHub (×2), Delivery Hero, AUTODOC — all real companies, none of them ours.
+- **Organisations:** 7 real companies across payments, music rights, HR tech, coaching, food delivery, e-commerce parts and climate software — none of them ours. Named employers are withheld (see the note below).
 - **Seniority:** 3 heads of function, 5 specialist/IC roles.
 - **Org-size bands exercised:** Start-up, Small-Medium Business, Mid-Market (×2), Enterprise (×4).
 - **Privacy posture:** 5 regulated, 3 standard.
 - **Budgets:** €300 to €20,000/month.
 - **Workflows:** Sales, IT & Platform, Data & Analytics, HR (×2), CX & Personalization, R&D & Engineering, Customer Service.
 - **Vendor exclusions:** used by 8 of 8 — every participant excluded at least one vendor, which is the first real evidence that B.5 matters to users rather than being a nice-to-have.
-- **Non-native English speakers: 5 of 8** (Marina, Dan, Kets, Shradha, Lorenzo).
+- **Non-native English speakers: 5 of 8** (P1, P4, P6, P7, P8).
 
 That last point closes a gap we had previously written up as unmet: Card P.13
 asked for at least one non-native English speaker, and this round had five, in
@@ -135,7 +145,7 @@ Directional evidence from 8 real sessions, not a statistically powered study.
   point estimates alone.
 - **Recruitment bias is real and undisclosed nowhere else, so it is stated
   here:** all 8 participants are professional contacts of the team. They had no
-  incentive to be harsh, and two work at the same company as each other. This is
+  incentive to be harsh, and two work at the same employer as each other. This is
   convenience sampling, and a friendly sample plausibly inflates trust scores.
   A neutral round would need recruits with no relationship to us.
 - **No comparative claim.** "Testers trusted this more than manual research"
