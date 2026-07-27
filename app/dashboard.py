@@ -157,13 +157,34 @@ def _render_action_row(result: dict):
                 mime="text/markdown",
             ):
                 log_event("onepager_downloaded")
-            if st.download_button(
-                "PDF (.pdf)",
-                blueprint_to_pdf(result),
-                file_name="aasa-blueprint.pdf",
-                mime="application/pdf",
-            ):
-                log_event("pdf_downloaded")
+
+            # B.8 hardening: st.download_button needs its bytes up-front, so the
+            # PDF is built on every rerun — which means ANY failure in there
+            # (fpdf2 not installed, an odd character, a bad result dict) would
+            # otherwise crash the whole blueprint view, not just this button.
+            # Degrade to a disabled button + a reason instead. The .md export
+            # above is unaffected either way.
+            try:
+                pdf_bytes = blueprint_to_pdf(result)
+            except ModuleNotFoundError:
+                pdf_bytes, pdf_error = None, (
+                    "PDF export needs the `fpdf2` package. Run "
+                    "`pip install -r requirements.txt`, then restart the app."
+                )
+            except Exception as exc:                     # noqa: BLE001 - see comment above
+                pdf_bytes, pdf_error = None, f"PDF could not be generated ({type(exc).__name__})."
+
+            if pdf_bytes is not None:
+                if st.download_button(
+                    "PDF (.pdf)",
+                    pdf_bytes,
+                    file_name="aasa-blueprint.pdf",
+                    mime="application/pdf",
+                ):
+                    log_event("pdf_downloaded")
+            else:
+                st.button("PDF (.pdf)", disabled=True, key="pdf_unavailable")
+                st.caption(pdf_error)
     with col2:
         with st.popover(".env scaffold"):
             scaffold_text = build_scaffold(result["recommended_stack"])
