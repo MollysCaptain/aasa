@@ -25,6 +25,7 @@ import sys
 from pathlib import Path
 
 CHROMA_PATH = Path("./chroma_store")
+SOURCE_CSV = Path("./data/use-cases.csv")
 
 # Order matters: normalise_cases.py rewrites data/use-cases.csv's
 # canonical_tools column in place (this is where Update A's gemini-api split
@@ -40,8 +41,29 @@ STEPS = [
 
 
 def main():
+    # Refuse to delete anything we can't rebuild.
+    #
+    # Added 2026-07-28. chroma_store/ is now COMMITTED to the repo (Build Guide 36)
+    # so the Streamlit Cloud deploy has a vector store, while data/use-cases.csv
+    # stays gitignored. That combination turned this script into a trap: a fresh
+    # clone has the store but not the source CSV, so the old flow deleted a
+    # working, committed store and then failed at step 1 with FileNotFoundError,
+    # leaving the app broken with no obvious way back. Check first, delete second.
+    if not SOURCE_CSV.exists():
+        print(f"REFUSING TO RUN — {SOURCE_CSV} not found.\n")
+        print("This script deletes chroma_store/ and rebuilds it from that CSV.")
+        print("The CSV is deliberately gitignored (third-party dataset), so a fresh")
+        print("clone does not have it — but the store IS committed and already works.\n")
+        print("Nothing has been deleted. You probably don't need this script at all:")
+        print("  - just running the app?      -> streamlit run app/intake.py")
+        print("  - really need to rebuild?    -> download the CSV to data/use-cases.csv")
+        print("                                 https://github.com/abbasmahdi-ai/ai-use-cases-library")
+        print("  - already lost the store?    -> git checkout -- chroma_store")
+        return 1
+
     if CHROMA_PATH.exists():
         print(f"Deleting existing {CHROMA_PATH} ...")
+        print("  (committed to git — restore with 'git checkout -- chroma_store' if this fails)")
         shutil.rmtree(CHROMA_PATH)
     else:
         print(f"No existing {CHROMA_PATH} found — nothing to delete.")
@@ -62,4 +84,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # sys.exit(main() or 0) rather than a bare main(): the guard above returns 1
+    # when the source CSV is missing, and a bare call would discard that and exit 0,
+    # reporting success for a run that deliberately did nothing.
+    sys.exit(main() or 0)

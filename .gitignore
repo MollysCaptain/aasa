@@ -220,16 +220,34 @@ __marimo__/
 .claude/skills/developing-with-streamlit
 data/StackOverflow/results.csv
 
-# AASA — Chroma vector store and chunk file (Card 2.2): both fully regenerable
-# from data/use-cases.csv via scripts/chunk_use_cases.py + scripts/embed_cases.py,
-# and chroma_store/ in particular is large binary data that doesn't belong in git.
-## chroma_store/
+# AASA — Chroma vector store (Card 2.2).
+#
+# chroma_store/ IS COMMITTED as of 2026-07-28 (Build Guide 36) and the ignore rule
+# below is deliberately disabled, not accidentally broken. Streamlit Community
+# Cloud only gets what is in the repo, and the store cannot be rebuilt there
+# because data/use-cases.csv is excluded (see the next block) — so shipping the
+# pre-built store is what makes the deployed app work at all.
+#
+# Two consequences to keep in view rather than rediscover:
+#   1. It is ~52 MB of binary, over GitHub's 50 MB advisory threshold. Pushes
+#      succeed but print a Git LFS suggestion. Harmless.
+#   2. It is NOT just vectors — chunk metadata carries the source dataset's
+#      title, organization, outcomes and ~3.1 MB of verbatim case prose. So
+#      committing it *is* a redistribution of the upstream data in a different
+#      container, which is permitted under MIT with attribution. Attribution
+#      lives in docs/data-attribution.md.
+# chroma_store/
 data/use_cases_chunks.jsonl
 
-# AASA — third-party dataset (MIT-licensed, not our work): intentionally not
-# committed. See "Before you start" in 13-Build-Guide-Epic2-Retrieval-v1.md for
-# the source repo link, license, and citation — everyone should download their
-# own copy from there rather than get it via this repo.
+# AASA — third-party dataset (MIT-licensed, not our work): the RAW CSV is not
+# committed. Download your own copy — see "Before you start" in
+# 13-Build-Guide-Epic2-Retrieval-v1.md for the source repo, licence and citation.
+#
+# Honest note on what this rule does and doesn't achieve: since 2026-07-28 the
+# derived chroma_store/ IS committed and contains the same case text in its chunk
+# metadata. So this rule no longer means "the upstream data isn't distributed via
+# this repo" — it means the canonical CSV isn't, and people building the store
+# themselves fetch it from source. Attribution: docs/data-attribution.md.
 data/use-cases.csv
 
 # macOS
@@ -238,10 +256,25 @@ data/use-cases.csv
 # Our PM slides
 PM_slides/
 AASA_Week2_Stakeholder_Checkin.pptx
-data/telemetry.log
 .python-version
 .~lock.StackPunk_PM_TeamCheckIn.pptx#
 StackPunk_PM_TeamCheckIn.pptx
+
+# AASA — data/telemetry.log is deliberately NOT ignored (force-tracked).
+#
+# It was ignored-yet-tracked for most of the project, then untracked on
+# 2026-07-28 to resolve that contradiction. That resolved it the wrong way: the
+# log is the sole evidence behind every Card P.14 validation figure quoted in the
+# write-up and the pitch deck, and scripts/telemetry_funnel.py and
+# scripts/credible_interval.py read it directly. Untracked, those scripts raise
+# FileNotFoundError for anyone but the machine that produced the data, and no
+# published number can be reproduced or audited.
+#
+# It contains no personal data by design (Card P.4): event names, timestamps and
+# numeric/enum values only, no user identifier and no free text. Keeping it in the
+# repo is therefore a deliberate reproducibility decision, not an oversight — do
+# not re-add an ignore rule for it without moving the evidence somewhere else
+# first.
 
 # Real-user testing: the unredacted session sheet holds participants' names, job
 # titles and employers. They consented to testing, not to being named in a

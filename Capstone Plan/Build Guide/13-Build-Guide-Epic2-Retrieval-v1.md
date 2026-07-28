@@ -4,12 +4,26 @@
 
 **Before you start:** you need the actual case dataset — the 3,023-row CSV of real AI deployments. Save it at `data/use-cases.csv` inside `~/aasa-project` (per the Handbook, the source is the `ai-use-cases-library` dataset).
 
-**This is someone else's dataset, not ours — download your own copy, don't fetch it via this repo.** The source is [`abbasmahdi-ai/ai-use-cases-library`](https://github.com/abbasmahdi-ai/ai-use-cases-library) on GitHub. It's MIT-licensed, but `data/use-cases.csv` is deliberately **gitignored** here rather than committed — everyone on the project should pull their own copy directly from the source repo (that's also the easiest way to get updates if the upstream data changes). If you use this dataset in research or publications, the upstream README asks for this citation:
+**This is someone else's dataset, not ours — download your own copy of the CSV, don't fetch it via this repo.** The source is [`abbasmahdi-ai/ai-use-cases-library`](https://github.com/abbasmahdi-ai/ai-use-cases-library) on GitHub. It's MIT-licensed, but `data/use-cases.csv` is deliberately **gitignored** here rather than committed — everyone on the project should pull their own copy directly from the source repo (that's also the easiest way to get updates if the upstream data changes). If you use this dataset in research or publications, the upstream README asks for this citation:
 
 ```
 AI Use Cases Library. (2026).
 Retrieved from https://github.com/abbasmahdi-ai/ai-use-cases-library
 ```
+
+> **Update 2026-07-28 — what "don't fetch it via this repo" now means.** The
+> paragraph above was written when nothing derived from the dataset was committed
+> either. That changed with the Streamlit Cloud deploy (Build Guide 36):
+> `chroma_store/` is now committed, and it is **not** just embedding vectors — its
+> chunk metadata carries the source titles, organisations, outcomes and roughly
+> 3.1 MB of verbatim case prose for all 3,023 cases. So this repo *does* now
+> redistribute a substantial part of the upstream dataset, in a different
+> container. That is permitted under MIT with attribution, and the attribution and
+> citation are recorded in [`docs/data-attribution.md`](../../docs/data-attribution.md).
+>
+> The instruction above still stands for anyone **rebuilding** the store — fetch
+> your own CSV from source. But don't read it as "the upstream data isn't
+> distributed here", because that is no longer true.
 
 **Column names are now real, not placeholders — but verify against your own file, not just this guide.** An earlier version of this guide had you print your CSV's columns and guess, because neither of us had the actual file yet. Your colleague's `stackpunk` repo (Gabi branch) verified a schema against the actual data — `data/stackpunk-schema.md` there was believed to be the authoritative reference — but running `print(pd.read_csv('data/use-cases.csv').columns)` against the real, current `data/use-cases.csv` turned up one mismatch worth flagging loudly:
 
