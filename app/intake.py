@@ -445,15 +445,19 @@ else:
 # reality: 3,023 cases / 41 priced tools / 24 industries as of this writing.
 @st.cache_data
 def _hero_stats() -> tuple[int, int, int]:
-    import csv as _csv
+    # Was: read data/use-cases.csv directly. That file is the raw third-party
+    # dataset and is intentionally gitignored (see .gitignore), so it doesn't
+    # exist on Streamlit Community Cloud — this crashed every page load there
+    # with FileNotFoundError. chroma_store/ *is* committed (Card P.16/Cloud
+    # deploy fix) and its metadata already carries case_id + industry for
+    # every embedded case, so we can get the same real, live-computed numbers
+    # from there instead, without needing the raw CSV at runtime at all.
     from app.logic.pricing import PRICING as _pricing
-    n_cases = 0
-    industries = set()
-    with open("data/use-cases.csv", newline="", encoding="utf-8") as f:
-        for row in _csv.DictReader(f):
-            n_cases += 1
-            industries.add(row["Use Case Industry"])
-    return n_cases, len(_pricing), len(industries)
+    from app.pipeline import _collection as _coll
+    all_meta = _coll.get(include=["metadatas"])["metadatas"]
+    case_ids = {m["case_id"] for m in all_meta}
+    industries = {m["industry"] for m in all_meta}
+    return len(case_ids), len(_pricing), len(industries)
 
 
 _n_cases, _n_tools, _n_industries = _hero_stats()
