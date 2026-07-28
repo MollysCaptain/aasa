@@ -261,7 +261,7 @@ Far below target — the starter list is model/agent-framework focused, but the 
 
 **Files:** `scripts/chunk_use_cases.py`, `scripts/embed_cases.py` · **Depends on:** 2.1 · **Effort:** ~1.0 day
 
-*Adopted from the colleague's `stackpunk`/`Gabi` branch (`scripts/chunk_use_cases.py`, and the `PLANNING.md`-documented ChromaDB + HuggingFace decision), with one modification: chunk metadata now uses the `canonical_tools` column from Card 2.1 instead of re-splitting the raw `Tools/Technologies` string, and carries `source_url` so Card 3.1's dashboard can link back to the source case. See `19-Gabi-Branch-Integration-Analysis-v1.md` for the full reasoning.*
+*Adopted from the colleague's `stackpunk`/`Gabi` branch (`scripts/chunk_use_cases.py`, and the `PLANNING.md`-documented ChromaDB + HuggingFace decision), with one modification: chunk metadata now uses the `canonical_tools` column from Card 2.1 instead of re-splitting the raw `Tools/Technologies` string, and carries `source_url` so Card 3.1's dashboard can link back to the source case. The full reasoning is in Build Guide 19 (`19-Ash2-Gabi-Integration-and-Band-Fix-v1.md`).*
 
 ### Goal in plain language
 We want to be able to ask "which real deployments are most similar to what this user described?" and get back sensible matches — not just exact keyword hits. That's a two-step job. First, **chunking**: break each case into a few focused pieces of text, because "how did they build it?" and "what were the results?" are different questions that match better against different text than one big blob per case. Second, **embedding**: convert each chunk's text into a list of numbers (an "embedding") that captures its meaning, and store those in a **vector database** that can quickly find the chunks whose numbers are closest to a search query's numbers.
@@ -538,7 +538,7 @@ print("Saved data/embedding_qa_plot.png — open it and look for industry cluste
 
 ---
 
-## Card 2.3 — Hardcode the 24-tool pricing table
+## Card 2.3 — Hardcode the 41-tool pricing table
 
 **File:** `app/logic/pricing.py` · **Depends on:** nothing · **Effort:** ~0.5 day
 

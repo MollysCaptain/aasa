@@ -85,6 +85,28 @@ Net value:             100% (8/8),  90% credible interval: 72%-99%
 Blueprint export rate:  83% (10/12), 90% credible interval: 59%-93%
 ```
 
+### Time-to-results: report the median, not the mean
+
+The script prints the mean, which is the misleading figure here. Both, so the
+reader can judge:
+
+| Statistic | Value | |
+|---|---|---|
+| **Median** | **114s (1.9 min)** | what a typical session took |
+| Mean | 372s (6.2 min) | inflated by two long sessions |
+| Outliers | 1,287s and 1,618s | participant opened the form, returned later |
+| Range | 58s – 1,618s | |
+
+The distribution is heavily right-skewed at n=12, so the mean describes nobody.
+**The product's `~2 min TO BLUEPRINT` hero stat is the median**, which is the
+correct statistic for a typical-user claim — and it is stated here alongside the
+mean rather than in place of it.
+
+This is worth flagging because we briefly got it wrong in the other direction: a
+consistency pass compared the hero against the *mean*, called it an over-claim,
+and the number was changed to "~5 min" — which matched neither statistic. Reverted
+2026-07-28. See P.21 finding 2.
+
 ### Provenance — every response ties to one recorded participant
 
 Trust scores in the spreadsheet match the telemetry events **in order**, with no

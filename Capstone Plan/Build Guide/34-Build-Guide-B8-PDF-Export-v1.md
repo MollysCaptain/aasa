@@ -237,7 +237,9 @@ pdf.multi_cell(0, 4.5, line, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
 ### 3. Verified output
 
-Generated from a **real** saved blueprint (`data/aasa-saved-blueprints.json`):
+Generated from a **real** saved blueprint (`data/sample-saved-blueprints.json` —
+renamed 2026-07-28 to make clear it's a committed fixture, not runtime output; see
+`data/SAMPLE-FIXTURE.md`):
 a valid 1-page PDF (`%PDF-` header, ~2.2 KB) containing the title, the ranked
 5-tool stack, both cost lines as `EUR 43.75/mo` / `EUR 2240.00/mo`, all four
 case references with their full URLs intact, the summary paragraph and the

@@ -44,6 +44,34 @@ cannot rebuild the store there because the raw CSV is excluded. Shipping the
 pre-built store is what makes the deployed app function. See Build Guide 36 for
 the deployment work and Build Guide 37 for this review.
 
+## On the size of it — do NOT "optimise" this
+
+`chroma_store/chroma.sqlite3` is ~54 MB, which is over GitHub's 50 MB *advisory*
+threshold (pushes succeed but print a Git LFS suggestion) and well under the
+100 MB hard limit. Two tempting optimisations, both of which make things worse.
+Decided 2026-07-28, recorded here so nobody re-litigates it from first principles:
+
+**1. `VACUUM` the SQLite file — don't.** About **14.9 MB of the file is free
+pages**, so `VACUUM` really would shrink it to roughly 39 MB and silence the LFS
+warning. But the 54 MB blob is **already permanent in git history** (commit
+`6f6f025`). Committing a vacuumed copy *adds* a second ~39 MB blob rather than
+replacing the first, so every future `git clone` downloads **more**, not less. The
+size cost is already paid; the only way to actually reclaim it is rewriting
+history with `git filter-repo`, which is not a freeze-week operation and would
+break every existing clone and the Cloud deployment's git reference.
+
+**2. Delete the full-text search tables — don't.** Roughly 13 MB is Chroma's
+`embedding_fulltext_search_*` index, which this app never queries (it does vector
+similarity only, via `collection.query(query_texts=...)`). Removing it would look
+like free savings, but those tables are Chroma's own internal schema; dropping
+them risks a store that fails to open on a future Chroma version, in exchange for
+a saving that — per point 1 — wouldn't shrink clones anyway.
+
+**What to do instead:** nothing. If the size genuinely becomes a problem later,
+the real fix is a store built with ids and links but no prose (which would also
+resolve the redistribution question above), rebuilt from scratch on a fresh
+branch — not an in-place optimisation of this one.
+
 ## Other third-party material in this repo
 
 | Material | Where | Licence / basis |

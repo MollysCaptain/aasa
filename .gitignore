@@ -257,8 +257,6 @@ data/use-cases.csv
 PM_slides/
 AASA_Week2_Stakeholder_Checkin.pptx
 .python-version
-.~lock.StackPunk_PM_TeamCheckIn.pptx#
-StackPunk_PM_TeamCheckIn.pptx
 
 # AASA — data/telemetry.log is deliberately NOT ignored (force-tracked).
 #

@@ -11,6 +11,12 @@ implementations, ranks the models, APIs and frameworks they used, and estimates 
 monthly cost against your budget — with every recommendation traceable to a real
 source.
 
+### ▶ Try it live: **[aasa-app.streamlit.app](https://aasa-app.streamlit.app)**
+
+No signup, no accounts — pick five dropdowns and you get a blueprint. Deployed
+from `main` on Streamlit Community Cloud. Nothing you enter is stored server-side
+(see [Privacy & ethics](#privacy--ethics)).
+
 **Honest scope:** this is a 4-week, 2-person student capstone prototype. Pricing
 is a small hand-built, illustrative table; compliance filtering is a directional
 shortlist, **not** certification. No accounts, no data stored.
@@ -123,6 +129,54 @@ streamlit run app/intake.py
 
 Then open the URL Streamlit prints (usually `http://localhost:8501`).
 
+### Verify your install
+
+Nothing here needs the network except the LLM call, and none of it sends your data
+anywhere. If the app misbehaves, run these in order — the first failure tells you
+which layer is broken:
+
+```bash
+python scripts/backend_dry_run.py     # retrieval → filter → rank → cost, 3 profiles
+python tests/distancecheck.py --full  # every workflow × industry pair; expect PASS
+python scripts/compliance_check.py    # regulated-posture filter, expect 2/2
+```
+
+A healthy install shows the hero reading **3,023 / 41 / 24** and
+`distancecheck.py --full` printing `PASS`. If the hero shows zeros, the vector
+store isn't being found — check you're running from the repo root.
+
+## Deployment
+
+Live at **[aasa-app.streamlit.app](https://aasa-app.streamlit.app)**, deployed
+from `main` on Streamlit Community Cloud. Two things make that work, and both are
+easy to miss:
+
+**1. The API key goes in Secrets, not `.env`.** Cloud has no `.env` file and never
+should — it's gitignored. In the app's *Settings → Secrets*, add:
+
+```toml
+GROQ_API_KEY = "your-actual-key"
+```
+
+Cloud exposes root-level secrets as real environment variables, so
+`app/logic/prompt.py`'s existing `os.environ["GROQ_API_KEY"]` picks it up with no
+code change.
+
+**2. The vector store has to be in the repo.** Cloud only gets what's committed
+and can't rebuild the store there, because the source CSV is excluded. That's why
+`chroma_store/` is committed — see [`docs/data-attribution.md`](docs/data-attribution.md)
+for what that means licence-wise.
+
+Paths must be absolute-from-file, not relative: `app/pipeline.py` anchors the store
+with `Path(__file__).resolve().parent.parent` because the working directory isn't
+guaranteed to be the repo root on Cloud. A bare `./chroma_store` silently opens an
+*empty* store rather than erroring — see Build Guide 36.
+
+**Harmless log noise:** every deploy prints a `ModuleNotFoundError: No module
+named 'torchvision'` traceback from `transformers`. That's Streamlit's file
+watcher probing a lazy import it doesn't need. Ignore it and read further down the
+log for the real error.
+
 ## Project layout
 
 | Path | What's in it |
@@ -134,7 +188,7 @@ Then open the URL Streamlit prints (usually `http://localhost:8501`).
 | `app/export.py` | Text / markdown blueprint exports |
 | `app/saved_blueprints.py` | Session-scoped save + JSON import/export |
 | `app/analytics/tracker.py` | Local JSON-lines event log (no third-party analytics) |
-| `data/` | Alias/unmatched logs, domain mapping, local telemetry log (the raw case CSV is not committed) |
+| `data/` | Alias/unmatched logs, domain mapping, local telemetry log, and one sample blueprint fixture (`SAMPLE-FIXTURE.md` explains it). The raw case CSV is not committed |
 | `chroma_store/` | Committed Chroma vector store — 3,023 embedded cases, 9,069 chunks |
 | `tests/distancecheck.py` | Relevance-threshold regression sweep over all 432 input combinations |
 | `scripts/` | Knowledge-base rebuild, dry-run harness, validation-metric scripts |
@@ -150,6 +204,7 @@ python tests/distancecheck.py --full       # relevance-threshold regression swee
 python scripts/compliance_check.py         # regulated-posture filter check
 python scripts/telemetry_funnel.py  --p14  # headline metrics + funnel  (Card P.14)
 python scripts/credible_interval.py --p14  # small-sample credible intervals
+python scripts/validation_metrics_table.py # regenerates the whole P.14 results table
 
 python scripts/rebuild_knowledge_base.py   # DESTRUCTIVE — deletes and rebuilds
                                            # chroma_store/. Needs the source CSV.

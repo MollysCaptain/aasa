@@ -3,7 +3,7 @@
 
 ## NOW (Weeks 1–3): The Core Validation MVP
 - **Guided AI Intake Form:** Streamlit UI capturing organisation size, industry, target workflow, privacy posture, and budget.
-- **Retrieval & Matching Engine:** a Python pipeline (Chroma vector store, no external orchestration tool) performing semantic search over the 3,023-case library, normalised tool names, and a hardcoded 24-tool pricing table.
+- **Retrieval & Matching Engine:** a Python pipeline (Chroma vector store, no external orchestration tool) performing semantic search over the 3,023-case library, normalised tool names, and a hardcoded 41-tool pricing table.
 - **3-Block Results Display:** matched AI stack, illustrative cost forecast, real case references with source links.
 - **Telemetry & Micro-Surveys:** completion velocity, blueprint export/copy rate, and a post-session trust score.
 
