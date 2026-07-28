@@ -1,6 +1,7 @@
 pandas
 streamlit
 chromadb
+fpdf2
 sentence-transformers
 scikit-learn
 scipy

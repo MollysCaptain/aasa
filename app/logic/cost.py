@@ -18,6 +18,27 @@ from app.logic.pricing import PRICING, ILLUSTRATIVE_DISCLAIMER
 #   smb:     150 headcount x 0.8199 adoption rate (n=5,215) = 123
 #   mid:     600 headcount x 0.8018 adoption rate (n=6,731) = 481
 #   ent:     3000 headcount x 0.7922 adoption rate (n=8,548) = 2377
+#
+# READ THIS BEFORE "FIXING" THE NUMBERS ABOVE (updated 2026-07-27) --------------
+# The org-size band LABELS changed after the first real user-test session
+# (1-10 / 11-100 / 101-200 / 201-1,000 / 1,000+), so the base headcounts quoted
+# above — 4 / 20 / 150 / 600 / 3000 — no longer correspond to the band edges.
+# The values were deliberately NOT re-derived, for a reason worth stating:
+#
+#   what these numbers represent is the size of the TEAM ADOPTING THE AI STACK,
+#   not the size of the organisation.
+#
+# Someone asking AASA for a stack is speccing it for a team, and that team is a
+# small fraction of the company at every band above solo. 16 seats inside an
+# 11-100 person company is a realistic adopting team; 82 (the band top x
+# adoption rate) would describe near-total company rollout, which is not the
+# question the product answers. SEAT_CEILING below already encodes exactly this
+# reasoning for the larger bands — this comment simply makes it the stated basis
+# for the whole seat side rather than an after-the-fact cap.
+#
+# Consequence to keep in view: the survey figures above now ground the ADOPTION
+# RATE only, not the headcount. The headcounts are our judgement. Do not describe
+# the seat side as fully survey-derived in the write-up.
 ASSUMED_SEATS = {
     "solo": 3, "startup": 16, "smb": 123, "mid": 481, "ent": 2377,
 }
@@ -44,6 +65,23 @@ SEAT_CEILING = 25
 # Overflow survey has no token/usage-volume question of any kind to ground it
 # against (checked as part of Update C). Still a hand-picked illustrative
 # constant; don't assume it shares the same evidentiary basis as the seat side.
+#
+# WHY THIS SCALES WHEN SEATS DO NOT (documented 2026-07-27) ---------------------
+# Seats are capped at SEAT_CEILING because a licence is per person and the
+# adopting team stays small. Token spend is not per person — it tracks how much
+# work is pushed through the API, and that does grow with the organisation even
+# when the team driving it doesn't: larger retrieval corpora, more documents per
+# run, longer context, batch and scheduled jobs, more integrations calling the
+# same endpoint. So a 25-person team at an enterprise can legitimately consume
+# far more tokens than a 16-person team at a startup.
+#
+# Being straight about the weakness: that argument justifies the DIRECTION of the
+# scaling, not its size. The spread here is 500x solo-to-enterprise (EUR 8.75 vs
+# EUR 4,375/mo on a GPT-4o-class API), and nothing in our evidence fixes the
+# multiplier at 500x rather than 50x. It is the single least-grounded number in
+# the cost model, and because the primary-API figure is usually token-priced it
+# is also the most prominent number on the Cost tab. Recorded in
+# PM & Ethics/Known-Limitations-v1.md rather than quietly left in the code.
 ASSUMED_TOKEN_VOLUME_MM = {
     "solo": 2, "startup": 10, "smb": 50, "mid": 250, "ent": 1000,
 }
