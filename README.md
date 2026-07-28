@@ -1,4 +1,10 @@
-# StackPunk — AASA (AI-Assisted Stack Architect)
+# AASA — AI-Assisted Stack Architect
+
+<!-- Repo renamed from "stackpunk" to "aasa" on 2026-07-28. Historical references
+     to the stackpunk repo remain in the Build Guide documents on purpose: they
+     describe where work actually came from at the time and shouldn't be rewritten
+     as if the rename had always been true. -->
+
 
 Give AASA five constraints. It retrieves comparable real-world AI
 implementations, ranks the models, APIs and frameworks they used, and estimates a
@@ -54,7 +60,7 @@ price.
 
 ```bash
 # 1. Clone and enter the repo
-git clone <repo-url> && cd stackpunk
+git clone <repo-url> && cd aasa
 
 # 2. Create and activate a virtual environment
 python3.11 -m venv .venv
@@ -66,12 +72,38 @@ pip install -r requirements.txt
 # 4. Add your API key
 echo 'GROQ_API_KEY=your-key-here' > .env
 
-# 5. Build the vector store (one-off, takes a few minutes)
+# 5. Get the case dataset — NOT in this repo, see note below
+#    Download use-cases.csv from the source and save it as data/use-cases.csv
+#    https://github.com/abbasmahdi-ai/ai-use-cases-library
+
+# 6. Build the vector store (one-off, takes a few minutes)
 python scripts/rebuild_knowledge_base.py
 ```
 
-Step 5 embeds the case library into `./chroma_store`. That directory is **not** in
-git, so every fresh clone must run it before the app will start.
+### Why steps 5 and 6 exist (the two things a fresh clone will not have)
+
+**`data/use-cases.csv` is deliberately not committed.** It's someone else's
+MIT-licensed dataset, so everyone pulls their own copy from
+[`abbasmahdi-ai/ai-use-cases-library`](https://github.com/abbasmahdi-ai/ai-use-cases-library)
+rather than us redistributing it — that's also how you get upstream updates. See
+Build Guide 13 for the citation the upstream README asks for. **Step 6 fails
+without it**, because `normalise_cases.py` reads and rewrites this file first.
+
+**`./chroma_store` is not committed either** — it's ~68 MB of binary vector data
+that doesn't belong in git. Step 6 rebuilds it (normalise → chunk → embed), and
+the first run also downloads the `all-MiniLM-L6-v2` embedding model from
+HuggingFace, so it needs internet and a few hundred MB of disk.
+
+Both absences are expected in a fresh clone, not signs of a broken checkout. If
+you already have a working copy elsewhere, copying `data/use-cases.csv` across is
+faster than re-downloading — `rebuild_knowledge_base.py` is safe to run against an
+already-normalised CSV.
+
+> **Note if you're checking whether a clone is complete:** `.env`, `.venv`,
+> `chroma_store/`, `data/use-cases.csv` and `data/use_cases_chunks.jsonl` are all
+> gitignored and will always be missing. `data/telemetry.log` **is** tracked
+> despite appearing in `.gitignore` — Card P.14's validation figures are computed
+> from it, so it has to travel with the repo.
 
 ## Run
 
