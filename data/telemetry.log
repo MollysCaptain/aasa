@@ -410,3 +410,4 @@
 {"event": "results_shown", "timestamp": 1785199664.093021, "elapsed_seconds": 149.3}
 {"event": "llm_summary_generated", "timestamp": 1785199664.093749, "duration_seconds": 0.67, "prompt_tokens": 1138, "completion_tokens": 264, "tokens_per_second": 394.0, "summary_fallback_used": false}
 {"event": "form_start", "timestamp": 1785199679.9816298}
+{"event": "form_start", "timestamp": 1785229905.992876}
