@@ -69,7 +69,7 @@ one-line pointer to the canonical file.
       re-verified 2026-07-28 against the final real-user round (n=8): 12 sessions,
       83% export rate, 100% net value, CIs 59–93% / 72–99%, trust median 5, avg
       LLM 1.34s. Figures are windowed to the round via
-      `--since "2026-07-27 23:00"` and the boundary was stress-tested — moving it
+      `--since "2026-07-27 23:00" --until "2026-07-28 01:31"` and the boundary was stress-tested — moving it
       back an hour leaves every reported count identical.
       *Superseded:* the earlier round's 14 sessions / 50% / 80% / CIs 42–94% and
       30–70% / trust median 3 are retained in the P.14 write-up as a prior

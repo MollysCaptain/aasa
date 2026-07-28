@@ -47,8 +47,8 @@ the single most dangerous thing this product could do."
 **Slide headline:** *Real testers, honest numbers, intervals included.*
 
 **Source:** `PM & Ethics/P14-Validation-Metrics-Final-v1.md`, computed by
-`scripts/telemetry_funnel.py --since "2026-07-27 23:00"` +
-`scripts/credible_interval.py --since "2026-07-27 23:00"` from
+`scripts/telemetry_funnel.py --since "2026-07-27 23:00" --until "2026-07-28 01:31"` +
+`scripts/credible_interval.py --since "2026-07-27 23:00" --until "2026-07-28 01:31"` from
 `data/telemetry.log`. **Do not retype these — copy them.**
 
 Updated 2026-07-28 for the final real-user round (8 participants). The `--since`

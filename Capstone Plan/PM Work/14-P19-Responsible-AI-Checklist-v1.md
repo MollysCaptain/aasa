@@ -98,7 +98,7 @@ This was a real flaw in our first build, so it's checked explicitly every time.
       Known-Limitations rather than left for a marker to notice.
 - [x] **Telemetry dataset is final** — real-user testing completed 2026-07-28 with
       8 participants; figures are windowed to that round and reproducible via
-      `scripts/telemetry_funnel.py --since "2026-07-27 23:00"`.
+      `scripts/telemetry_funnel.py --since "2026-07-27 23:00" --until "2026-07-28 01:31"`.
 
 ## Accessibility & inclusion (Card P.13 overlap)
 

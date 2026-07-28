@@ -77,6 +77,50 @@ numeric/enum values — no identifier, no free text).
 **Verified:** the bounded P.14 window reproduces exactly — 8 surveys, trust
 median 5, 12 viewed, 10 exported.
 
+> ### Correction (2026-07-28, after Gabi's review) — that claim wasn't reproducible
+>
+> Gabi ran the command this repo actually documents — `telemetry_funnel.py --since
+> "2026-07-27 23:00"` — and got **18 viewed → 10 exported (56%)**, not 12 → 83%.
+> She's right, and the wording above was doing me a favour it hadn't earned: my
+> verification used *both* bounds, but the documented command only had `--since`,
+> so nobody following the docs could reproduce the figure printed next to it.
+>
+> **Cause.** The round closed with its last survey at 01:30:41. Continued use of
+> the app afterwards — verifying these very fixes, reproducing the blank-summary
+> bug, testing the Cloud deploy — appended six more `results_shown` events with no
+> surveys attached. `export_clicked` stayed at 10, so the denominator grew and the
+> rate fell. One of the four headline metrics on the deck had quietly stopped
+> reproducing.
+>
+> **Also worth saying plainly: this is why Gabi wanted `telemetry.log` gitignored
+> in the first place, and that instinct was correct.** The append-only log does
+> pollute the metrics. Untracking it was the wrong remedy because it destroyed the
+> evidence, but the diagnosis was right — and the fix below addresses what she was
+> actually worried about while keeping the evidence in the repo. Both halves were
+> needed.
+>
+> **And this was known.** I identified it two days earlier and it was
+> deprioritised as not important, so the `--until` fix never reached the remote. I
+> should have pushed harder given it touches a published deck figure. Recorded
+> here rather than quietly fixed, because "we knew and skipped it" is the useful
+> part.
+>
+> **Fixed on this branch:**
+> - `--until` added to both scripts, plus a `--p14` shorthand for the published
+>   window so it can't be typed wrong.
+> - `P14_SINCE` / `P14_UNTIL` / `P14_COMMAND` live in one place
+>   (`telemetry_funnel.py`) and `credible_interval.py` imports them, so the two
+>   scripts can never quote different windows for the same figures.
+> - **Any run that isn't the published window now prints a loud warning**, naming
+>   how many post-round events it folded in and how many of those had surveys
+>   (zero). Docs alone wouldn't have prevented this; the script now tells you.
+> - Every document quoting the command updated to the bounded form: the P.14
+>   write-up, P.18 slide content, the P.19 checklist and the P.21 findings.
+>
+> Re-verified after the change: `--p14` gives 8 surveys, trust median 5, 12 viewed,
+> 10 exported, 83% export rate, net value 100% (8/8), intervals 59–93% and 72–99%.
+> An unbounded run warns and reports 18 viewed, as it should.
+
 > If you untracked it for a Cloud reason I couldn't see from the repo, say so and
 > I'll move the evidence somewhere else instead — but it can't just be absent.
 

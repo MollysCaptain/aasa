@@ -148,8 +148,8 @@ Then open the URL Streamlit prints (usually `http://localhost:8501`).
 python scripts/backend_dry_run.py          # run 3 test profiles end-to-end
 python tests/distancecheck.py --full       # relevance-threshold regression sweep (432 pairs)
 python scripts/compliance_check.py         # regulated-posture filter check
-python scripts/telemetry_funnel.py         # headline metrics + funnel from telemetry
-python scripts/credible_interval.py        # small-sample credible intervals
+python scripts/telemetry_funnel.py  --p14  # headline metrics + funnel  (Card P.14)
+python scripts/credible_interval.py --p14  # small-sample credible intervals
 
 python scripts/rebuild_knowledge_base.py   # DESTRUCTIVE — deletes and rebuilds
                                            # chroma_store/. Needs the source CSV.
@@ -160,6 +160,13 @@ All of these read local data or re-run the pipeline — none sends anything
 anywhere. The first three are the ones to run after a change to verify nothing
 regressed; `distancecheck.py --full` is the one that catches retrieval breaking
 silently.
+
+**`--p14` is not optional on the two metrics scripts.** `data/telemetry.log` is
+append-only, so every later run of the app adds events. Without the flag you get
+the whole log — including development traffic recorded after the user-test round
+closed — and the funnel disagrees with the published figures (56% export rate
+instead of 83%). `--p14` pins the frozen window the write-up uses. Run them
+without it and they'll warn you.
 
 ## Privacy & ethics
 
