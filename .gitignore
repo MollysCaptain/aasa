@@ -223,7 +223,7 @@ data/StackOverflow/results.csv
 # AASA — Chroma vector store and chunk file (Card 2.2): both fully regenerable
 # from data/use-cases.csv via scripts/chunk_use_cases.py + scripts/embed_cases.py,
 # and chroma_store/ in particular is large binary data that doesn't belong in git.
-chroma_store/
+## chroma_store/
 data/use_cases_chunks.jsonl
 
 # AASA — third-party dataset (MIT-licensed, not our work): intentionally not
@@ -242,7 +242,6 @@ data/telemetry.log
 .python-version
 .~lock.StackPunk_PM_TeamCheckIn.pptx#
 StackPunk_PM_TeamCheckIn.pptx
-data/telemetry.log
 
 # Real-user testing: the unredacted session sheet holds participants' names, job
 # titles and employers. They consented to testing, not to being named in a
