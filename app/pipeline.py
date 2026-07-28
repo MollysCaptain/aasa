@@ -252,5 +252,9 @@ def run_pipeline(inputs: dict) -> dict:
             "prompt_tokens": summary["prompt_tokens"],
             "completion_tokens": summary["completion_tokens"],
             "tokens_per_second": summary["tokens_per_second"],
+            # True when the model returned nothing and the deterministic summary
+            # was used instead (see prompt.py). Logged so a silent regression in
+            # summary quality is measurable rather than invisible.
+            "summary_fallback_used": summary.get("summary_fallback_used", False),
         },
     }

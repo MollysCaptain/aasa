@@ -74,6 +74,93 @@ watsonx is estimated at about €3,500 per month across 25 seats, for a combined
 €2,012.50 over your €1,800 monthly budget. Both tools are directionally suited to governable environments, \
 but you may want to consider a smaller pilot group or a lower-cost alternative to bring this within budget."""
 
+# Third example, added 2026-07-28 after a real tester hit an EMPTY summary.
+# estimate_cost() prices "one + one, not the sum": the first token-priced tool as
+# primary_api and the first seat-priced tool as assistant. When the recommended
+# stack contains no seat-priced tool at all — common, since compute/usage/free
+# tools are plentiful — `assistant` is None. The model had no example of that
+# shape and returned empty content for it. This anchors the primary-only case.
+FEW_SHOT_EXAMPLE_USER_3 = """Ranked tools: ['nvidia', 'google-cloud', 'aws-bedrock']
+Cost forecast: primary_api=€875.00/mo (Amazon Bedrock), assistant=none (no seat-priced tool in the recommended stack)
+Budget: €2000/mo — forecast (€875.00/mo) fits within budget
+Matched cases: 4 comparable deployments
+Privacy posture: standard"""
+
+FEW_SHOT_EXAMPLE_ASSISTANT_3 = """Based on 4 comparable deployments, Amazon Bedrock together with NVIDIA AI \
+Enterprise and Google Cloud Platform is a well-evidenced starting point for your workflow. Amazon Bedrock is \
+estimated at around €875 per month for typical usage, which fits inside your €2,000 monthly budget. The rest \
+of the recommended stack is infrastructure and usage-based rather than per-seat software, so there is no \
+separate seat cost to add here. Confirm current pricing with each vendor before you commit budget."""
+
+
+def _slot_phrase(slot: str, cost_forecast: dict, price_model: str) -> str:
+    """
+    One cost slot as prose, matching the few-shot format — 'primary_api=€875.00/mo
+    (Amazon Bedrock)' or, when the stack has nothing of that pricing model,
+    'assistant=none (no seat-priced tool in the recommended stack)'.
+
+    Saying "none" explicitly matters: the alternative is omitting the slot, which
+    leaves the model guessing whether the number was withheld or doesn't exist.
+    """
+    entry = cost_forecast.get(slot)
+    if not entry or entry.get("monthly_eur") is None:
+        return f"{slot}=none (no {price_model} tool in the recommended stack)"
+    return f"{slot}=€{entry['monthly_eur']:.2f}/mo ({entry.get('tool', 'unknown')})"
+
+
+def _deterministic_summary(ranked_tools: list, cost_forecast: dict,
+                           matched_cases: list, privacy_key: str) -> str:
+    """
+    Factual summary assembled from the already-computed result — no model, no
+    invention. Used only if the LLM returns nothing usable.
+
+    Why this exists: a tester found the Summary tab and the export both rendering
+    BLANK. Whatever the cause (here, a prompt shape the model had no example for),
+    an empty summary is the worst possible failure — the product's whole claim is
+    that the prose is grounded, and a blank panel looks broken while telling the
+    user nothing. Every fact below is read from data that deterministic code
+    already decided, in the same spirit as the no-match guard in pipeline.py.
+    """
+    names = [str(t) for t in ranked_tools]
+    if len(names) > 1:
+        tool_text = ", ".join(names[:-1]) + f" and {names[-1]}"
+    else:
+        tool_text = names[0] if names else "no tools"
+
+    bits = [f"Based on {len(matched_cases)} comparable deployment"
+            f"{'s' if len(matched_cases) != 1 else ''} in the case library, the "
+            f"recommended stack is {tool_text}."]
+
+    priced = []
+    for slot, label in (("primary_api", "primary API"), ("assistant", "assistant")):
+        e = cost_forecast.get(slot)
+        if e and e.get("monthly_eur") is not None:
+            priced.append(f"{e.get('tool', slot)} at about €{e['monthly_eur']:.2f} per month "
+                          f"as the {label}")
+    if priced:
+        bits.append("Illustrative costs cover " + " and ".join(priced) + ".")
+    else:
+        bits.append("No priced tool in this stack has a per-token or per-seat rate in "
+                    "our table, so no monthly figure is shown.")
+
+    total, budget = cost_forecast.get("total_monthly_eur"), cost_forecast.get("budget")
+    within = cost_forecast.get("within_budget")
+    if total is not None and budget is not None and within is not None:
+        if within:
+            bits.append(f"That totals about €{total:.2f} per month, inside your "
+                        f"€{budget:.0f} monthly budget.")
+        else:
+            bits.append(f"That totals about €{total:.2f} per month, roughly "
+                        f"€{total - budget:.2f} over your €{budget:.0f} monthly budget.")
+
+    if privacy_key == "regulated":
+        bits.append("These are directionally suited to governable environments, not "
+                    "certified compliant — confirm requirements with each vendor.")
+    else:
+        bits.append("Pricing is illustrative — confirm current rates with each vendor "
+                    "before committing budget.")
+    return " ".join(bits)
+
 
 def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: list,
                       privacy_key: str) -> dict:
@@ -97,9 +184,17 @@ def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: lis
         over_by = round(total - budget, 2)
         budget_line = f"Budget: €{budget}/mo — forecast (€{total}/mo) exceeds budget by €{over_by}/mo"
 
+    # Build the cost line in the SAME prose shape as the few-shot examples above.
+    # This used to interpolate the raw dict (`f"Cost forecast: {cost_forecast}"`),
+    # so every example showed the model one format while runtime handed it a
+    # Python repr full of keys it was never shown — including `'assistant': None`,
+    # which is what produced the empty summary a tester found on 2026-07-28.
+    cost_line = f"Cost forecast: {_slot_phrase('primary_api', cost_forecast, 'token-priced')}, " \
+                f"{_slot_phrase('assistant', cost_forecast, 'seat-priced')}"
+
     user_content = (
         f"Ranked tools: {ranked_tools}\n"
-        f"Cost forecast: {cost_forecast}\n"
+        f"{cost_line}\n"
         f"{budget_line}\n"
         f"Matched cases: {len(matched_cases)} comparable deployments\n"
         f"Privacy posture: {privacy_key}"
@@ -114,6 +209,8 @@ def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: lis
             {"role": "assistant", "content": FEW_SHOT_EXAMPLE_ASSISTANT},
             {"role": "user", "content": FEW_SHOT_EXAMPLE_USER_2},
             {"role": "assistant", "content": FEW_SHOT_EXAMPLE_ASSISTANT_2},
+            {"role": "user", "content": FEW_SHOT_EXAMPLE_USER_3},
+            {"role": "assistant", "content": FEW_SHOT_EXAMPLE_ASSISTANT_3},
             {"role": "user", "content": user_content},
         ],
         temperature=0,  # fully deterministic: this step phrases facts, it doesn't create
@@ -125,12 +222,25 @@ def generate_summary(ranked_tools: list, cost_forecast: dict, matched_cases: lis
         round(usage.completion_tokens / duration_seconds, 1) if duration_seconds > 0 else None
     )
 
+    # Never hand an empty summary to the UI. `content` can come back None or blank
+    # — MODEL is a reasoning model (openai/gpt-oss-20b), so output can land in the
+    # reasoning channel with nothing in content, and any provider can return an
+    # empty completion. A tester hit exactly this: Summary tab and export both
+    # blank. Fall back to the deterministic sentence rather than rendering nothing.
+    text = (response.choices[0].message.content or "").strip()
+    fallback_used = not text
+    if fallback_used:
+        text = _deterministic_summary(ranked_tools, cost_forecast, matched_cases, privacy_key)
+
     return {
-        "text": response.choices[0].message.content,
+        "text": text,
         "duration_seconds": duration_seconds,
         "prompt_tokens": usage.prompt_tokens,
         "completion_tokens": usage.completion_tokens,
         "tokens_per_second": tokens_per_second,
+        # Surfaced so it lands in telemetry via llm_metrics — if this starts firing
+        # often, the prompt needs work rather than the fallback carrying the product.
+        "summary_fallback_used": fallback_used,
     }
 
 

@@ -155,6 +155,9 @@ Full return shape:
     "project_name": "...",        # optional cosmetic name (B.5), "" if unset
     "no_match": False,            # Ash4 — True only on the short-circuit path
     "exact_match_count": 0,       # Ash4 — true industry+workflow matches
+    # llm_metrics gained "summary_fallback_used" (bool) on 2026-07-28 — True when
+    # the model returned empty content and the deterministic summary was used
+    # instead. It flows into telemetry via log_event("llm_summary_generated", ...).
     "llm_metrics": {...},
 }
 ```
