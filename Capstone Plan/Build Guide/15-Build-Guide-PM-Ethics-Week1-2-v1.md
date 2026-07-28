@@ -331,15 +331,15 @@ Before Week 3 puts a real UI in front of the backend, run the whole chain — no
 ---
 
 ## Weeks 1–2 PM/Ethics — Done Checklist
-- [ ] Signed project charter exists.
-- [ ] Recruiting tracker has ≥3 scheduled testers.
-- [ ] Intake/output schema document exists and both people agree on exact field names.
-- [ ] Data-minimisation checklist is dated and checked.
-- [ ] Pipeline diagram (image + `.mmd` source) exists.
-- [ ] Concept-test notes exist for 2–3 sessions, with closing-question answers recorded.
-- [ ] At least 2 UI fixes trace back to a named concept-test finding.
+- [x] Signed project charter exists.
+- [x] Recruiting tracker has ≥3 scheduled testers.
+- [x] Intake/output schema document exists and both people agree on exact field names.
+- [x] Data-minimisation checklist is dated and checked.
+- [x] Pipeline diagram (image + `.mmd` source) exists.
+- [x] Concept-test notes exist for 2–3 sessions, with closing-question answers recorded.
+- [x] At least 2 UI fixes trace back to a named concept-test finding.
 - [x] Model card exists, dated, and linked in-product. *(docs/model-card.md + "About this data" expander)*
-- [ ] Full backend dry run completed on 3 profiles, with a dated defect list.
+- [x] Full backend dry run completed on 3 profiles, with a dated defect list.
 
 Continue to `16-Build-Guide-PM-Ethics-Week3-v1.md` next.
 
