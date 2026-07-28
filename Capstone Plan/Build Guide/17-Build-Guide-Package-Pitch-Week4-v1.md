@@ -170,7 +170,13 @@ Turn every gap you already know about into an honestly-labelled "Known Limitatio
    - Privacy filtering is directional guidance, not a compliance certification (Card 2.5).
    - The dataset skews toward enterprise-productivity tools (Card P.8's model card).
    - There's no organisation-size join key in the case data — Org Size is a separate, user-stated taxonomy.
-   - Validation sample size is 5–8 real testers, not a statistically representative study.
+   - Validation sample size is 8 real testers, not a statistically representative study.
+   - **All four targets are met as of the final round (2026-07-28), including the trust score the earlier round missed (3/5 → 5/5). Do NOT present that as a measured improvement** — the build changed *and* the participants changed between rounds, so the two effects can't be separated. Card P.14's honesty standard now cuts the other way: the risk is over-claiming a win rather than hiding a miss.
+   - All 8 participants were recruited through the team's own professional networks — convenience sampling, which plausibly inflates trust scores. State it.
+   - Telemetry (Card 3.3) has no user/session identifier — session counts in `data/telemetry.log` can't be mapped to distinct testers, so "12 completed sessions" isn't 12 different people. The 8 survey responses *are* 8 people for this round, corroborated against the recorded session sheet.
+   - ~~Retrieval has no relevance threshold~~ **Fixed 2026-07-27** (`RELEVANCE_THRESHOLD = 0.52`, Build Guide 35). The related and larger finding to disclose instead: **205 of the 432 selectable workflow × industry combinations have no cases at all**, so for those the tool shows nearest-comparable evidence — the banner now says which it is rather than claiming "N real X Y deployments matched."
+   - The `project_name` field (Icebox B.5, `app/intake.py`) is a free-text input the UI asks users not to put PII into but doesn't enforce. **Corrected 2026-07-28 — the leak this originally described does not exist:** saved blueprints live in `st.session_state` and only leave the machine through `st.download_button` (`app/saved_blueprints.py`), so nothing is written to `data/` at runtime. Verified after real testing: 8 participants typed real project names and produced 31 `blueprint_saved` events, and none of those names appear in any tracked file. The committed `data/aasa-saved-blueprints.json` is a stale 21 July artefact containing our own Profile 1/2/3 with empty `project_name`. Residual risk is only that a user could *choose* to export the JSON and then commit it.
+   - ~~Card P.11 may still be "In Progress"~~ **Complete 2026-07-28**: 8 participants, every one with a real `survey_submitted` event.
    - Any Minor issues deliberately deferred back in Card P.12.
 2. **Write each one as: what it is → why it exists → what would fix it (roadmap item).** This structure shows judgement, not just a list of flaws.
 3. **Put a visible version of this in the product itself** (a "Known limitations" note near the results, in plain language) — not just buried in a project document only graders will read.
@@ -186,7 +192,13 @@ Turn every gap you already know about into an honestly-labelled "Known Limitatio
 | Privacy filter is directional, not certified | No governance authority backs the tool classification | Would need legal/compliance review, out of scope for a 2-person capstone |
 | Dataset skews toward enterprise productivity tools | Reflects real-world case frequency in the source library | Document transparently (done — see model card); could diversify sources later |
 | No org-size join to case data | Source dataset has no such field | Would require a different/joined dataset |
-| Small sample validation (5-8 testers) | Realistic for a 2-person, 4-week team | Larger N in a post-capstone iteration. Rates are reported with credible intervals (Card P.14), and no comparative ("A beat B") claim is made, since that would require a properly powered study this team size/timeline can't run. |
+| Small sample validation (8 testers) | Realistic for a 2-person, 4-week team | Larger N in a post-capstone iteration. Rates are reported with credible intervals (Card P.14), and no comparative ("A beat B") claim is made, since that would require a properly powered study this team size/timeline can't run. |
+| The trust-score improvement is not a measured before/after | Median went 3/5 → 5/5 between rounds, but the build and the participants both changed | State the result without claiming our fixes caused it. The earlier miss stays on the record in the P.14 write-up rather than being deleted once it stopped being current. |
+| Participants were all professional contacts of the team | Convenience sampling — 8 practitioners at 7 real companies, but all recruited via our own networks | Can't be corrected retrospectively; a neutral round would need unrelated recruits. Disclosed rather than left to be inferred. |
+| Telemetry has no user/session identifier | Card 3.3's schema logs events, not people | Add an anonymous per-browser-session token if finer-grained analysis is ever needed |
+| ~~Retrieval has no relevance threshold~~ *(fixed — `RELEVANCE_THRESHOLD = 0.52`)* | — | Replaced by: **205 of 432 input combinations have no cases at all**, so nearly half of possible queries return nearest-comparable rather than direct evidence. Fix: flag unpopulated pairs in the dropdowns before the user submits. |
+| `project_name` free-text field is unvalidated | Icebox B.5/B.6 added a `st.text_input` with a PII warning but no enforcement | **Lower risk than first written** (corrected 2026-07-28): saves are session-state only and exit via a download button, so nothing reaches `data/` at runtime — confirmed against real testing, where no participant's project name appears in any tracked file. Optional hardening: scrub or warn on the exported JSON. |
+| ~~Card P.11 may still be in progress~~ *(complete 2026-07-28, n=8)* | — | Metrics windowed to the final round via `--since`; re-run the two scripts if further sessions ever land. |
 ```
 
 ### How to verify this card is done
@@ -212,7 +224,7 @@ Before touching slide design, decide what each slide is *for* in one sentence. A
    real AI-stack advice and default to scattered forum research.
 3. Solution — AASA in one sentence + a screenshot of the 3-block output.
 4. How it works (Architecture) — the Card P.5 pipeline diagram.
-5. Data foundation — 3,023 real deployments, the normalisation challenge (2,511 → 24 tools), honestly labelled as a retrieval corpus, not a compliance authority.
+5. Data foundation — 3,023 real deployments, the normalisation challenge (2,511 → 41 tools), honestly labelled as a retrieval corpus, not a compliance authority.
 6. Real test results — the Card P.14 metrics table.
 7. What we heard (qualitative) — 2-3 real, anonymised quotes from testing.
 8. Risk management — the top 2-3 risks you actually mitigated (e.g. dropping Flowise to remove webhook risk; the privacy filter running before the LLM).

@@ -242,3 +242,10 @@ data/telemetry.log
 .python-version
 .~lock.StackPunk_PM_TeamCheckIn.pptx#
 StackPunk_PM_TeamCheckIn.pptx
+data/telemetry.log
+
+# Real-user testing: the unredacted session sheet holds participants' names, job
+# titles and employers. They consented to testing, not to being named in a
+# submitted document, so only the pseudonymised copy (P1-P8, employers withheld)
+# is committed. Keep the original locally.
+PM & Ethics/AI-Assisted Stack Architect User Testing.xlsx

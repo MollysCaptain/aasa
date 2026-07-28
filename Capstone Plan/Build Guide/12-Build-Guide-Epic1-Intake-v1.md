@@ -279,12 +279,16 @@ see the instructions below Step 3.
 """
 
 ORG_SIZES = {
-    "solo": "Solo / Pre-seed (1–4 people)",
-    "startup": "Startup (5–20 people)",
-    "smb": "Small–Medium Business (21–200 people)",
-    "mid": "Mid-Market (201–1,000 people)",
+    "solo": "Solo / Pre-seed (1-10 people)",
+    "startup": "Startup (11-100 people)",
+    "smb": "Small-Medium Business (101-200 people)",
+    "mid": "Mid-Market (201-1,000 people)",
     "ent": "Enterprise (1,000+ people)",
 }
+# Bands revised 2026-07-27 after the first real user-test session (the original
+# 1-4 / 5-20 / 21-200 ranges left a gap testers fell into). If you change these
+# ranges again, re-derive cost.py's ASSUMED_SEATS and ASSUMED_TOKEN_VOLUME_MM —
+# they are sized against the band widths. See Build Guide 18, Update C.
 
 PRIVACY_POSTURES = {
     "standard": "Standard",

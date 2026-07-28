@@ -18,7 +18,7 @@ Notes, field by field:
 
 - **`workflow`** — `st.selectbox("Target AI Workflow", WORKFLOWS)` (`app/intake.py:60`). The dropdown label *is* the stored value — no separate short key. Full option set: 18 canonical domains derived from the real case dataset, plus `"Any workflow"` (`app/data/options.py:57–76`).
 - **`industry`** — `st.selectbox("Industry", INDUSTRIES)` (`intake.py:61`). Same pattern: label is the value. 24 real dataset values + `"Any industry"` (`options.py:26–51`).
-- **`org_size`** — `st.selectbox(..., options=list(ORG_SIZES.keys()), format_func=lambda k: ORG_SIZES[k])` (`intake.py:62–66`). The UI shows a friendly label ("Startup (5–20 people)") but the form stores the short key (`"startup"`). Full key→label mapping in `options.py:11–17`.
+- **`org_size`** — `st.selectbox(..., options=list(ORG_SIZES.keys()), format_func=lambda k: ORG_SIZES[k])` (`intake.py:62–66`). The UI shows a friendly label ("Startup (11-100 people)") but the form stores the short key (`"startup"`). Full key→label mapping in `options.py:11–17`.
 - **`privacy`** — `st.radio(..., options=list(PRIVACY_POSTURES.keys()), ...)` (`intake.py:67–74`). Validated to be exactly `"standard"` or `"regulated"`, nothing else (`app/validators.py:17`).
 - **`budget`** — `st.number_input("Monthly Budget (€)", min_value=0, step=50, value=800)` (`intake.py:75–78`). **Gotcha:** the widget's own `min_value=0` allows 0, but `validate_intake()` separately requires `budget_value > 0` and rejects exactly 0 (`validators.py:20–27`) — so "0" passes the widget but fails validation with "Monthly budget must be greater than zero."
 
@@ -108,6 +108,36 @@ Worked example (startup, `["openai-api", "chatgpt", "langchain"]`, budget €120
 - **`llm_metrics`** (`dict`) — `{"duration_seconds": float, "prompt_tokens": int, "completion_tokens": int, "tokens_per_second": float|None}`, straight from `generate_summary()`'s return value, kept for Card 3.3's telemetry log (`13-Build-Guide-Epic2-Retrieval-v1.md:1032–1064`).
 - **`tool_costs`** (`dict`, new in Update E) — `{canonical_tool_id: {"tool": str, "model": str, "monthly_eur": float|None, "assumption"|"note": str}}`, one entry per tool in `recommended_stack` (not just the two winning `cost_forecast` picks), from `estimate_all_tool_costs()` in `app/logic/cost.py`. Powers Block A's per-tool price display — see Update E in `18-Build-Guide-Updates-Epic1-2-v1.md` (or the Epic 3 updates doc, once created) for why this needed to exist separately from `cost_forecast`. Not sent to Card 2.6's LLM prompt — the model still only ever describes the single decided `primary_api`/`assistant` pair.
 - **`query`** (`dict`, new in the Lovable-parity UI round) — `{"workflow": str, "industry": str, "org_size": str, "privacy": str}`, a plain echo of the validated intake inputs. Display-only: `app/dashboard.py` reads it for the status-chip row ("REGULATED POSTURE" chip), the "DIRECTIONAL ONLY" banner text, and Block C's per-case "why:" lines (same-industry check). Never re-enters any pipeline logic and is not sent to the LLM. Dashboard code reads it with `.get("query", {})` so results saved before this key existed still render.
+- **`distance`** (`float`, inside each `matched_cases` entry — new in the Gabi
+  relevance-threshold change, Ash4) — the raw Chroma distance for the chunk that
+  surfaced this case, rounded to 3dp. **Scale is metric-dependent:** the
+  collection is created without `hnsw:space`, so Chroma's default `l2` applies
+  (`scripts/embed_cases.py`). If anyone rebuilds with cosine, or swaps the
+  embedding model, these numbers — and `RELEVANCE_THRESHOLD` — change meaning
+  entirely and must be re-derived with `tests/distancecheck.py`.
+- **`no_match`** (`bool`, new in Ash4) — `True` when the relevance threshold (or
+  the privacy filter) left no rankable tools. On that path the pipeline
+  **short-circuits: no LLM call is made**, `recommended_stack` is `[]`,
+  `tool_costs` is `{}`, and `summary_text` is a fixed factual sentence written by
+  us, not by a model. Always present on both paths.
+- **`no_match_reason`** (`str`, present only when `no_match` is `True`) — either
+  `"no_relevant_cases"` (nothing cleared the relevance threshold) or
+  `"privacy_filter"` (cases matched, but none of their tools are governable for a
+  regulated posture). The UI uses this to explain the real cause instead of
+  always blaming the privacy filter.
+- **`domain`** (`str`, inside each `matched_cases` entry — new in Ash4) — the
+  case's own workflow/domain, copied from chunk metadata. Added so the UI can
+  tell a case that genuinely matches the requested workflow from a
+  nearest-neighbour case retrieved from elsewhere. `""` if absent from metadata.
+- **`exact_match_count`** (`int`, new in Ash4, present on both paths) — how many
+  of `matched_cases` have **both** `industry` and `domain` equal to what the user
+  asked for. Retrieval is semantic, so it always returns the nearest cases: a
+  full 432-pair sweep found **205 combinations (47%) have zero real cases**, and
+  for those the banner previously claimed "N real X Y deployments matched" — a
+  false statement. The banner now branches on this count (all / some / none
+  genuine). `"Any workflow"`/`"Any industry"` impose no constraint, so they can't
+  make a case a mismatch and the count equals `len(matched_cases)`. Blueprints
+  saved before Ash4 lack this key; the UI treats absent as "make no claim".
 - **`project_name`** (`str`, new in Icebox B.5 / Build Guide 24) — optional, cosmetic; empty string when the user leaves the field blank. Echoed in the dashboard heading, the plain-text export header, the board one-pager title (guide 26), and B.6's default save-name. Kept top-level, deliberately NOT inside `query` (that key is strictly the 5 validated pipeline inputs).
 
 **Inputs (B.5 additions):** `run_pipeline`'s `inputs` dict also accepts two optional keys — `project_name` (str, cosmetic, above) and `exclude_tools` (list of canonical tool ids). Exclusions are applied by `apply_vendor_exclusions()` in `app/logic/filter.py` **after** the privacy filter and before ranking: privacy is a hard compliance rule that always sees the full case list; exclusions are a user preference layered on top. Neither field is validated by `validate_intake` — empty values are a no-op by design.
@@ -123,9 +153,27 @@ Full return shape:
     "summary_text": "...",
     "query": {...},               # intake echo, display-only (UI-parity round)
     "project_name": "...",        # optional cosmetic name (B.5), "" if unset
+    "no_match": False,            # Ash4 — True only on the short-circuit path
+    "exact_match_count": 0,       # Ash4 — true industry+workflow matches
+    # llm_metrics gained "summary_fallback_used" (bool) on 2026-07-28 — True when
+    # the model returned empty content and the deterministic summary was used
+    # instead. It flows into telemetry via log_event("llm_summary_generated", ...).
     "llm_metrics": {...},
 }
 ```
+
+**Note on the retrieval query string (Ash4).** `query_text` is built from the two
+dropdowns only — the project name never reaches retrieval. `"Any workflow"` /
+`"Any industry"` are UI conveniences, not corpus values, so the unspecified half
+is dropped rather than interpolated (which previously produced the literal query
+`"Any workflow in the Any industry industry"` from the default form state):
+
+| Workflow | Industry | Query sent |
+|---|---|---|
+| specified | specified | `{workflow} in the {industry} industry` |
+| Any | specified | `AI adoption in the {industry} industry` |
+| specified | Any | `{workflow}` |
+| Any | Any | `enterprise AI adoption` |
 
 ---
 

@@ -8,11 +8,19 @@ of 12-Build-Guide-Epic1-Intake-v1.md and update these two lists if the
 underlying data ever changes.
 """
 
+# Bands revised 2026-07-27 after the first real user-test session: the old
+# ranges (1-4 / 5-20 / 21-200) left a large gap between "startup" and "SMB" that
+# testers read as not covering their company. Plain hyphens, not en-dashes, so
+# the labels are safe to retype into a spreadsheet for test-session recording.
+# NB: the keys are what everything else stores — changing a LABEL is display-only,
+# but these bands are also what app/logic/cost.py's ASSUMED_SEATS and
+# ASSUMED_TOKEN_VOLUME_MM are sized against, so those must be re-derived
+# whenever the ranges move. See Build Guide 18, Update C.
 ORG_SIZES = {
-    "solo": "Solo / Pre-seed (1–4 people)",
-    "startup": "Startup (5–20 people)",
-    "smb": "Small–Medium Business (21–200 people)",
-    "mid": "Mid-Market (201–1,000 people)",
+    "solo": "Solo / Pre-seed (1-10 people)",
+    "startup": "Startup (11-100 people)",
+    "smb": "Small-Medium Business (101-200 people)",
+    "mid": "Mid-Market (201-1,000 people)",
     "ent": "Enterprise (1,000+ people)",
 }
 

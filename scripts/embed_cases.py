@@ -32,6 +32,11 @@ def main():
     client = chromadb.PersistentClient(path=CHROMA_PATH)
     # get_or_create_collection: safe to re-run this script without erroring on a duplicate.
     # embedding_function must be passed consistently every time this collection is opened.
+    # NOTE (Ash4): no `metadata={"hnsw:space": ...}` here, so Chroma's DEFAULT
+    # l2 distance applies. app/pipeline.py's RELEVANCE_THRESHOLD (0.52) is
+    # calibrated against THAT metric with THIS embedding model. If you ever set
+    # hnsw:space to cosine/ip, or change the model, the threshold silently means
+    # something different — re-derive it with tests/distancecheck.py first.
     collection = client.get_or_create_collection(COLLECTION_NAME, embedding_function=embedding_fn)
 
     documents, metadatas, ids = [], [], []
