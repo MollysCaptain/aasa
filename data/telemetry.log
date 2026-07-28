@@ -395,3 +395,18 @@
 {"event": "export_clicked", "timestamp": 1785195037.122678}
 {"event": "survey_submitted", "timestamp": 1785195041.45664, "trust_score": 5, "net_value": "Yes"}
 {"event": "form_start", "timestamp": 1785195053.345118}
+{"event": "form_start", "timestamp": 1785196099.0813}
+{"event": "results_shown", "timestamp": 1785196112.6476622, "elapsed_seconds": 13.6}
+{"event": "llm_summary_generated", "timestamp": 1785196112.648461, "duration_seconds": 0.57, "prompt_tokens": 1023, "completion_tokens": 197, "tokens_per_second": 345.6}
+{"event": "results_shown", "timestamp": 1785196167.681277, "elapsed_seconds": 68.6}
+{"event": "llm_summary_generated", "timestamp": 1785196167.683727, "duration_seconds": 1.31, "prompt_tokens": 1078, "completion_tokens": 860, "tokens_per_second": 656.5}
+{"event": "form_start", "timestamp": 1785199514.7616692}
+{"event": "results_shown", "timestamp": 1785199615.980532, "elapsed_seconds": 101.2}
+{"event": "llm_summary_generated", "timestamp": 1785199615.981544, "duration_seconds": 1.31, "prompt_tokens": 1154, "completion_tokens": 572, "tokens_per_second": 436.6, "summary_fallback_used": false}
+{"event": "results_shown", "timestamp": 1785199633.4208682, "elapsed_seconds": 118.7}
+{"event": "llm_summary_generated", "timestamp": 1785199633.421626, "duration_seconds": 0.71, "prompt_tokens": 1137, "completion_tokens": 337, "tokens_per_second": 474.6, "summary_fallback_used": false}
+{"event": "results_shown", "timestamp": 1785199647.0978281, "elapsed_seconds": 132.3}
+{"event": "llm_summary_generated", "timestamp": 1785199647.0988421, "duration_seconds": 0.87, "prompt_tokens": 1140, "completion_tokens": 369, "tokens_per_second": 424.1, "summary_fallback_used": false}
+{"event": "results_shown", "timestamp": 1785199664.093021, "elapsed_seconds": 149.3}
+{"event": "llm_summary_generated", "timestamp": 1785199664.093749, "duration_seconds": 0.67, "prompt_tokens": 1138, "completion_tokens": 264, "tokens_per_second": 394.0, "summary_fallback_used": false}
+{"event": "form_start", "timestamp": 1785199679.9816298}
