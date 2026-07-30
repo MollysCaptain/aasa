@@ -157,6 +157,43 @@ except where noted.
 | 19 | **Handbook §11 claimed to be the index and to be complete**, then listed only 01–09 — omitting 10–14, the Kanban board, and now 15–16 | Handbook §11 | Table completed; the consistency claim kept and annotated rather than deleted |
 | 20 | **Size of `chroma.sqlite3` given as ~54 MB in one place, ~52 MB in two others** | `docs/data-attribution.md`:49 | → ~52 MB throughout |
 
+### Added 2026-07-30: P.9's defect list, completed retrospectively
+
+`PM & Ethics/P9-Backend-Dry-Run-Results-v1.md` ended in a blank defect-list
+template and an unticked go/no-go. The dry run really happened on 2026-07-21 and
+Week 3 really went ahead on it — only the written record of *what was found* was
+never filled in, and it survived two consistency passes because both compared
+documents to each other and this one contradicted nothing.
+
+Filled in from evidence in that file plus dated commits, with nothing backdated
+and the €68,433.75 budget bug deliberately excluded (it was fixed 2026-07-16,
+five days *before* the run — claiming it would be the cheapest way to make a
+retrospective list look productive). Five defects, of which the first is the one
+that matters:
+
+**The dry run printed the evidence for the banner over-claim and the reviewer
+read past it.** Profile 3 was chosen as the deliberately-thin case: *Facilities &
+EHS in Agriculture*, a pair with exactly **1** real case in 3,023. It returned
+"MATCHED CASES (15)", of which one — Avanade — is a true match. The banner then
+announced 15 real deployments of that industry-and-workflow. All three automated
+checks PASSed, because each tests internal consistency and none asks whether the
+evidence is what the user requested. The defect wasn't found for six days, and
+when it was, it was found by threshold calibration rather than by anyone
+re-reading this file.
+
+What makes it instructive is that the *ranking was right*: `azure-platform`, the
+single genuinely-matching case's tool, ranked #1. The product recommended well and
+described its own evidence badly — a failure mode that passes every check that
+only verifies the code against itself. **This is the fourth instance of that
+pattern on this project** (distancecheck's FAIL verdict, the `--since`-only
+command, the third unbounded metrics script, and now this).
+
+Two of the five defects were not previously disclosed anywhere, so they have been
+added to `Known-Limitations-v1.md`: the budget verdict is computed on a
+partially-costed stack (3 of 5 tools `€None`, total €8.75, `within_budget: True`),
+and cases with no recognised tool (341 of 3,023) can still occupy an evidence
+slot. Neither is being fixed under the P.15 freeze.
+
 ### Left open on purpose
 
 - **`data/AICaseStudy/schema.md`:60 says the upstream dataset is "MIT and
