@@ -50,7 +50,7 @@ Upstream also publishes `in-review/` (78 cases) and `excluded/` (720 cases) data
 
 ## Notes
 - Each case should be **self-contained** (no missing critical fields). Upstream reports 99.97% completeness across the 3,023 cases.
-- This file was originally hand-copied from the upstream repo's `data/schema.md` and inherited its errors (`Tools/Technologies` plural, no `Source` column). Both are corrected above after re-verifying directly against the real CSV — see `23-Gabi-Branch-Epic2-Verified-v1.md` for the fuller writeup of how the error was found.
+- This file was originally hand-copied from the upstream repo's `data/schema.md` and inherited its errors (`Tools/Technologies` plural, no `Source` column). Both are corrected above after re-verifying directly against the real CSV — the fuller writeup of how the error was found is in Build Guide 13, under "Before you start".
 - If you ever pull a fresh copy of the dataset and something looks different, re-verify with `print(pd.read_csv('data/use-cases.csv').columns)` rather than trusting this file (or upstream's own docs) blindly.
 
 ---

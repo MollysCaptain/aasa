@@ -44,10 +44,15 @@ This was a real flaw in our first build, so it's checked explicitly every time.
 - [x] **Ranking is genuinely frequency-based** — verified in `app/logic/filter.py`:
       a plain `collections.Counter` with `most_common()`, no manual weighting,
       boosting or hand-reordering anywhere in the path.
-- [ ] ⚠️ **The `~2 min TO BLUEPRINT` hero stat.** Our own telemetry shows average
-      time-to-results of **381.6s (~6 min)**. Either reword it (e.g. "~2 min of
-      input") or change the number. **This is currently the clearest
-      over-claim in the product — decide before submission.**
+- [x] **The `~2 min TO BLUEPRINT` hero stat is defensible — decided 2026-07-28.**
+      This was flagged as the clearest over-claim in the product on the basis of
+      the **mean** time-to-results (381.6s / ~6 min). That was the wrong statistic:
+      the mean is skewed by two sessions of 1,287s and 1,617s where a participant
+      left the form open. The **median across the real user-test round is 114s
+      (1.9 min)** — so "~2 min" describes the typical user honestly, and the number
+      briefly changed to "~5 min" matched neither the median nor the mean. Reverted
+      to `~2 min`, with the reasoning in a comment at `app/intake.py:500` and both
+      statistics reported in the P.14 write-up so nothing is concealed.
 - [ ] ⚠️ **Deck metrics match the real P.14 output**, not rounded-up versions.
       Check once the deck is built (Card P.21 re-checks this too).
 
@@ -98,7 +103,7 @@ This was a real flaw in our first build, so it's checked explicitly every time.
       Known-Limitations rather than left for a marker to notice.
 - [x] **Telemetry dataset is final** — real-user testing completed 2026-07-28 with
       8 participants; figures are windowed to that round and reproducible via
-      `scripts/telemetry_funnel.py --since "2026-07-27 23:00"`.
+      `scripts/telemetry_funnel.py --since "2026-07-27 23:00" --until "2026-07-28 01:31"`.
 
 ## Accessibility & inclusion (Card P.13 overlap)
 
@@ -108,7 +113,7 @@ This was a real flaw in our first build, so it's checked explicitly every time.
       "Regulated" and left "Standard" to be inferred, and the org-size bands left a
       gap testers didn't see themselves in.
 - [ ] ⚠️ **Jargon pass completed with both personas** (non-technical founder,
-      non-native speaker) — shortlist prepared in `13-P13-Clarity-Jargon-Shortlist-v1.md`.
+      non-native speaker) — shortlist prepared in `12-P13-Clarity-Jargon-Shortlist-v1.md`.
       Partially superseded: the tooltip and band fixes above came from real
       non-native speakers rather than the prepared shortlist, but the shortlist
       itself was never worked through item by item.
@@ -124,6 +129,13 @@ This was a real flaw in our first build, so it's checked explicitly every time.
       (B.1, B.3, B.4, B.7, B.8, mobile).
 - [x] **README documents real setup steps**, including the mandatory
       `rebuild_knowledge_base.py` step for a fresh clone.
+      > **Note 2026-07-28:** that step is no longer mandatory, and this line is
+      > kept rather than rewritten so the change is visible. Since the Cloud
+      > deploy (Build Guide 36) `chroma_store/` is committed, so a fresh clone
+      > runs the app straight after `pip install` + the API key. Running
+      > `rebuild_knowledge_base.py` is now actively discouraged — it deletes the
+      > committed store and needs the gitignored source CSV to rebuild. The README
+      > says so, and the script refuses to delete anything if that CSV is absent.
 - [ ] ⚠️ **Feature freeze declared and dated** (Card P.15) — needs the human
       decision, then a line in the changelog.
 - [ ] ⚠️ **No doc references a feature that got cut** — final sweep at P.21.

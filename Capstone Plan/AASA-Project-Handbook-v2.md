@@ -162,11 +162,11 @@ This handbook is the index and change-rationale. The individual capstone deliver
 | `03-Ethical-Action-Plan-v2.md` | Rewritten — roles consolidated to 2 people, fabrication check added |
 | `03b-User-Research-v2.md` | **Corrected on re-audit** — discovery work (personas/interviews/hypotheses) unchanged, but the "Data Strategy Design" section still specified N=50/N=12, "Human Architect Override Ratio", and Flowise-based logging; all three now aligned with the rest of the doc set |
 | `04-MVP-Scoping-v2.md` | Rewritten — Flowise dropped, seat/token cost split added |
-| `06-Outcome-Goals-v2.md` | **Corrected on re-audit** — the "Teachable" bullet named Flowise specifically; fixed to match the simplified stack |
-| `07-Roadmap-v2.md` | Rewritten — Flowise references replaced, pricing-sync claim made honest |
-| `08-Technical-Work-Breakdown-v2.md` | Rewritten, then **corrected on re-audit** — a cost-calculation task was double-counted across two features; totals now reconcile with the priority matrix |
-| `09-Effort-Informed-Prioritisation-v2.md` | Rewritten, then **corrected on re-audit** — its effort totals didn't match the Technical Work Breakdown for the same scope; both now sum to the same 15 days |
-| `10-User-Stories-and-Task-Mapping-v2.md` | Rewritten — webhook tasks replaced with direct function calls |
+| `05-Outcome-Goals-v2.md` | **Corrected on re-audit** — the "Teachable" bullet named Flowise specifically; fixed to match the simplified stack |
+| `06-Roadmap-v2.md` | Rewritten — Flowise references replaced, pricing-sync claim made honest |
+| `07-Technical-Work-Breakdown-v2.md` | Rewritten, then **corrected on re-audit** — a cost-calculation task was double-counted across two features; totals now reconcile with the priority matrix |
+| `08-Effort-Informed-Prioritisation-v2.md` | Rewritten, then **corrected on re-audit** — its effort totals didn't match the Technical Work Breakdown for the same scope; both now sum to the same 15 days |
+| `09-User-Stories-and-Task-Mapping-v2.md` | Rewritten — webhook tasks replaced with direct function calls |
 | `aasa-prototype.html` | Rebuilt — fabrications removed, runs on real curated data |
 
 *End of handbook v2. Together with the files above, this is now a fully reconciled, internally consistent capstone submission.*

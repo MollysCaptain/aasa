@@ -5,8 +5,8 @@ figure below is computed from `data/telemetry.log`, not transcribed from the
 session notes. Reproduce all of it with:*
 
 ```bash
-python3 scripts/telemetry_funnel.py   --since "2026-07-27 23:00"
-python3 scripts/credible_interval.py  --since "2026-07-27 23:00"
+python3 scripts/telemetry_funnel.py   --since "2026-07-27 23:00" --until "2026-07-28 01:31"
+python3 scripts/credible_interval.py  --since "2026-07-27 23:00" --until "2026-07-28 01:31"
 ```
 
 Participant details are recorded in
@@ -31,12 +31,34 @@ responses over 100 sessions**, which measures nothing cleanly: it averages
 feedback on the shipped build together with feedback on builds that had known
 defects, and it counts our own testing as if it were user testing.
 
-The `--since "2026-07-27 23:00"` boundary isolates the final round. Two checks
-make it defensible rather than arbitrary:
+The `--since "2026-07-27 23:00" --until "2026-07-28 01:31"` window isolates the
+final round. **Both bounds are required** — run the shorthand `--p14` and you
+cannot get it wrong.
+
+### Why the end bound is not optional
+
+The round closed with its last survey at **01:30:41**. We then carried on using
+the app — verifying fixes, reproducing a reported bug, testing the Cloud deploy —
+and each of those runs appended a `results_shown` event. Since `export_clicked`
+stayed at 10 while `results_shown` climbed from 12 to 18, the export rate the
+scripts reported fell from **83% to 56% within a day of this document being
+written**, with no survey attached to a single one of the new events.
+
+The published figures were never wrong. What broke was reproducibility: for a
+while this file quoted a `--since`-only command that no longer produced the
+numbers printed beneath it. **Found by Gabi on 2026-07-28** by running the
+documented command instead of trusting the write-up — which is exactly how it
+should have been caught, and a reminder that "verified" means nothing unless the
+stated command is the one that was verified.
+
+Both scripts now refuse to be quiet about it: any run that isn't the published
+window prints a warning naming how many post-round events it just folded in.
+
+### Why the boundaries are defensible rather than arbitrary
 
 1. **Every survey inside the window maps to one recorded participant**, in order, with
    no gaps and no extras (cross-check below). Eight events, eight people.
-2. **The boundary does not change any published figure.** The last event before
+2. **The start bound doesn't change any published figure.** The last event before
    it is a `form_start` at 22:41 and the first inside is a `form_start` at 23:06
    — only 25 minutes apart, so the cutoff was worth stress-testing. Moving it back
    an hour to 22:00 gives *identical* `results_shown` (12), `export_clicked` (10)
@@ -44,6 +66,9 @@ make it defensible rather than arbitrary:
    (15 → 17), and no reported metric is derived from it. The two extra
    `form_start` events produced no `results_shown` at all, consistent with
    restarting the app after the UI changes deployed rather than a test session.
+3. **The end bound sits one minute after the final survey**, so it captures every
+   participant action and nothing that came after. The 16 excluded events contain
+   **zero surveys** — that is development traffic, not testing.
 
 The previous survey before this round was at 18:32, over five hours earlier.
 
@@ -59,6 +84,28 @@ Funnel: 12 viewed -> 10 exported (83% of viewers) -> 8 survey responses,
 Net value:             100% (8/8),  90% credible interval: 72%-99%
 Blueprint export rate:  83% (10/12), 90% credible interval: 59%-93%
 ```
+
+### Time-to-results: report the median, not the mean
+
+The script prints the mean, which is the misleading figure here. Both, so the
+reader can judge:
+
+| Statistic | Value | |
+|---|---|---|
+| **Median** | **114s (1.9 min)** | what a typical session took |
+| Mean | 372s (6.2 min) | inflated by two long sessions |
+| Outliers | 1,287s and 1,618s | participant opened the form, returned later |
+| Range | 58s – 1,618s | |
+
+The distribution is heavily right-skewed at n=12, so the mean describes nobody.
+**The product's `~2 min TO BLUEPRINT` hero stat is the median**, which is the
+correct statistic for a typical-user claim — and it is stated here alongside the
+mean rather than in place of it.
+
+This is worth flagging because we briefly got it wrong in the other direction: a
+consistency pass compared the hero against the *mean*, called it an over-claim,
+and the number was changed to "~5 min" — which matched neither statistic. Reverted
+2026-07-28. See P.21 finding 2.
 
 ### Provenance — every response ties to one recorded participant
 

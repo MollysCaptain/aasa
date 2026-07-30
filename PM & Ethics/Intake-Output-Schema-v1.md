@@ -83,7 +83,7 @@ Worked example (startup, `["openai-api", "chatgpt", "langchain"]`, budget €120
 }
 ```
 
-**Rule, not a detail:** at most one `primary_api` (the first token-priced tool in the ranked list) and one `assistant` (the first seat-priced tool) — deliberately never a sum-per-tool across every recommended tool (`...:672–676`, and originally called out as a mistake to avoid in `08-Technical-Work-Breakdown-v2.md`). `total_monthly_eur` is a sum of just these two figures, not a change to that rule.
+**Rule, not a detail:** at most one `primary_api` (the first token-priced tool in the ranked list) and one `assistant` (the first seat-priced tool) — deliberately never a sum-per-tool across every recommended tool (`...:672–676`, and originally called out as a mistake to avoid in `07-Technical-Work-Breakdown-v2.md`). `total_monthly_eur` is a sum of just these two figures, not a change to that rule.
 
 **Also new (Update D): seat counts are now capped by a `SEAT_CEILING` (currently 25) regardless of org-size band** — see `app/logic/cost.py` and Update D for why (a flat per-org-size seat assumption was costing a single-workflow query, e.g. "Customer Service," as if the whole company adopted the tool).
 

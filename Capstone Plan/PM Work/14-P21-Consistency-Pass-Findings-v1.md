@@ -27,29 +27,58 @@ The pricing table has grown to 41 priced tools (verified in
 sentences. Saying 24 when the app shows 41 is the kind of small inconsistency a
 reviewer notices. **Fix: change to 41** (or "41 priced tools").
 
-### 2. `~2 min TO BLUEPRINT` hero stat contradicts our own telemetry
+### 2. ~~`~2 min TO BLUEPRINT` hero stat contradicts our own telemetry~~ — RESOLVED 2026-07-28
 
-The app's hero claims "~2 min to blueprint". `data/telemetry.log` gives an
-**average time-to-results of 381.6s (~6 min)** (P.14). Two honest options:
+**This finding was itself wrong, and it is worth keeping visible rather than
+deleting.** It compared the hero's "~2 min" against the **mean** time-to-results
+(381.6s / ~6 min) and concluded the product was over-claiming.
 
-- Reword to **"~2 min of input"** (defensible — the form itself is quick), or
-- Change the number to match measured reality.
+The mean is the wrong statistic for "how long does this take a typical user". It
+is dragged up by two outlier sessions of **1,287s and 1,617s**, where a
+participant opened the form and came back to it later. Measured across the real
+user-test round:
 
-This is the single clearest over-claim currently in the product. Also listed in
-the P.19 checklist as an ⚠️ item.
+| Statistic | Value |
+|---|---|
+| **Median time-to-results** | **114s (1.9 min)** |
+| Mean | 372s (6.2 min) |
+| Outliers driving the mean | 1,287s and 1,617s |
+
+So "~2 min" was accurate all along. Acting on this finding briefly changed the
+hero to "~5 min", which matched **neither** the median nor the mean — a correction
+that made the number less true. Reverted to `~2 min` on 2026-07-28, with the
+reasoning recorded at `app/intake.py:500` and both statistics published in the
+P.14 write-up.
+
+**Lesson worth carrying:** a consistency pass that compares a claim against the
+wrong summary statistic can manufacture a problem. Check which statistic the claim
+is actually making before calling it an over-claim.
 
 ### 3. One `ATSA` leftover after the AASA rename
 
 `Capstone Plan/Build Guide/13-Build-Guide-Epic2-Retrieval-v1.md` still contains
 the old `ATSA` name. Low stakes, but it's in a document set we're submitting.
 
-### 4. Duplicated Ethical Action Plan
+### 4. Duplicated Ethical Action Plan — DECIDED 2026-07-28: keep both
 
 `PM & Ethics/Ethical-Action-Plan-v2.md` and
-`Capstone Plan/PM Work/03-Ethical-Action-Plan-v2.md` are currently **identical**
-(synced 2026-07-27), but keeping two copies invites future drift. Options:
-leave as-is and re-diff at submission, or replace the PM Work copy with a
-one-line pointer to the canonical file.
+`Capstone Plan/PM Work/03-Ethical-Action-Plan-v2.md` are **byte-identical**
+(re-verified 2026-07-28, both hash `ea9d481`).
+
+**Decision: keep both copies rather than replacing one with a pointer.** The two
+document sets are read by different audiences — `PM & Ethics/` is the ethics
+evidence bundle, `Capstone Plan/PM Work/` is the numbered PM sequence — and each
+should stand on its own without a reader having to follow a cross-directory link.
+
+**The accepted cost:** they can drift. Mitigation is a one-line check, which
+belongs in the pre-submission pass:
+
+```bash
+diff "PM & Ethics/Ethical-Action-Plan-v2.md" \
+     "Capstone Plan/PM Work/03-Ethical-Action-Plan-v2.md" && echo "in sync"
+```
+
+If that ever prints a diff, the `PM & Ethics/` copy is canonical.
 
 ---
 
@@ -69,7 +98,7 @@ one-line pointer to the canonical file.
       re-verified 2026-07-28 against the final real-user round (n=8): 12 sessions,
       83% export rate, 100% net value, CIs 59–93% / 72–99%, trust median 5, avg
       LLM 1.34s. Figures are windowed to the round via
-      `--since "2026-07-27 23:00"` and the boundary was stress-tested — moving it
+      `--since "2026-07-27 23:00" --until "2026-07-28 01:31"` and the boundary was stress-tested — moving it
       back an hour leaves every reported count identical.
       *Superseded:* the earlier round's 14 sessions / 50% / 80% / CIs 42–94% and
       30–70% / trust median 3 are retained in the P.14 write-up as a prior

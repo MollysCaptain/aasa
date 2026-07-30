@@ -5,7 +5,7 @@
 |---|---|---|---|
 | Guided AI Intake Form (Streamlit, 5 fields, validation, direct pipeline call) | 3.5d | 🟩 MUST HAVE | Essential to capture the 5 constraints |
 | Retrieval & Matching Engine (normalise tool names, embed, filter, rank, prompt) | 7.5d | 🟩 MUST HAVE | Core value; matches constraints to real deployment outcomes |
-| Cost Forecast (seat + token aware parser, 24-tool pricing table) | 1.5d | ⚙️ SHOULD HAVE | Addresses risk-averse users' need for financial clarity; now correctly split by pricing model, not a single token assumption |
+| Cost Forecast (seat + token aware parser, 41-tool pricing table) | 1.5d | ⚙️ SHOULD HAVE | Addresses risk-averse users' need for financial clarity; now correctly split by pricing model, not a single token assumption |
 | 3-Block Results Display & Analytics (UI render + export + telemetry) | 2.5d | ⚙️ SHOULD HAVE | Enables trust verification and drop-off tracking |
 | Plain-language cost export | 1d | 💡 COULD HAVE | High value for non-technical CEOs, not required for validation |
 | One-Click Code Boilerplate | 2d | 💡 COULD HAVE | Nice accelerator, out of advisory scope for MVP |
@@ -35,7 +35,7 @@ In 3 weeks, startup founders and product leads receive automated, data-backed AI
   - Task 2.2.1: Deterministic Python privacy filter applied before ranking.
   - Task 2.2.2: Few-shot system prompt constraining the LLM to summary prose only.
 - **Deliverable 2.3: Cost Parser**
-  - Task 2.3.1: 24-tool pricing dictionary tagged token / seat / compute / free.
+  - Task 2.3.1: 41-tool pricing dictionary tagged token / seat / compute / free.
   - Task 2.3.2: Cost function computing one primary API + one assistant estimate against user budget.
 
 ### 📁 Epic 3: Actionable Blueprint UI

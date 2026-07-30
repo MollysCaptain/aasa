@@ -497,7 +497,16 @@ if "result" not in st.session_state:
                 <div class="aasa-stat-num">{_n_industries}</div>
                 <div class="aasa-stat-label">INDUSTRIES COVERED</div></td>
             <td style="border: none;">
-                <div class="aasa-stat-num">~5 min</div>
+                <!-- ~2 min is the MEDIAN time-to-results from the real user-test
+                     round (114s over 12 sessions). It briefly read ~5 min, changed
+                     on the basis of the MEAN (372s) — but the mean is dragged up by
+                     two sessions of 1,287s and 1,617s where someone left the form
+                     open. For "how long does this take a typical user", the median
+                     is the right statistic and ~2 min is the honest number.
+                     Reverted 2026-07-28; both figures are reported in the P.14
+                     write-up so nothing is hidden. Recompute with:
+                     scripts/telemetry_funnel.py --p14 -->
+                <div class="aasa-stat-num">~2 min</div>
                 <div class="aasa-stat-label">TO BLUEPRINT</div></td>
         </tr></table>
         <div class="aasa-scope">Honest scope: this is a 4-week student prototype.

@@ -25,7 +25,7 @@ In 3 weeks, startup founders and product leads receive automated, data-backed AI
 |---|---|---|---|---|---|---|
 | 2.1 | Load and normalise the case CSV via the alias map | `scripts/normalise_cases.py` | Raw CSV (3,023 rows) → normalised rows with canonical tool ids | 1.0d | None | ≥90% of rows resolve to at least one canonical tool; unmatched strings logged for review |
 | 2.2 | Embed normalised case text into Chroma | `scripts/embed_cases.py` | Normalised rows → vector store records | 1.0d | 2.1 | Retrieval for a test query returns cases from the correct domain with reasonable relevance |
-| 2.3 | Hardcode the 24-tool pricing table | `app/logic/pricing.py` | Public pricing pages → typed Python dict tagged token/seat/compute/free | 0.5d | None | All canonical tool ids resolve to a pricing entry |
+| 2.3 | Hardcode the 41-tool pricing table | `app/logic/pricing.py` | Public pricing pages → typed Python dict tagged token/seat/compute/free | 0.5d | None | All canonical tool ids resolve to a pricing entry |
 | 2.4 | Cost computation (token- and seat-aware) | `app/logic/cost.py` | Recommended tools + org size → monthly estimate | 0.5d | 2.3 | Seat-priced and token-priced tools produce correctly-typed, non-conflated estimates |
 | 2.5 | **Deterministic privacy filter** *(replaces "configure Flowise orchestration routing")* | `app/logic/filter.py` | Retrieved cases + privacy posture → filtered case/tool set | 1.0d | 2.2 | Regulated posture excludes consumer-only assistants in 100% of test cases |
 | 2.6 | Few-shot summary prompt | `app/logic/prompt.py` | Filtered, ranked results → structured markdown summary | 1.0d | 2.5 | Output matches the fixed 3-block template without drift across 10 test runs |
