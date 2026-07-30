@@ -222,7 +222,7 @@ better evidence" is not "done", so it stays open rather than being quietly ticke
 | Name | Role | Confirms | Date |
 |---|---|---|---|
 | Ash | Person B | UI, product, ethics docs | A.CARLIN - 30.07.26|
-| Gabi | Person A | retrieval, telemetry, metrics | _____ |
+| Gabi | Person A | retrieval, telemetry, metrics | G.SCZUKA - 30.07.26 |
 
 **Rule:** every ⚠️ item must be either genuinely done and ticked, or explicitly
 recorded as a known limitation. Nothing gets ticked on the assumption it's
