@@ -24,7 +24,16 @@ from contextlib import redirect_stdout
 from datetime import date
 from pathlib import Path
 
-from app.logic.pricing import PRICING
+# Running `python scripts/backend_dry_run.py` puts scripts/ on sys.path[0], NOT
+# the repo root — so Python looks for an "app" package *inside* scripts/ and
+# raises ModuleNotFoundError. Every other script that imports app has this two
+# liner (compliance_check.py, credible_interval.py, validation_metrics_table.py,
+# eval_prompt.py); this one didn't, so the exact command in its own docstring —
+# and the FIRST of the three verification commands in the README — has never
+# worked from a clean shell. Added 2026-07-30 (P.22), found by running it.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from app.logic.pricing import PRICING  # noqa: E402
 
 RESULTS_PATH = Path("Capstone Plan/Build Guide/P9-Backend-Dry-Run-Results-v1.md")
 
