@@ -59,10 +59,13 @@ def count_exact_matches(cases: list, workflow: str, industry: str) -> int:
     How many of these cases are *actually* the requested industry + workflow?
 
     Why this exists: retrieval is semantic, so it always returns the nearest
-    cases whether or not any case truly matches the request. A full sweep of all
-    432 dropdown combinations against the corpus found that 205 of them (47%)
-    have ZERO real cases — e.g. there is no "Procurement in Education" deployment
-    in the library at all. For those, the pipeline still returns 15 neighbours
+    cases whether or not any case truly matches the request. A count of all
+    432 dropdown combinations against the committed corpus found that 185 of
+    them (43%) have ZERO real cases — e.g. there is no "Procurement in
+    Education" deployment in the library at all. (Recounted 2026-07-30. The
+    2026-07-27 sweep reported 205/47%; the store was rebuilt on the 28th for the
+    Cloud deploy, which populated 20 more pairs. See PM Work/16-P22.)
+    For those, the pipeline still returns 15 neighbours
     from other industries, which is a defensible design ("here is the closest
     comparable evidence") but only if the UI says so. It previously claimed
     "15 real Education Procurement deployments matched", which was false.
@@ -251,7 +254,7 @@ def run_pipeline(inputs: dict) -> dict:
         # Ash4: present on both paths so the UI can branch on one key.
         "no_match": False,
         # Ash4 (post-sweep): how many of matched_cases are TRULY this industry +
-        # workflow, as opposed to nearest-neighbour cases from elsewhere. 205 of
+        # workflow, as opposed to nearest-neighbour cases from elsewhere. 185 of
         # the 432 dropdown combinations have no real cases at all, so the banner
         # must not claim "N real X Y deployments" without checking this first.
         "exact_match_count": count_exact_matches(

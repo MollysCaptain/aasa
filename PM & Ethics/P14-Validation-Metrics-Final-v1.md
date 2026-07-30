@@ -27,7 +27,7 @@ Participant details are recorded in
 `data/telemetry.log` is append-only and covers the whole project — our own
 development runs, three earlier partial rounds, and the final round — across
 several different builds. A bare run of the scripts reports **18 survey
-responses over 100 sessions**, which measures nothing cleanly: it averages
+responses over 106 sessions**, which measures nothing cleanly: it averages
 feedback on the shipped build together with feedback on builds that had known
 defects, and it counts our own testing as if it were user testing.
 
@@ -93,9 +93,15 @@ reader can judge:
 | Statistic | Value | |
 |---|---|---|
 | **Median** | **114s (1.9 min)** | what a typical session took |
-| Mean | 372s (6.2 min) | inflated by two long sessions |
-| Outliers | 1,287s and 1,618s | participant opened the form, returned later |
-| Range | 58s – 1,618s | |
+| Mean | 372s (6.2 min) | inflated by three long sessions |
+| Outliers | 576s, 1,287s and 1,617s | participant opened the form, returned later |
+| Range | 58s – 1,617s | |
+
+*Corrected 2026-07-30 (P.22): the two long sessions were quoted as 1,287s and
+1,618s. The true values are 1,286.6s and 1,616.8s, so the second rounds to
+**1,617**, and there is a **third** session over 500s (576.7s) that the "two
+outliers" wording did not account for. Recomputed straight from the 12 windowed
+`elapsed_seconds` values.*
 
 The distribution is heavily right-skewed at n=12, so the mean describes nobody.
 **The product's `~2 min TO BLUEPRINT` hero stat is the median**, which is the
@@ -203,6 +209,14 @@ Directional evidence from 8 real sessions, not a statistically powered study.
   people — several participants generated more than one blueprint. The **8
   survey responses** are the reliable participant count here, and unusually for
   this project they are independently corroborated by the session sheet.
+- **The 10 exports came from 9 sessions, not 10.** Added 2026-07-30 (P.22). Two
+  `export_clicked` events sit 2 seconds apart in one session (01:30:35 and
+  01:30:37) — a double-click, not two decisions. The 83% headline is arithmetically
+  correct as an event count (10 exports / 12 views) and is left as published, but
+  measured as *sessions that exported* it is 9/12 = **75%**. The "sessions ≠
+  people" caveat below was previously applied only to the denominator; applying it
+  to the numerator too is the honest treatment, and 75% still clears the ≥40%
+  target comfortably.
 - **One session generated no survey.** Between 00:52:48 and 00:55:35 a session
   generated, saved, exported and downloaded a PDF without submitting the survey.
   It is counted in the 12 viewed and the 10 exported, and not in the 8 responses
@@ -257,9 +271,23 @@ is the reason several of the fixes exist.
 
 ## Scripts
 
-- `scripts/telemetry_funnel.py` — trust-score median, avg time-to-results, avg LLM latency, 3-stage funnel. `--since` isolates a round.
-- `scripts/credible_interval.py` — Beta(1,1)-posterior 90% credible interval for net value and export rate. `--since` as above.
-- `scripts/compliance_check.py` — re-runs the real pipeline against every regulated profile and checks output against `GOVERNABLE_FOR_REGULATED`; needs the full ML/LLM stack to execute live.
+**Three** scripts read `data/telemetry.log`, and all three need `--p14` to
+reproduce anything published here. `--since` on its own is **not** enough — see
+"Why the end bound is not optional" above.
+
+- `scripts/telemetry_funnel.py --p14` — trust-score median, avg time-to-results, avg LLM latency, 3-stage funnel.
+- `scripts/credible_interval.py --p14` — Beta(1,1)-posterior 90% credible interval for net value and export rate.
+- `scripts/validation_metrics_table.py --p14` — regenerates the whole table at the top of this document in one command.
+- `scripts/compliance_check.py` — re-runs the real pipeline against every regulated profile and checks output against `GOVERNABLE_FOR_REGULATED`; needs the full ML/LLM stack to execute live. Reads no telemetry, so no window applies.
+
+*Fixed 2026-07-30 (P.22): this section listed two log-reading scripts and
+described `--since` as sufficient. `validation_metrics_table.py` was missing
+from the list entirely **and** had no window support at all — it called
+`load_events()` bare, so the one command the README advertises as regenerating
+"the whole P.14 results table" silently produced a different table (23% export,
+94% net value, 4/5 trust, 106 sessions). It now takes `--since/--until/--p14`
+and warns on an unbounded run like the other two, and `--p14` reproduces this
+document's table exactly.*
 
 *Fixed while writing this up:* `telemetry_funnel.py`'s median was
 `scores[len(scores)//2]`, which returns the upper of the two middle values at

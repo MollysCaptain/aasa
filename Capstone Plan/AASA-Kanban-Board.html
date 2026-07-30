@@ -124,7 +124,7 @@
 
 <div class="board" id="board"></div>
 
-<footer>Source: 07-Roadmap, 08-Technical-Work-Breakdown, 09-Effort-Informed-Prioritisation, 10-User-Stories-and-Task-Mapping, 11-4-Week-Action-Plan (v2/v1 docs, ash_capstone_branch1). Day/Week/Owner fields are pulled directly from 11-4-Week-Action-Plan-v1.md.</footer>
+<footer>Source: 06-Roadmap, 07-Technical-Work-Breakdown, 08-Effort-Informed-Prioritisation, 09-User-Stories-and-Task-Mapping, 11-4-Week-Action-Plan (v2/v1 docs, ash_capstone_branch1). Day/Week/Owner fields are pulled directly from 11-4-Week-Action-Plan-v1.md.</footer>
 
 <script>
 const COLUMNS = [
@@ -145,7 +145,7 @@ const CARDS = [
   // Epic 2 — Retrieval & Costing Engine
   { id:"2.1", epic:2, title:"Validate + normalise domains, then build tool-alias map", file:"validate_use_cases.py, normalize_domains.py, domain_mapping.json + scripts/normalise_cases.py (Gabi branch, verified — 88.7% coverage, documented exception)", effort:"1.0d", depends:"None", prio:"must", owner:"A", week:1, day:6, col:"done" },
   { id:"2.2", epic:2, title:"Chunk cases (3/case) & embed into Chroma vector store", file:"scripts/chunk_use_cases.py (9,069 chunks) + scripts/embed_cases.py (Gabi branch, verified — Chroma batch-size fix applied)", effort:"1.0d", depends:"2.1", prio:"must", owner:"A", week:2, day:8, col:"done" },
-  { id:"2.3", epic:2, title:"Hardcode 24-tool pricing table", file:"app/logic/pricing.py (Gabi branch, verified — 40 tools priced incl. Card 2.1's expanded alias ids)", effort:"0.5d", depends:"None", prio:"should", owner:"A", week:1, day:5, col:"done" },
+  { id:"2.3", epic:2, title:"Hardcode 24-tool pricing table", file:"app/logic/pricing.py (Gabi branch, verified — 41 tools priced incl. Card 2.1's expanded alias ids)", effort:"0.5d", depends:"None", prio:"should", owner:"A", week:1, day:5, col:"done" },
   { id:"2.4", epic:2, title:"Token/seat-aware cost computation", file:"app/logic/cost.py (Gabi branch, verified — one primary_api + one assistant, never a sum)", effort:"0.5d", depends:"2.3", prio:"should", owner:"A", week:2, day:12, col:"done" },
   { id:"2.5", epic:2, title:"Deterministic privacy filter", file:"app/logic/filter.py (Gabi branch, verified — consumer tools correctly stripped under 'regulated')", effort:"1.0d", depends:"2.2", prio:"must", owner:"A", week:2, day:10, col:"done" },
   { id:"2.6", epic:2, title:"Few-shot summary prompt (prose-only output)", file:"app/logic/prompt.py (Gabi branch, verified — Groq/gpt-oss-20b, label-leak fix applied)", effort:"1.0d", depends:"2.5", prio:"must", owner:"A", week:2, day:13, col:"done" },

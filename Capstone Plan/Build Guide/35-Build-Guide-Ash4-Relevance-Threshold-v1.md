@@ -241,16 +241,17 @@ and splits empty results in two:
 
 Re-verified against the real corpus: 0 wrongly empty, 5 correctly empty → **PASS**.
 
-### The bigger finding: 205 of 432 combinations have no evidence
+### The bigger finding: 205 of 432 combinations have no evidence (now 185 — see the note below)
 
-The threshold only catches 5 of them. The other **200** return 15
+The threshold only catches 5 of them. The other **200** (180 now) return 15
 nearest-neighbour cases from other industries — and the banner announced:
 
 ```python
 context = f"{n} real {query['industry']} {query['workflow']} deployments matched. "
 ```
 
-For 47% of possible queries that sentence was **false**. It named an
+For 47% of possible queries that sentence was **false** (43% against the current
+store). It named an
 industry/workflow pair with zero deployments and called the results "real …
 deployments". Block C was already honest (each case shows its own industry, and
 "same industry as yours" only appears on a true match) — the banner was not.
@@ -310,6 +311,16 @@ EMPTY + no evidence (correct)  : 5
 NONSENSE CONTROLS: fully rejected 7/8   (leak: "competitive yodeling", 0.476)
 PASS — every combination that has evidence returns it (threshold 0.52).
 ```
+
+**Note added 2026-07-30 — the first line of that output no longer reproduces.**
+The output above is kept as the record of the real 2026-07-27 run, but Gabi
+rebuilt and committed `chroma_store` on the 28th for the Cloud deploy, and the
+rebuild populated 20 more pairs. Recounted against the committed store it is now
+**247 populated / 185 empty**, not 227/205. The threshold findings on the other
+lines (0 wrongly empty, 5 correctly empty, worst genuine 0.568, nonsense leak
+0.476) have **not** been re-confirmed against the rebuilt store — they need a
+live `--full` re-run before anyone quotes them as current. See
+`Capstone Plan/PM Work/16-P22-Final-Consistency-Pass-v1.md`.
 
 Matches the offline corpus check exactly. **The threshold discards no real
 evidence anywhere in the 432-pair space.** `RELEVANCE_THRESHOLD = 0.52` is now

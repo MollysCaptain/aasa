@@ -16,13 +16,13 @@
 
 Notes, field by field:
 
-- **`workflow`** — `st.selectbox("Target AI Workflow", WORKFLOWS)` (`app/intake.py:60`). The dropdown label *is* the stored value — no separate short key. Full option set: 18 canonical domains derived from the real case dataset, plus `"Any workflow"` (`app/data/options.py:57–76`).
-- **`industry`** — `st.selectbox("Industry", INDUSTRIES)` (`intake.py:61`). Same pattern: label is the value. 24 real dataset values + `"Any industry"` (`options.py:26–51`).
-- **`org_size`** — `st.selectbox(..., options=list(ORG_SIZES.keys()), format_func=lambda k: ORG_SIZES[k])` (`intake.py:62–66`). The UI shows a friendly label ("Startup (11-100 people)") but the form stores the short key (`"startup"`). Full key→label mapping in `options.py:11–17`.
-- **`privacy`** — `st.radio(..., options=list(PRIVACY_POSTURES.keys()), ...)` (`intake.py:67–74`). Validated to be exactly `"standard"` or `"regulated"`, nothing else (`app/validators.py:17`).
-- **`budget`** — `st.number_input("Monthly Budget (€)", min_value=0, step=50, value=800)` (`intake.py:75–78`). **Gotcha:** the widget's own `min_value=0` allows 0, but `validate_intake()` separately requires `budget_value > 0` and rejects exactly 0 (`validators.py:20–27`) — so "0" passes the widget but fails validation with "Monthly budget must be greater than zero."
+- **`workflow`** — `st.selectbox("Target AI Workflow", WORKFLOWS)` (`app/intake.py:556`). The dropdown label *is* the stored value — no separate short key. Full option set: 18 canonical domains derived from the real case dataset, plus `"Any workflow"` (`app/data/options.py:65–84`).
+- **`industry`** — `st.selectbox("Industry", INDUSTRIES)` (`intake.py:557`). Same pattern: label is the value. 24 real dataset values + `"Any industry"` (`options.py:34–59`).
+- **`org_size`** — `st.selectbox(..., options=list(ORG_SIZES.keys()), format_func=lambda k: ORG_SIZES[k])` (`intake.py:558–563`). The UI shows a friendly label ("Startup (11-100 people)") but the form stores the short key (`"startup"`). Full key→label mapping in `options.py:19–26`.
+- **`privacy`** — `st.radio(..., options=list(PRIVACY_POSTURES.keys()), ...)` (`intake.py:564–571`). Validated to be exactly `"standard"` or `"regulated"`, nothing else (`app/validators.py:17`).
+- **`budget`** — `st.number_input("Monthly Budget (€)", min_value=0, step=50, value=800)` (`intake.py:588–591`). **Gotcha:** the widget's own `min_value=0` allows 0, but `validate_intake()` separately requires `budget_value > 0` and rejects exactly 0 (`validators.py:20–27`) — so "0" passes the widget but fails validation with "Monthly budget must be greater than zero."
 
-All five keys are passed into the pipeline exactly as named above — `run_pipeline({"workflow": ..., "industry": ..., "org_size": ..., "privacy": ..., "budget": ...})` (`intake.py:90–94`). Cards 1.1–1.4 should treat these 5 key names as fixed; Epic 2's functions all take them by these names.
+All five keys are passed into the pipeline exactly as named above — `run_pipeline({"workflow": ..., "industry": ..., "org_size": ..., "privacy": ..., "budget": ...})` (`intake.py:627–634`). Cards 1.1–1.4 should treat these 5 key names as fixed; Epic 2's functions all take them by these names.
 
 ---
 
@@ -96,16 +96,16 @@ Worked example (startup, `["openai-api", "chatgpt", "langchain"]`, budget €120
   "source_url": str, "canonical_tools": list[str] }
 ```
 
-(`13-Build-Guide-Epic2-Retrieval-v1.md:1006–1013`, confirmed again at `14-Build-Guide-Epic3-Blueprint-UI-v1.md:134`.)
+(`13-Build-Guide-Epic2-Retrieval-v1.md:1077–1080`, confirmed again at `14-Build-Guide-Epic3-Blueprint-UI-v1.md:134`.)
 
 **Correction to the task's draft template:** the field is `organization`, not `org`.
 
-**On "up to 4":** the pipeline itself does not cap this list — it returns every case that survived de-dup (one entry per `case_id`) and the privacy filter, from an initial retrieval of 15 chunks (`...:988–1000`). The **4-case cap is UI-only**. **Update F correction:** this used to be a fixed slice in both places; as of Update F, the results page has a 4/8/All toggle (`app/dashboard.py`, `_render_case_references_block()`) while the export view (`app/export.py`) deliberately stays fixed at `matched_cases[:4]` regardless of what's toggled on-screen, so the exported blueprint text is always predictable. So: Cards 1.1–1.4/Epic 2 should pass through the *full* filtered list; Epic 3 does the slicing everywhere, not the pipeline.
+**On "up to 4":** the pipeline itself does not cap this list — it returns every case that survived de-dup (one entry per `case_id`) and the privacy filter, from an initial retrieval of 15 chunks (`...:1063`). The **4-case cap is UI-only**. **Update F correction:** this used to be a fixed slice in both places; as of Update F, the results page has a 4/8/All toggle (`app/dashboard.py`, `_render_case_references_block()`) while the export view (`app/export.py`) deliberately stays fixed at `matched_cases[:4]` regardless of what's toggled on-screen, so the exported blueprint text is always predictable. So: Cards 1.1–1.4/Epic 2 should pass through the *full* filtered list; Epic 3 does the slicing everywhere, not the pipeline.
 
 ### Also part of the output (not one of the 3 "blocks," but real)
 
 - **`summary_text`** (`str`) — the LLM-generated plain-English paragraph from Card 2.6, rendered above Block A (`intake.py`-era pattern; `14-Build-Guide-Epic3-Blueprint-UI-v1.md:45`).
-- **`llm_metrics`** (`dict`) — `{"duration_seconds": float, "prompt_tokens": int, "completion_tokens": int, "tokens_per_second": float|None}`, straight from `generate_summary()`'s return value, kept for Card 3.3's telemetry log (`13-Build-Guide-Epic2-Retrieval-v1.md:1032–1064`).
+- **`llm_metrics`** (`dict`) — `{"duration_seconds": float, "prompt_tokens": int, "completion_tokens": int, "tokens_per_second": float|None}`, straight from `generate_summary()`'s return value, kept for Card 3.3's telemetry log (`13-Build-Guide-Epic2-Retrieval-v1.md:1110–1114`).
 - **`tool_costs`** (`dict`, new in Update E) — `{canonical_tool_id: {"tool": str, "model": str, "monthly_eur": float|None, "assumption"|"note": str}}`, one entry per tool in `recommended_stack` (not just the two winning `cost_forecast` picks), from `estimate_all_tool_costs()` in `app/logic/cost.py`. Powers Block A's per-tool price display — see Update E in `18-Build-Guide-Updates-Epic1-2-v1.md` (or the Epic 3 updates doc, once created) for why this needed to exist separately from `cost_forecast`. Not sent to Card 2.6's LLM prompt — the model still only ever describes the single decided `primary_api`/`assistant` pair.
 - **`query`** (`dict`, new in the Lovable-parity UI round) — `{"workflow": str, "industry": str, "org_size": str, "privacy": str}`, a plain echo of the validated intake inputs. Display-only: `app/dashboard.py` reads it for the status-chip row ("REGULATED POSTURE" chip), the "DIRECTIONAL ONLY" banner text, and Block C's per-case "why:" lines (same-industry check). Never re-enters any pipeline logic and is not sent to the LLM. Dashboard code reads it with `.get("query", {})` so results saved before this key existed still render.
 - **`distance`** (`float`, inside each `matched_cases` entry — new in the Gabi
@@ -132,7 +132,8 @@ Worked example (startup, `["openai-api", "chatgpt", "langchain"]`, budget €120
 - **`exact_match_count`** (`int`, new in Ash4, present on both paths) — how many
   of `matched_cases` have **both** `industry` and `domain` equal to what the user
   asked for. Retrieval is semantic, so it always returns the nearest cases: a
-  full 432-pair sweep found **205 combinations (47%) have zero real cases**, and
+  full 432-pair sweep found **185 combinations (43%) have zero real cases**
+  (2026-07-27 sweep said 205/47%; recounted 2026-07-30 after the store rebuild), and
   for those the banner previously claimed "N real X Y deployments matched" — a
   false statement. The banner now branches on this count (all / some / none
   genuine). `"Any workflow"`/`"Any industry"` impose no constraint, so they can't

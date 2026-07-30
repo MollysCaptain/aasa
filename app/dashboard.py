@@ -146,8 +146,11 @@ def _render_directional_banner(result: dict):
     # Ash4 (post-sweep): this line used to read "{n} real {industry} {workflow}
     # deployments matched" unconditionally. Retrieval is semantic, so it always
     # returns the nearest cases — and a full sweep of all 432 dropdown
-    # combinations found 205 of them (47%) have ZERO cases in the corpus. For
-    # those the sentence was simply false: it named an industry/workflow pair
+    # combinations found that a large minority of them have ZERO cases in the
+    # corpus (185 of 432, 43%, recounted 2026-07-30 against the committed store;
+    # the sweep of 2026-07-27 said 205/47% before Gabi rebuilt the store on the
+    # 28th — see PM Work/16-P22). For those the sentence was simply false: it
+    # named an industry/workflow pair
     # that has no deployments at all. Returning the closest comparable evidence
     # is still useful, so we keep doing it — but we say which one it is.
     context = _evidence_sentence(query, n, result.get("exact_match_count"))

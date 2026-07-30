@@ -40,7 +40,7 @@ We received feedback that our artefacts described *three different projects*: th
 We inspected the source repo (`abbasmahdi-ai/ai-use-cases-library`) directly rather than trusting our own summary:
 
 - It is **one clean CSV of 3,023 fully-populated rows** — not 3,000 markdown files. Every key field (Tool/Technology, Description, Outcomes, Industry, Source URL) is 100% filled. Parsing is trivial; **the C-rated "clean the raw files" task no longer exists.**
-- The **real cleaning job is tool-name normalisation**: 2,511 distinct tool strings for 3,023 rows (e.g. *Gemini / Gemini models / Gemini in Docs / Gemini for Workspace*), plus junk like "AI", "Generative AI", "Not specified". Without an alias map, our pricing lookup would miss most rows. We built that map (24 canonical tools).
+- The **real cleaning job is tool-name normalisation**: 2,511 distinct tool strings for 3,023 rows (e.g. *Gemini / Gemini models / Gemini in Docs / Gemini for Workspace*), plus junk like "AI", "Generative AI", "Not specified". Without an alias map, our pricing lookup would miss most rows. We built that map (41 canonical tools).
 - The data **skews to enterprise productivity AI** (Gemini/Workspace, M365 Copilot, Bedrock), not the CrewAI/LangGraph agent world our old pitch foregrounded. Our recommendations honestly reflect that adoption pattern.
 - **Many top tools are per-seat SaaS, not per-token APIs.** A token burn-rate is meaningless for M365 Copilot. Our cost model now handles both.
 - **There is no org-size field and no join key to the Stack Overflow survey.** SO firmographics can only give *population-level* patterns ("X% of 100–499-person orgs use Y"), never per-case filtering.
@@ -92,7 +92,9 @@ We inspected the source repo (`abbasmahdi-ai/ai-use-cases-library`) directly rat
 **Person A — Data & Logic:** normalisation map, embeddings, hard-filter + ranking, cost parser, prompt.
 **Person B — UI & Validation:** Streamlit intake + 3-block output, telemetry, micro-survey, user recruiting & sessions, pitch.
 
-Both share testing and the pitch deck. Total build ≈ **9.5 days**; with two people in parallel that fits the 3-week window **only if** the Should-Haves are treated as the cut line. Realistic buffer is **~30%** (not 20%) because we are learning Chroma + prompt tuning; if we slip, we drop cost-PDF/telemetry-polish first, never the retrieval core.
+Both share testing and the pitch deck. Total build ≈ **15 days of task effort**, which with two people working in parallel is ≈ **7.5 calendar days each**; that fits the 3-week window **only if** the Should-Haves are treated as the cut line.
+
+> *Corrected 2026-07-30 (P.22): this line said "≈ 9.5 days", which contradicted both `07-Technical-Work-Breakdown-v2.md` (15 days) and `08-Effort-Informed-Prioritisation-v2.md` (15 days) — and contradicted §11 of this same handbook, which asserts those two "both now sum to the same 15 days". 15 is the reconciled figure; 9.5 appears to have been a part-total that was never updated. Note that 07 decomposes the 15 days across 3 features and 08 across 4 workstreams — both total 15, but the splits are not comparable line-for-line.* Realistic buffer is **~30%** (not 20%) because we are learning Chroma + prompt tuning; if we slip, we drop cost-PDF/telemetry-polish first, never the retrieval core.
 
 ---
 
@@ -129,7 +131,7 @@ Both share testing and the pitch deck. Total build ≈ **9.5 days**; with two pe
 The first prototype was a Lovable-generated marketing shell. Everything below was **removed** because it contradicts our ethics workstream and, in a real launch, would be misleading or unlawful:
 
 - **Removed:** fabricated testimonials & named people/companies; "4.9 · 312 reviews"; customer logo wall; "Featured in TLDR / Product Hunt / YC alum"; invented case metrics; **fake SOC 2 Type II / ISO 27001 / AWS & Google Partner badges**; fake pricing scarcity ("12 seats left").
-- **Changed:** scope realigned from general tech-stack → AI stack; the rejected "StackPunk" steampunk theme replaced with the **neo-industrial blueprint** direction our user research chose; stats are drawn from a **real, sourced subset of the dataset** (197 curated cases, 24 priced tools, 15 industries) with a visible "prototype · demo data" tag.
+- **Changed:** scope realigned from general tech-stack → AI stack; the rejected "StackPunk" steampunk theme replaced with the **neo-industrial blueprint** direction our user research chose; stats are drawn from a **real, sourced subset of the dataset** (197 curated cases, 24 priced tools, 21 industries) with a visible "prototype · demo data" tag.
 - **Added:** a plain "known limitations" section; source links on every case; "no data stored" and "illustrative pricing / directional, not advice" disclaimers.
 
 **Clarification (added after a follow-up review — see `19-Ash2-Gabi-Integration-and-Band-Fix-v1.md` and `20-Handbook-Wording-and-Rebuild-Script-v1.md`):** "real" above means the 197 cases shown are genuine, sourced deployments (not fabricated), not that 197 is the size of our actual dataset. **The real product's retrieval knowledge base is the full 3,023-row `data/use-cases.csv`** (§2). The 197-case figure describes a smaller, static, curated slice used only for the standalone HTML/Lovable prototypes below, which exist purely as quick visualization aids — they are not connected to the live Chroma/Streamlit pipeline and don't reflect its actual scale. The prototypes and the real product are two separate things: **the real product is the Streamlit app built against the full dataset**, as planned from the start.
@@ -167,6 +169,31 @@ This handbook is the index and change-rationale. The individual capstone deliver
 | `07-Technical-Work-Breakdown-v2.md` | Rewritten, then **corrected on re-audit** — a cost-calculation task was double-counted across two features; totals now reconcile with the priority matrix |
 | `08-Effort-Informed-Prioritisation-v2.md` | Rewritten, then **corrected on re-audit** — its effort totals didn't match the Technical Work Breakdown for the same scope; both now sum to the same 15 days |
 | `09-User-Stories-and-Task-Mapping-v2.md` | Rewritten — webhook tasks replaced with direct function calls |
-| `aasa-prototype.html` | Rebuilt — fabrications removed, runs on real curated data |
+| `aasa-prototype.html` | Rebuilt — fabrications removed, runs on real curated data. **Note:** it is a static visual mockup on a 197-case curated slice, not the shipped 3,023-case product |
+| `10-P17-Pitch-Outline-v1.md` | Added Week 4 — pitch structure and timing |
+| `11-P18-Architecture-and-Results-Slide-Content-v1.md` | Added Week 4 — architecture diagram + the results table to copy, not retype |
+| `12-P13-Clarity-Jargon-Shortlist-v1.md` | Added Week 4 — jargon shortlist for the two personas |
+| `13-P19-Responsible-AI-Checklist-v1.md` | Added Week 4, **finalised 2026-07-30** — the responsible-AI sign-off checklist |
+| `14-P21-Consistency-Pass-Findings-v1.md` | Added Week 4, **updated 2026-07-30** — first consistency pass; several findings since closed |
+| `15-P15-Feature-Freeze-v1.md` | Added 2026-07-30 — the dated feature freeze and what is deliberately not in it |
+| `16-P22-Final-Consistency-Pass-v1.md` | Added 2026-07-30 — the final pre-submission audit and what it found |
+| `AASA-Kanban-Board.html` | Live board snapshot — card states and file notes |
 
-*End of handbook v2. Together with the files above, this is now a fully reconciled, internally consistent capstone submission.*
+*End of handbook v2.*
+
+> **On "internally consistent" — added 2026-07-30 (P.22).** The sentence above the
+> table claims the submitted set is internally consistent and that no document
+> contradicts another. That claim was made after the v2 reconciliation and was
+> **not** true by the end of the project: the final consistency pass found a stale
+> corpus-coverage figure asserted in nine places including shipped app text, ten
+> surviving "24 tools" references, this handbook's own effort total disagreeing
+> with §11, and a trust target that no document reported a result against. Those
+> are now fixed or annotated, and every one of them is listed in
+> `16-P22-Final-Consistency-Pass-v1.md`.
+>
+> The claim is kept rather than deleted, with this note attached, because "we
+> asserted consistency and then found nine inconsistencies" is the more useful
+> thing for a reader to know than a silently corrected sentence. The honest
+> version of the claim is: the set is consistent **as re-verified on 2026-07-30**,
+> and the mechanism for keeping it that way is a re-run of the checks listed in
+> document 16, not an assertion in this table.

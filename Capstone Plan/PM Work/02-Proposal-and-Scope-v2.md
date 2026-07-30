@@ -11,7 +11,7 @@ Both share testing analysis and rehearsal. (v1 split this across three invented 
 ## Week 1: Guardrails & Data Foundation
 1. **Draft the Project Charter** (Days 1–2): 1-page scope statement — AI stack only, no general infrastructure, no code generation, no compliance certification claims. Start recruiting 5–8 real test users now (moved up from Week 3 to avoid the scheduling collision identified in feedback).
 2. **Define the Input/Output Schema** (Days 3–4): 5 inputs (Workflow, Industry, Org size, Privacy posture, Budget) → 3 output blocks (Stack, Cost, Case References).
-3. **Normalise the case data** (Days 5–7): the source is one clean 3,023-row CSV — parsing is trivial. The actual work is building the tool-name alias map (2,511 raw variants → ~24 canonical tools) and the accompanying pricing table (per-token vs per-seat vs compute-billed).
+3. **Normalise the case data** (Days 5–7): the source is one clean 3,023-row CSV — parsing is trivial. The actual work is building the tool-name alias map (2,511 raw variants → 41 canonical tools) and the accompanying pricing table (per-token vs per-seat vs compute-billed).
 
 ## Week 2: Logic System
 1. **Map the pipeline** (Days 8–9): input → deterministic privacy filter → evidence-ranked retrieval → cost calculation → LLM summary. Diagrammed in Miro/Mermaid.

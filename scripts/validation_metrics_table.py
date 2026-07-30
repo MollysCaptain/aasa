@@ -8,8 +8,24 @@ check) into the one "## Validation Metrics -- Final" table from
 regenerated with a single command instead of copy-pasted by hand from three
 separate script outputs.
 
-Run from the repo root:
-    python3 scripts/validation_metrics_table.py
+Run from the repo root. To reproduce the PUBLISHED Card P.14 table you must pass
+the window, exactly as with the other two metrics scripts:
+
+    python3 scripts/validation_metrics_table.py --p14
+
+WHY THIS FLAG EXISTS HERE TOO -- found 2026-07-30, P.22
+This script was missed when telemetry_funnel.py and credible_interval.py were
+hardened on 2026-07-28. It called load_events() with no bounds, accepted no
+--since/--until, and printed no warning -- so the one command documented in the
+README as regenerating "the whole P.14 results table" silently produced a
+DIFFERENT table from the one in the write-up and on the slides:
+
+    published (--p14)      23%->83% export, 94%->100% net value, 4/5->5/5 trust,
+    vs. bare run           106 sessions / 18 responses instead of 12 / 8
+
+Same root cause Gabi caught in the funnel script: data/telemetry.log is
+append-only, so development runs after the user-test round closed keep inflating
+the denominators. This is the third and last script that reads that log.
 
 The compliance row needs the full ML/LLM stack (chroma_store, the
 all-MiniLM-L6-v2 model, GROQ_API_KEY) to re-run the live pipeline. If that's
@@ -29,12 +45,16 @@ from pathlib import Path
 # regardless of where/how this script is invoked from.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.telemetry_funnel import load_events, headline_metrics, funnel
+from scripts.telemetry_funnel import (
+    P14_SINCE, P14_UNTIL, P14_COMMAND,
+    load_events, headline_metrics, funnel, warn_if_unbounded,
+)
 from scripts.credible_interval import credible_interval
 
-# Known-good P9 dry-run record (Capstone Plan/Build Guide/
-# P9-Backend-Dry-Run-Results-v1.md) -- used as a fallback when the live
-# pipeline infra isn't available in the current environment.
+# Known-good P9 dry-run record (PM & Ethics/P9-Backend-Dry-Run-Results-v1.md)
+# -- used as a fallback when the live pipeline infra isn't available in the
+# current environment. (Path corrected 2026-07-30: this comment said
+# "Capstone Plan/Build Guide/", where the file has never lived.)
 P9_FALLBACK = [
     ("Profile 2 -- Healthcare/ent/regulated",
      ["aws-bedrock", "aws-platform", "google-cloud", "ibm-watsonx", "ms-dynamics"]),
@@ -78,8 +98,9 @@ def met_label(point_ok: bool, ci_lower: float, target: float) -> str:
     return "Yes"
 
 
-def build_rows(live_compliance: bool):
-    events = load_events()
+def build_rows(live_compliance: bool, since: str | None = None,
+               until: str | None = None):
+    events = load_events(since=since, until=until)
     hm = headline_metrics(events)
     fn = funnel(events)
 
@@ -141,15 +162,35 @@ def print_markdown(rows):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog=f"Published Card P.14 table: {P14_COMMAND}")
     parser.add_argument("--skip-compliance", action="store_true",
                          help="Use the recorded P9 dry-run result instead of "
                               "re-running the live pipeline.")
     parser.add_argument("--markdown", action="store_true",
                          help="Print as a markdown pipe-table instead of plain text.")
+    parser.add_argument("--since", metavar="'YYYY-MM-DD HH:MM'",
+                         help="only count events at or after this local time")
+    parser.add_argument("--until", metavar="'YYYY-MM-DD HH:MM'",
+                         help="only count events at or before this local time — "
+                              "required as well as --since, or later development "
+                              "runs drift into a closed round")
+    parser.add_argument("--p14", action="store_true",
+                         help=f"shorthand for the published window ({P14_COMMAND})")
     args = parser.parse_args()
 
-    rows, details = build_rows(live_compliance=not args.skip_compliance)
+    since, until = args.since, args.until
+    if args.p14:
+        since, until = P14_SINCE, P14_UNTIL
+
+    # Warn against the FULL log, before filtering, so the post-round count is real.
+    warn_if_unbounded(load_events(), since, until)
+
+    rows, details = build_rows(live_compliance=not args.skip_compliance,
+                               since=since, until=until)
+    if since or until:
+        print(f"[window: {since or 'start'} .. {until or 'end'}]\n")
 
     print("Compliance check detail:")
     for name, stack, violations in details:

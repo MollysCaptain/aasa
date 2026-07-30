@@ -185,6 +185,9 @@ log for the real error.
 | `app/pipeline.py` | The single `run_pipeline()` that turns inputs into a blueprint |
 | `app/dashboard.py` | The three-block blueprint UI (tabbed) |
 | `app/logic/` | `filter.py` (privacy + ranking), `cost.py`, `pricing.py`, `prompt.py`, `scaffold.py` |
+| `app/data/options.py` | The five dropdowns' option lists — the only place they're defined |
+| `app/validators.py` | Input validation for the five constraints |
+| `app/survey_modal.py` | The post-blueprint micro-survey (Card P.14's data source) |
 | `app/export.py` | Text / markdown blueprint exports |
 | `app/saved_blueprints.py` | Session-scoped save + JSON import/export |
 | `app/analytics/tracker.py` | Local JSON-lines event log (no third-party analytics) |
@@ -202,9 +205,9 @@ log for the real error.
 python scripts/backend_dry_run.py          # run 3 test profiles end-to-end
 python tests/distancecheck.py --full       # relevance-threshold regression sweep (432 pairs)
 python scripts/compliance_check.py         # regulated-posture filter check
-python scripts/telemetry_funnel.py  --p14  # headline metrics + funnel  (Card P.14)
-python scripts/credible_interval.py --p14  # small-sample credible intervals
-python scripts/validation_metrics_table.py # regenerates the whole P.14 results table
+python scripts/telemetry_funnel.py         --p14  # headline metrics + funnel  (Card P.14)
+python scripts/credible_interval.py        --p14  # small-sample credible intervals
+python scripts/validation_metrics_table.py --p14  # regenerates the whole P.14 results table
 
 python scripts/rebuild_knowledge_base.py   # DESTRUCTIVE — deletes and rebuilds
                                            # chroma_store/. Needs the source CSV.
@@ -216,7 +219,7 @@ anywhere. The first three are the ones to run after a change to verify nothing
 regressed; `distancecheck.py --full` is the one that catches retrieval breaking
 silently.
 
-**`--p14` is not optional on the two metrics scripts.** `data/telemetry.log` is
+**`--p14` is not optional on the three metrics scripts.** `data/telemetry.log` is
 append-only, so every later run of the app adds events. Without the flag you get
 the whole log — including development traffic recorded after the user-test round
 closed — and the funnel disagrees with the published figures (56% export rate

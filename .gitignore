@@ -253,10 +253,18 @@ data/use-cases.csv
 # macOS
 .DS_Store
 
-# Our PM slides
-PM_slides/
-AASA_Week2_Stakeholder_Checkin.pptx
-.python-version
+# AASA — slide decks are deliberately NOT ignored.
+#
+# Cleaned up 2026-07-30 (P.22). This block used to ignore PM_slides/ and
+# AASA_Week2_Stakeholder_Checkin.pptx — neither of which has existed in this repo
+# for weeks — and it also listed .python-version, which IS tracked. That is the
+# same ignored-yet-tracked contradiction we fixed for data/telemetry.log: git
+# keeps honouring the tracked copy, so the rule does nothing except mislead the
+# next person reading this file. All three removed.
+#
+# The final decks were removed from the branch on 2026-07-28 while wording is
+# finalised and will be re-added by hand, so do NOT add a *.pptx rule here — it
+# would silently swallow them on the way back in.
 
 # AASA — data/telemetry.log is deliberately NOT ignored (force-tracked).
 #
