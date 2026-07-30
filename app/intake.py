@@ -445,15 +445,19 @@ else:
 # reality: 3,023 cases / 41 priced tools / 24 industries as of this writing.
 @st.cache_data
 def _hero_stats() -> tuple[int, int, int]:
-    import csv as _csv
+    # Was: read data/use-cases.csv directly. That file is the raw third-party
+    # dataset and is intentionally gitignored (see .gitignore), so it doesn't
+    # exist on Streamlit Community Cloud — this crashed every page load there
+    # with FileNotFoundError. chroma_store/ *is* committed (Card P.16/Cloud
+    # deploy fix) and its metadata already carries case_id + industry for
+    # every embedded case, so we can get the same real, live-computed numbers
+    # from there instead, without needing the raw CSV at runtime at all.
     from app.logic.pricing import PRICING as _pricing
-    n_cases = 0
-    industries = set()
-    with open("data/use-cases.csv", newline="", encoding="utf-8") as f:
-        for row in _csv.DictReader(f):
-            n_cases += 1
-            industries.add(row["Use Case Industry"])
-    return n_cases, len(_pricing), len(industries)
+    from app.pipeline import _collection as _coll
+    all_meta = _coll.get(include=["metadatas"])["metadatas"]
+    case_ids = {m["case_id"] for m in all_meta}
+    industries = {m["industry"] for m in all_meta}
+    return len(case_ids), len(_pricing), len(industries)
 
 
 _n_cases, _n_tools, _n_industries = _hero_stats()
@@ -493,7 +497,16 @@ if "result" not in st.session_state:
                 <div class="aasa-stat-num">{_n_industries}</div>
                 <div class="aasa-stat-label">INDUSTRIES COVERED</div></td>
             <td style="border: none;">
-                <div class="aasa-stat-num">~5 min</div>
+                <!-- ~2 min is the MEDIAN time-to-results from the real user-test
+                     round (114s over 12 sessions). It briefly read ~5 min, changed
+                     on the basis of the MEAN (372s) — but the mean is dragged up by
+                     two sessions of 1,287s and 1,617s where someone left the form
+                     open. For "how long does this take a typical user", the median
+                     is the right statistic and ~2 min is the honest number.
+                     Reverted 2026-07-28; both figures are reported in the P.14
+                     write-up so nothing is hidden. Recompute with:
+                     scripts/telemetry_funnel.py --p14 -->
+                <div class="aasa-stat-num">~2 min</div>
                 <div class="aasa-stat-label">TO BLUEPRINT</div></td>
         </tr></table>
         <div class="aasa-scope">Honest scope: this is a 4-week student prototype.

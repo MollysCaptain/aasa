@@ -1,9 +1,21 @@
-# StackPunk — AASA (AI-Assisted Stack Architect)
+# AASA — AI-Assisted Stack Architect
+
+<!-- Repo renamed from "stackpunk" to "aasa" on 2026-07-28. Historical references
+     to the stackpunk repo remain in the Build Guide documents on purpose: they
+     describe where work actually came from at the time and shouldn't be rewritten
+     as if the rename had always been true. -->
+
 
 Give AASA five constraints. It retrieves comparable real-world AI
 implementations, ranks the models, APIs and frameworks they used, and estimates a
 monthly cost against your budget — with every recommendation traceable to a real
 source.
+
+### ▶ Try it live: **[aasa-app.streamlit.app](https://aasa-app.streamlit.app)**
+
+No signup, no accounts — pick five dropdowns and you get a blueprint. Deployed
+from `main` on Streamlit Community Cloud. Nothing you enter is stored server-side
+(see [Privacy & ethics](#privacy--ethics)).
 
 **Honest scope:** this is a 4-week, 2-person student capstone prototype. Pricing
 is a small hand-built, illustrative table; compliance filtering is a directional
@@ -54,7 +66,7 @@ price.
 
 ```bash
 # 1. Clone and enter the repo
-git clone <repo-url> && cd stackpunk
+git clone <repo-url> && cd aasa
 
 # 2. Create and activate a virtual environment
 python3.11 -m venv .venv
@@ -66,12 +78,48 @@ pip install -r requirements.txt
 # 4. Add your API key
 echo 'GROQ_API_KEY=your-key-here' > .env
 
-# 5. Build the vector store (one-off, takes a few minutes)
+```
+
+**That's it — the app runs after step 4.** The vector store is committed to the
+repo, so there is no build step to complete first.
+
+### Do NOT run `rebuild_knowledge_base.py` unless you mean to
+
+It is not part of setup, and running it casually will break your working copy.
+The script starts with `shutil.rmtree("./chroma_store")` — it deletes the
+committed store, then rebuilds it from `data/use-cases.csv`, which is **not** in
+this repo. Without that CSV you end up with no store and a non-functioning app.
+
+It refuses to delete anything if the CSV is missing, so a mistaken run is
+recoverable — but if you did lose the store, `git checkout -- chroma_store` brings
+it back.
+
+You only need it if you are changing the embedding model, the chunking strategy,
+or the underlying dataset. In that case:
+
+```bash
+# 1. Get the source dataset (MIT-licensed, not committed here)
+#    Save it as data/use-cases.csv
+#    https://github.com/abbasmahdi-ai/ai-use-cases-library
+
+# 2. Rebuild (normalise → chunk → embed; several minutes)
 python scripts/rebuild_knowledge_base.py
 ```
 
-Step 5 embeds the case library into `./chroma_store`. That directory is **not** in
-git, so every fresh clone must run it before the app will start.
+First run also downloads the `all-MiniLM-L6-v2` embedding model from HuggingFace,
+so it needs internet and a few hundred MB of disk.
+
+### What a fresh clone will and won't have
+
+| Path | In the repo? | Why |
+|---|---|---|
+| `chroma_store/` | **Yes** (~52 MB) | Streamlit Cloud can only use what's committed, and can't rebuild it there. Contains verbatim source case text — see [`docs/data-attribution.md`](docs/data-attribution.md) |
+| `data/telemetry.log` | **Yes** | Card P.14's validation figures are computed from it; the metrics scripts read it directly. No personal data by design |
+| `data/use-cases.csv` | No | Someone else's raw dataset — fetch your own copy |
+| `data/use_cases_chunks.jsonl` | No | Intermediate build artefact |
+| `.env`, `.venv` | No | Secrets and local environment |
+
+Nothing in the "No" column indicates a broken checkout.
 
 ## Run
 
@@ -80,6 +128,54 @@ streamlit run app/intake.py
 ```
 
 Then open the URL Streamlit prints (usually `http://localhost:8501`).
+
+### Verify your install
+
+Nothing here needs the network except the LLM call, and none of it sends your data
+anywhere. If the app misbehaves, run these in order — the first failure tells you
+which layer is broken:
+
+```bash
+python scripts/backend_dry_run.py     # retrieval → filter → rank → cost, 3 profiles
+python tests/distancecheck.py --full  # every workflow × industry pair; expect PASS
+python scripts/compliance_check.py    # regulated-posture filter, expect 2/2
+```
+
+A healthy install shows the hero reading **3,023 / 41 / 24** and
+`distancecheck.py --full` printing `PASS`. If the hero shows zeros, the vector
+store isn't being found — check you're running from the repo root.
+
+## Deployment
+
+Live at **[aasa-app.streamlit.app](https://aasa-app.streamlit.app)**, deployed
+from `main` on Streamlit Community Cloud. Two things make that work, and both are
+easy to miss:
+
+**1. The API key goes in Secrets, not `.env`.** Cloud has no `.env` file and never
+should — it's gitignored. In the app's *Settings → Secrets*, add:
+
+```toml
+GROQ_API_KEY = "your-actual-key"
+```
+
+Cloud exposes root-level secrets as real environment variables, so
+`app/logic/prompt.py`'s existing `os.environ["GROQ_API_KEY"]` picks it up with no
+code change.
+
+**2. The vector store has to be in the repo.** Cloud only gets what's committed
+and can't rebuild the store there, because the source CSV is excluded. That's why
+`chroma_store/` is committed — see [`docs/data-attribution.md`](docs/data-attribution.md)
+for what that means licence-wise.
+
+Paths must be absolute-from-file, not relative: `app/pipeline.py` anchors the store
+with `Path(__file__).resolve().parent.parent` because the working directory isn't
+guaranteed to be the repo root on Cloud. A bare `./chroma_store` silently opens an
+*empty* store rather than erroring — see Build Guide 36.
+
+**Harmless log noise:** every deploy prints a `ModuleNotFoundError: No module
+named 'torchvision'` traceback from `transformers`. That's Streamlit's file
+watcher probing a lazy import it doesn't need. Ignore it and read further down the
+log for the real error.
 
 ## Project layout
 
@@ -92,7 +188,9 @@ Then open the URL Streamlit prints (usually `http://localhost:8501`).
 | `app/export.py` | Text / markdown blueprint exports |
 | `app/saved_blueprints.py` | Session-scoped save + JSON import/export |
 | `app/analytics/tracker.py` | Local JSON-lines event log (no third-party analytics) |
-| `data/` | Case library CSV, alias/unmatched logs, local telemetry log |
+| `data/` | Alias/unmatched logs, domain mapping, local telemetry log, and one sample blueprint fixture (`SAMPLE-FIXTURE.md` explains it). The raw case CSV is not committed |
+| `chroma_store/` | Committed Chroma vector store — 3,023 embedded cases, 9,069 chunks |
+| `tests/distancecheck.py` | Relevance-threshold regression sweep over all 432 input combinations |
 | `scripts/` | Knowledge-base rebuild, dry-run harness, validation-metric scripts |
 | `docs/model-card.md` | Dataset bias & skew disclosure |
 | `PM & Ethics/` | Charter, scope, ethics action plan, known limitations |
@@ -101,15 +199,29 @@ Then open the URL Streamlit prints (usually `http://localhost:8501`).
 ## Useful scripts
 
 ```bash
-python scripts/rebuild_knowledge_base.py   # (re)build the Chroma vector store
 python scripts/backend_dry_run.py          # run 3 test profiles end-to-end
-python scripts/telemetry_funnel.py         # headline metrics + funnel from telemetry
-python scripts/credible_interval.py        # small-sample credible intervals
+python tests/distancecheck.py --full       # relevance-threshold regression sweep (432 pairs)
 python scripts/compliance_check.py         # regulated-posture filter check
+python scripts/telemetry_funnel.py  --p14  # headline metrics + funnel  (Card P.14)
+python scripts/credible_interval.py --p14  # small-sample credible intervals
+python scripts/validation_metrics_table.py # regenerates the whole P.14 results table
+
+python scripts/rebuild_knowledge_base.py   # DESTRUCTIVE — deletes and rebuilds
+                                           # chroma_store/. Needs the source CSV.
+                                           # See the setup warning above.
 ```
 
-The last four read local data or re-run the pipeline — none sends anything
-anywhere.
+All of these read local data or re-run the pipeline — none sends anything
+anywhere. The first three are the ones to run after a change to verify nothing
+regressed; `distancecheck.py --full` is the one that catches retrieval breaking
+silently.
+
+**`--p14` is not optional on the two metrics scripts.** `data/telemetry.log` is
+append-only, so every later run of the app adds events. Without the flag you get
+the whole log — including development traffic recorded after the user-test round
+closed — and the funnel disagrees with the published figures (56% export rate
+instead of 83%). `--p14` pins the frozen window the write-up uses. Run them
+without it and they'll warn you.
 
 ## Privacy & ethics
 
@@ -138,8 +250,17 @@ validation sample.
 
 Case data comes from the open, MIT-licensed
 [AI Use-Cases Library](https://github.com/abbasmahdi-ai/ai-use-cases-library).
-Seat/usage assumptions reference the Stack Overflow Developer Survey. Vendored
-fonts (Inter, Roboto Mono) are OFL-licensed. See `LICENSE`.
+
+**This repo redistributes that data.** The committed `chroma_store/` is not only
+embedding vectors — its chunk metadata carries the source dataset's titles,
+organisations, outcomes and ~3.1 MB of verbatim case prose. MIT permits this with
+attribution, so the attribution, licence and requested citation are recorded in
+[`docs/data-attribution.md`](docs/data-attribution.md). The raw
+`data/use-cases.csv` is still not committed — fetch your own copy from the source.
+
+Seat/usage assumptions reference the Stack Overflow Developer Survey (aggregate
+adoption rates only; the raw response file is not committed). Vendored fonts
+(Inter, Roboto Mono) are OFL-licensed. Our own code and documents: see `LICENSE`.
 
 ## Team
 

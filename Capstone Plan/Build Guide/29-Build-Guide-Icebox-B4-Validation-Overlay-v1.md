@@ -16,7 +16,7 @@ reason nobody expected: **the input data does not exist in the repo.**
 1. `data/technology_landscape.csv` — **absent from every branch** (`Ash`, `Ash2`,
    `Gabi`, `main`, and all `origin/*` equivalents; verified with `git ls-tree -r`).
    `scripts/extract_tech_landscape.py` is equally absent. The claims in
-   `07-Roadmap-v2.md` and this guide's own preamble (sourced from doc 19's
+   `06-Roadmap-v2.md` and this guide's own preamble (sourced from doc 19's
    integration analysis) describe an asset that was presumably built on Gabi's
    machine but **never committed or pushed**.
 2. `data/StackOverflow/results.csv` (the raw survey export the landscape file

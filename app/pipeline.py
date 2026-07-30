@@ -6,6 +6,8 @@ Epic 2 is now wired in for real:
   Step 3 (cost)               <- Cards 2.3, 2.4
   Step 4 (LLM summary)        <- Card 2.6
 """
+from pathlib import Path
+
 import chromadb
 from chromadb.utils import embedding_functions
 from app.logic.filter import apply_privacy_filter, apply_vendor_exclusions, rank_tools_by_frequency
@@ -18,7 +20,15 @@ from app.logic.pricing import PRICING
 _embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
     model_name="all-MiniLM-L6-v2"
 )
-_chroma_client = chromadb.PersistentClient(path="./chroma_store")
+# Anchored to this file's own location rather than a bare relative "./chroma_store" —
+# a relative path depends on the process's current working directory, which is not
+# guaranteed to be the repo root on every host (this broke the Streamlit Community
+# Cloud deploy: chroma_store was committed to the repo and present on disk, but the
+# app still raised chromadb.errors.NotFoundError for "aasa_cases" because a
+# different CWD there meant "./chroma_store" pointed at an empty directory, not the
+# committed one).
+_CHROMA_STORE_PATH = Path(__file__).resolve().parent.parent / "chroma_store"
+_chroma_client = chromadb.PersistentClient(path=str(_CHROMA_STORE_PATH))
 _collection = _chroma_client.get_collection("aasa_cases", embedding_function=_embedding_fn)
 
 # Relevance threshold (Card P.16 roadmap fix — retrieval previously had no

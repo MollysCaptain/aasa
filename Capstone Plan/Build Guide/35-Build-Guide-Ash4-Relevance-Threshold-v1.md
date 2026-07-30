@@ -128,7 +128,9 @@ no `GROQ_API_KEY`). **Both must pass before `Ash4` merges to main.**
 `Ash4 = Ash3-update + Gabi`, in that direction **on purpose**: Gabi's branch was
 behind on the UI/export work, so merging the other way would have dropped the B.8
 PDF export and reinstated the `~2 min` hero over-claim. Verified present in the
-merged tree: `blueprint_to_pdf`, the Download popover, `fpdf2`, `~5 min`,
+merged tree: `blueprint_to_pdf`, the Download popover, `fpdf2`, `~5 min` (the
+hero stat at the time — reverted to `~2 min` on 2026-07-28 once the median was
+checked rather than the mean; see P.21 finding 2),
 `RELEVANCE_THRESHOLD`, `distancecheck.py`, `validation_metrics_table.py`.
 
 Two conflicts resolved by hand rather than by picking a side:

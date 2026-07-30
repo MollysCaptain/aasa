@@ -6,36 +6,96 @@ Formalises the inline snippets already written in
 script, so the Week-4 write-up numbers can be regenerated at any time instead
 of re-typed from a one-off terminal paste.
 
-Run from the repo root:
-    python3 scripts/telemetry_funnel.py
-    python3 scripts/telemetry_funnel.py --since "2026-07-27 23:00"
+Run from the repo root. To reproduce the PUBLISHED Card P.14 figures you must
+pass BOTH bounds — this exact command:
 
-WHY --since EXISTS (added 2026-07-28)
+    python3 scripts/telemetry_funnel.py --since "2026-07-27 23:00" \
+                                        --until "2026-07-28 01:31"
+
+WHY BOTH BOUNDS EXIST
 The log is append-only and spans the whole project, so it mixes our own
-development runs with real test sessions, across several different builds. Run
-bare, it answers "everything that ever happened", which measures nothing
-cleanly. The final real-user round (8 participants, the build we submitted) is
-isolated with --since; the boundary is defensible because a 5-hour gap separates
-that round from the previous activity. Every figure in
-PM & Ethics/P14-Validation-Metrics-Final-v1.md is reproducible with the exact
-command quoted at the top of that file.
+development runs with real test sessions across several builds. Run bare it
+answers "everything that ever happened", which measures nothing cleanly.
+
+--since alone is NOT enough, and this bit us. The final real-user round closed
+with its last survey at 2026-07-28 01:30:41. We then kept using the app —
+verifying fixes, reproducing a reported bug, testing the Cloud deploy — and every
+one of those runs appended a results_shown event. Because "exported" stayed at 10
+while "viewed" kept climbing, the reported export rate fell from the published
+83% (10/12) to 56% (10/18) within a day, with no survey attached to any of the
+new events. A published headline figure had silently stopped reproducing.
+
+Caught by Gabi on 2026-07-28 by running the documented command rather than
+trusting the write-up. --until freezes the round so the figures hold no matter
+how much the app is used afterwards.
+
+If you run this without both bounds, it will tell you so and print how many
+post-round events it just folded in.
 """
 import argparse
 import json
 import statistics
+import sys
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
 LOG_PATH = Path("data/telemetry.log")
 
+# The frozen window the published Card P.14 figures are computed over: the final
+# 8-participant round, opened before the first participant session and closed
+# immediately after the last survey (01:30:41). Defined here so the scripts, the
+# warning text and the write-up can never drift apart — if this ever needs to
+# change, change it here and re-run both scripts.
+P14_SINCE = "2026-07-27 23:00"
+P14_UNTIL = "2026-07-28 01:31"
+P14_COMMAND = f'--since "{P14_SINCE}" --until "{P14_UNTIL}"'
 
-def load_events(path: Path = LOG_PATH, since: str | None = None) -> list[dict]:
+
+def warn_if_unbounded(events: list[dict], since: str | None, until: str | None) -> None:
+    """
+    Say so, loudly, when a run cannot reproduce the published figures.
+
+    The failure this prevents: someone runs the script with --since only (or
+    nothing), reads the funnel, and quietly believes a number that disagrees with
+    the write-up and the deck. Counting the post-round events makes the cause
+    obvious instead of leaving them to diff two outputs.
+    """
+    if since == P14_SINCE and until == P14_UNTIL:
+        return
+    cutoff = datetime.fromisoformat(P14_UNTIL).timestamp()
+    after = [e for e in events if e["timestamp"] > cutoff]
+    # sys.argv[0], not __file__ — this helper is shared with credible_interval.py,
+    # so hardcoding this file's path would tell the reader to run the wrong script.
+    invoked = Path(sys.argv[0]).name or "telemetry_funnel.py"
+    print("!" * 74)
+    print("NOT the published Card P.14 window — these numbers will not match the")
+    print("write-up or the pitch deck. For the published figures run:")
+    print(f"    python3 scripts/{invoked} --p14")
+    print(f"    (equivalent to: {P14_COMMAND})")
+    if after:
+        kinds = Counter(e["event"] for e in after)
+        surveys = kinds.get("survey_submitted", 0)
+        print(f"\nThis run includes {len(after)} event(s) recorded AFTER the round closed"
+              f" ({P14_UNTIL}),")
+        print(f"including {kinds.get('results_shown', 0)} results_shown and {surveys}"
+              " survey_submitted.")
+        if not surveys:
+            print("No surveys among them, so that is development/QA traffic inflating")
+            print("the 'viewed' denominator — it is not additional user testing.")
+    print("!" * 74 + "\n")
+
+
+def load_events(path: Path = LOG_PATH, since: str | None = None,
+                until: str | None = None) -> list[dict]:
     events = [json.loads(line) for line in path.open() if line.strip()]
     events.sort(key=lambda e: e["timestamp"])
     if since:
-        cutoff = datetime.fromisoformat(since).timestamp()
-        events = [e for e in events if e["timestamp"] >= cutoff]
+        events = [e for e in events
+                  if e["timestamp"] >= datetime.fromisoformat(since).timestamp()]
+    if until:
+        events = [e for e in events
+                  if e["timestamp"] <= datetime.fromisoformat(until).timestamp()]
     return events
 
 
@@ -91,18 +151,32 @@ def funnel(events: list[dict]) -> dict:
 
 
 def main():
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(
+        epilog=f'Published Card P.14 figures: {P14_COMMAND}')
     ap.add_argument("--since", metavar="'YYYY-MM-DD HH:MM'",
                     help="only count events at or after this local time — use to "
                          "isolate one test round from development runs")
+    ap.add_argument("--until", metavar="'YYYY-MM-DD HH:MM'",
+                    help="only count events at or before this local time — required "
+                         "as well as --since, or later development runs drift into "
+                         "a closed round and change the reported rates")
+    ap.add_argument("--p14", action="store_true",
+                    help=f"shorthand for the published window ({P14_COMMAND})")
     args = ap.parse_args()
 
-    events = load_events(since=args.since)
+    since, until = args.since, args.until
+    if args.p14:
+        since, until = P14_SINCE, P14_UNTIL
+
+    # Warn against the FULL log, before filtering, so the post-round count is real.
+    warn_if_unbounded(load_events(), since, until)
+
+    events = load_events(since=since, until=until)
     hm = headline_metrics(events)
     fn = funnel(events)
 
-    if args.since:
-        print(f"[window: events from {args.since} onwards — {len(events)} events]")
+    if since or until:
+        print(f"[window: {since or 'start'} .. {until or 'end'} — {len(events)} events]")
     print(f"{hm['trust_scores']} -> trust-score median: {hm['trust_score_median']}"
           f" ({len(hm['trust_scores'])} responses)")
     print(f"{hm['completed_sessions']} completed sessions, "
