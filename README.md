@@ -58,9 +58,23 @@ price.
 
 ## Requirements
 
-- **Python 3.11** (see `.python-version`)
+- **Python 3.11 or newer** — a hard floor, not a preference (see `.python-version`).
+  `pandas`, `scikit-learn`, `scipy` and `matplotlib` are pinned at versions that
+  declare `Requires-Python >=3.11`, so an older interpreter fails at install.
 - A **Groq API key** (for the LLM summary step)
 - A few hundred MB of free disk for the embedding model + vector store
+
+`requirements.txt` is **pinned** (feature freeze, Card P.15) so the app anyone runs
+is the app that was tested. The versions are taken from `pip freeze` in the
+environment the 8-participant user-test round ran against — don't loosen them
+without a reason.
+
+Only six of the ten are imported by `app/`: `streamlit`, `chromadb`,
+`sentence-transformers`, `openai`, `python-dotenv` and `fpdf2`. The other four are
+used solely by `scripts/` (knowledge-base rebuild, QA plots) and are the only
+reason Python 3.11 is required — none of the six needs it. If a deployment target
+is stuck on an older Python, move those four to a `requirements-dev.txt` rather
+than unpinning anything.
 
 ## Setup
 

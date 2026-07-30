@@ -1,37 +1,9 @@
-# AASA dependencies — pinned 2026-07-30 for the feature freeze (Card P.15).
-#
-# WHY PINNED: unpinned requirements mean the Streamlit Cloud deploy resolves
-# whatever is newest at build time, so the app a marker opens is not guaranteed to
-# be the app we tested. Gabi's call, and it is right: "our versions are used, which
-# are working." See Capstone Plan/PM Work/15-P15-Feature-Freeze-v1.md.
-#
-# EVERY VERSION BELOW IS TAKEN FROM `pip freeze` IN THE ENVIRONMENT THAT WORKS,
-# not chosen or inferred. That is the only defensible source for a freeze.
-#
-# PYTHON >=3.11 IS NOW A HARD REQUIREMENT. pandas 3.0.2, scikit-learn 1.9.0 and
-# scipy 1.17.1 all declare Requires-Python >=3.11. That matches .python-version
-# (3.11.3), but it means the Streamlit Cloud app must also be on 3.11+ or the
-# build fails — worth confirming in the app's settings before/after the first
-# rebuild that includes this file.
-
-# --- required by the deployed app (app/) ---
 streamlit==1.59.0
 chromadb==1.5.9
 sentence-transformers==5.6.0
-openai==2.44.0                  # Groq, via its OpenAI-compatible endpoint
+openai==2.44.0
 python-dotenv==1.2.2
-fpdf2==2.8.7                    # Icebox B.8 PDF export — SHIPPED and in use
-                                # (app/export.py:blueprint_to_pdf). Missing, the
-                                # Download popover disables the PDF button and
-                                # says why rather than crashing — but 4 of the 8
-                                # real testers used it, so it is not optional.
-
-# --- required only by scripts/, never imported by app/ ---
-# Kept so a fresh clone can run the knowledge-base rebuild and the QA plots.
-# None is needed to run the app itself — but the Cloud build still has to install
-# them successfully, so a version that won't resolve here breaks the deploy even
-# though the app never imports it. If that ever becomes a problem, the fix is to
-# split these into requirements-dev.txt rather than to loosen the pins.
+fpdf2==2.8.7
 pandas==3.0.2
 scikit-learn==1.9.0
 scipy==1.17.1
