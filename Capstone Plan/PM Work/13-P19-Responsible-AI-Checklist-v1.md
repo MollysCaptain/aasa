@@ -165,8 +165,17 @@ This was a real flaw in our first build, so it's checked explicitly every time.
 
 - [x] **Known limitations documented** in `PM & Ethics/Known-Limitations-v1.md`
       **and** visible in-product (How it works tab).
-- [x] **Deferred features listed honestly** as Icebox with roadmap positions
-      (B.1, B.3, B.4, B.7, B.8, mobile).
+- [x] **Deferred features listed honestly** as Icebox with roadmap positions —
+      **corrected 2026-07-30.** This bullet said the deferred set was
+      "B.1, B.3, B.4, B.7, B.8, mobile". **B.1 and B.8 both shipped**: the Markdown
+      cost one-pager and the PDF blueprint export, behind the Download popover,
+      with 8 `onepager_downloaded` and 8 `pdf_downloaded` events in telemetry (4 of
+      the PDFs inside the P.14 window). The genuinely deferred set is **B.3, B.4,
+      B.7 and mobile** — verified against the code, not against the previous
+      version of this list. Corrected in `15-P15-Feature-Freeze-v1.md` too.
+      > Under-claiming what we built is a smaller sin than over-claiming, but it is
+      > the same defect: an Icebox list reused without re-checking it. It was found
+      > because Gabi asked whether `fpdf2` was really a dependency.
 - [x] **README documents real setup steps**, including the mandatory
       `rebuild_knowledge_base.py` step for a fresh clone.
       > **Note 2026-07-28:** that step is no longer mandatory, and this line is

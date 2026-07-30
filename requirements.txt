@@ -1,10 +1,43 @@
+# AASA dependencies — pinned 2026-07-30 for the feature freeze (Card P.15).
+#
+# WHY PINNED: unpinned requirements mean the Streamlit Cloud deploy resolves
+# whatever is newest at build time, so the app a marker opens is not guaranteed
+# to be the app we tested. Gabi's call, and it is right: "our versions are used,
+# which are working." See Capstone Plan/PM Work/15-P15-Feature-Freeze-v1.md.
+#
+# HOW TO CHANGE THIS FILE: don't, unless something is broken. Every pin below was
+# verified to exist and resolve for Python 3.11 (see .python-version) before being
+# committed. A pin that does not resolve fails the Cloud build and takes the live
+# app down — a much worse outcome than an unpinned dependency.
+
+# --- required by the deployed app (app/) ---
+streamlit==1.59.0
+chromadb==1.5.9
+sentence-transformers==5.6.0
+openai==2.44.0                  # Groq, via its OpenAI-compatible endpoint
+python-dotenv==1.2.2
+fpdf2==2.8.7                    # Icebox B.8 PDF export — SHIPPED and in use
+                                # (app/export.py:blueprint_to_pdf). Missing, the
+                                # Download popover disables the PDF button and
+                                # says why rather than crashing — but 4 of the 8
+                                # real testers used it, so it is not optional.
+
+# --- required only by scripts/, never imported by app/ ---
+# Kept so a fresh clone can run the knowledge-base rebuild and the QA plots.
+# None of these is needed to run or deploy the app itself.
+#
+# THREE ARE DELIBERATELY UNPINNED — 2026-07-30. Gabi proposed pandas==3.0.3,
+# scikit-learn==1.9.0 and scipy==1.17.1. None of those three versions exists on
+# PyPI for Python 3.11; the highest available are pandas 2.3.2,
+# scikit-learn 1.7.2 and scipy 1.16.3. Pinning them as given would have failed
+# the Cloud build. Rather than substitute a guess, they stay unpinned until Gabi
+# pastes the real values from the environment that works:
+#
+#     pip freeze | grep -iE '^(pandas|scikit-learn|scipy|matplotlib)='
+#
+# That output is the authoritative answer to "the versions which are working".
+# A version typed from memory is not — which is the whole reason this note exists.
 pandas
-streamlit
-chromadb
-fpdf2
-sentence-transformers
 scikit-learn
 scipy
-matplotlib
-openai
-python-dotenv
+matplotlib==3.11.0              # verified for 3.11
