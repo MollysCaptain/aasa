@@ -241,16 +241,17 @@ and splits empty results in two:
 
 Re-verified against the real corpus: 0 wrongly empty, 5 correctly empty → **PASS**.
 
-### The bigger finding: 205 of 432 combinations have no evidence
+### The bigger finding: 205 of 432 combinations have no evidence (now 185 — see the note below)
 
-The threshold only catches 5 of them. The other **200** return 15
+The threshold only catches 5 of them. The other **200** (180 now) return 15
 nearest-neighbour cases from other industries — and the banner announced:
 
 ```python
 context = f"{n} real {query['industry']} {query['workflow']} deployments matched. "
 ```
 
-For 47% of possible queries that sentence was **false**. It named an
+For 47% of possible queries that sentence was **false** (43% against the current
+store). It named an
 industry/workflow pair with zero deployments and called the results "real …
 deployments". Block C was already honest (each case shows its own industry, and
 "same industry as yours" only appears on a true match) — the banner was not.
@@ -310,6 +311,52 @@ EMPTY + no evidence (correct)  : 5
 NONSENSE CONTROLS: fully rejected 7/8   (leak: "competitive yodeling", 0.476)
 PASS — every combination that has evidence returns it (threshold 0.52).
 ```
+
+### Re-run live 2026-07-30 (P.22) — one line moved, everything else is bit-identical
+
+The output above is kept as the record of the real 2026-07-27 run. Gabi rebuilt
+and committed `chroma_store` on the 28th for the Cloud deploy, so the sweep was
+re-run in full against the store actually being submitted:
+
+```
+Real pairs             : 432 of 432 possible (FULL sweep)
+Pairs WITH real cases  : 247 of 432 tested (185 have no cases at all)
+worst genuine best-distance : 0.568     MARGIN : -0.048 (informational)
+chunks kept per real query  : min=0 median=15 max=15
+EMPTY + evidence exists (BUG) : 0
+EMPTY + no evidence (correct)  : 5
+    0.555  Finance in the Education industry
+    0.568  Procurement in the Education industry
+    0.533  Procurement in the Government & Public Sector industry
+    0.529  Procurement in the Real Estate & Construction industry
+    0.558  Sales in the Education industry
+NONSENSE CONTROLS: fully rejected 7/8   (leak: "competitive yodeling", 0.476)
+PASS — every combination that has evidence returns it (threshold 0.52).
+```
+
+**Only the pair-population line changed: 227/205 → 247/185.** Every threshold
+figure is identical to three decimal places — same worst genuine distance (0.568),
+same margin (−0.048), same 0 wrongly empty, the same **five** correctly-empty
+pairs at the same distances, the same single nonsense leak at 0.476.
+
+**That identity is itself the finding, and it explains the change.** If the
+rebuild had altered the embedded text, the distances would have moved. They
+didn't. So what the rebuild changed was **chunk metadata only** — the canonical
+domain column, re-derived by `normalize_domains.py` — which is exactly the field
+`case_population()` counts pairs by. Twenty pairs gained a domain label they
+previously lacked; no vector moved, no case was added or removed (still 3,023),
+and the retrieval behaviour of the shipped product is unchanged.
+
+Two consequences worth keeping:
+
+- **The threshold conclusions in this guide stand as written**, now verified
+  against the submitted store rather than a superseded one.
+- **A "the store was rebuilt" event is not automatically a retrieval regression.**
+  It can move corpus-coverage facts while leaving retrieval untouched, which is
+  why the two need checking separately rather than being assumed to travel
+  together. The pair count went stale for a month; the threshold never did.
+
+See `Capstone Plan/PM Work/16-P22-Final-Consistency-Pass-v1.md`.
 
 Matches the offline corpus check exactly. **The threshold discards no real
 evidence anywhere in the 432-pair space.** `RELEVANCE_THRESHOLD = 0.52` is now

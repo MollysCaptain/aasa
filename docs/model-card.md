@@ -8,7 +8,10 @@ real figures computed from `data/use-cases.csv`, not generic placeholders.*
 
 ---
 
-**Dataset:** 3,023 real AI-deployment case rows (13 columns), sourced from the
+**Dataset:** 3,023 real AI-deployment case rows (12 source columns, as documented
+in `data/AICaseStudy/schema.md`; our own scripts derive 2 more —
+`Use Case Domain (Canonical)` and `canonical_tools` — for 14 after processing),
+sourced from the
 open, MIT-licensed [AI Use-Cases Library](https://github.com/abbasmahdi-ai/ai-use-cases-library)
 (see Handbook §2). Each row carries a description, reported outcome, and a
 source URL. Cases were aggregated from public vendor case-study libraries

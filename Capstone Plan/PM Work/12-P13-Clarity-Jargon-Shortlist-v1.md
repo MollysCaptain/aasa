@@ -49,7 +49,7 @@ is spent judging rather than hunting.*
 | "AI-Assisted Stack Architect" (top bar) vs "AI Stack Architect" (elsewhere in docs) | Pick one and use it everywhere — the deck and README should match the app. |
 | `Organisation` (UK) vs `Organization` | We use UK spelling in the UI. Keep it consistent in the deck/README too. |
 | Currency is € everywhere | Correct and consistent — no action, but be ready to say "illustrative, EUR" on stage. |
-| `~2 min TO BLUEPRINT` hero stat | **Resolved 2026-07-28 — the claim stands, on the median.** This row previously called it an over-claim by citing the *mean* (381.6s). The mean is the wrong statistic here: it's dragged up by two sessions of 1,287s and 1,617s where someone left the form open. The **median** time-to-results in the real user-test round is **114s (1.9 min)**, so "~2 min" is what a typical user actually experiences. Both figures are in the P.14 write-up. Recompute: `scripts/telemetry_funnel.py --p14`. |
+| `~2 min TO BLUEPRINT` hero stat | **Resolved 2026-07-28 — the claim stands, on the median.** This row previously called it an over-claim by citing the *mean* (372s). The mean is the wrong statistic here: it's dragged up by two sessions of 1,287s and 1,617s where someone left the form open. The **median** time-to-results in the real user-test round is **114s (1.9 min)**, so "~2 min" is what a typical user actually experiences. Both figures are in the P.14 write-up. Recompute: `scripts/telemetry_funnel.py --p14`. |
 
 ## What I could not check (needs the human pass)
 

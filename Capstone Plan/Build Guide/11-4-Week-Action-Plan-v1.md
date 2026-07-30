@@ -14,7 +14,7 @@
 | 1 | Review the 3,023-row CSV; confirm no PII; set up repo, Python venv, Chroma. | Draft test-user recruiting post + interview guide. | Kick off; agree on working agreement. |
 | 2 | Begin tool-name alias map: inventory the 2,511 distinct tool strings. | Start recruiting outreach for 5–8 real testers (moved up from Week 3). | Draft & sign off the 1-page **Project Charter** (scope: AI stack only, no infra, no code-gen, no compliance claims). |
 | 3 | Continue alias map: group variants → canonical ids; log unmatched strings for review. | Finalize the 5-field input / 3-block output schema (Workflow, Industry, Org Size, Privacy, Budget → Stack, Cost, Case Refs). | Share schema with A — this becomes the pipeline contract. |
-| 4 | Finish alias map v1; verify ≥90% row coverage against target ~24 canonical tools. | **Task 1.2** — map Org Size/Industry to dropdown taxonomy (`app/data/options.py`). | — |
+| 4 | Finish alias map v1; verify ≥90% row coverage against target 41 canonical tools. | **Task 1.2** — map Org Size/Industry to dropdown taxonomy (`app/data/options.py`). | — |
 | 5 | **Task 2.3** — draft 41-tool pricing table, tagged token/seat/compute/free. | **Task 1.1** — start Streamlit dark-mode CSS grid intake skeleton (`app/intake.py`). | — |
 | 6 *(buffer)* | **Task 2.1** — normalise the CSV using the alias map (`scripts/normalise_cases.py`); confirm unmatched-string log. | Ethics checkpoint prep (Owner: A) — confirm no accounts, inputs are anonymous constraints only. | — |
 | 7 *(buffer)* | Ethics — finalize **Week 1 data-minimisation** confirmation: no PII stored anywhere. | Confirm ≥3 recruiting candidates lined up for Week 3 testing. | **Checkpoint:** alias-map coverage, pricing table draft, and schema all signed off before Week 2 starts. |

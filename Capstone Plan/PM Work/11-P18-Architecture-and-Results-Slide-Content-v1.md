@@ -51,9 +51,10 @@ the single most dangerous thing this product could do."
 `scripts/credible_interval.py --since "2026-07-27 23:00" --until "2026-07-28 01:31"` from
 `data/telemetry.log`. **Do not retype these — copy them.**
 
-Updated 2026-07-28 for the final real-user round (8 participants). The `--since`
-window matters: run bare, the scripts pool our own development runs and three
-earlier builds and report 18 responses over 100 sessions, which measures nothing.
+Updated 2026-07-28 for the final real-user round (8 participants). The window
+matters, and **both** bounds are required — pass `--p14`. Run bare, the scripts
+pool our own development runs and three earlier builds and report 18 responses
+over 106 sessions, which measures nothing.
 
 | Metric | Target | Actual | 90% credible interval | Met? |
 |---|---|---|---|---|

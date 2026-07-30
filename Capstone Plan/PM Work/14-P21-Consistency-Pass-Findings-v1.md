@@ -6,12 +6,42 @@ human-only items (backup, submission) are at the end.*
 
 **Run by:** Claude (repo-wide scan of `Ash3-update`) · **Date:** 2026-07-27
 **Owner to action:** Joint
+**Closed:** 2026-07-30 — see the status box below and
+`16-P22-Final-Consistency-Pass-v1.md` for the second, deeper pass.
+
+> ## Status as of 2026-07-30 — read this before acting on anything below
+>
+> This document is now a **record of the first pass**, not a to-do list. Its
+> findings are closed, and the second pass (`16-P22`) found that two of them were
+> reported less accurately than they should have been:
+>
+> - **Finding 1 was right but badly incomplete.** It listed 4 places saying "24
+>   tools". All 4 are fixed — but there were **10 more** it missed, including the
+>   pitch-day spoken script at Build Guide 17:253. Those are fixed too, and listed
+>   in `16-P22`. Note also that this document's own line 23 still quotes "3,023
+>   cases, 24 tools" while describing the fix, which is left visible as an example
+>   of how easily the number propagates.
+> - **Finding 3 was a false positive.** The remaining `ATSA` occurrence in Build
+>   Guide 13 (line 1144) is a deliberate post-mortem *about* the rename — "the Ash
+>   branch had already renamed the project (ATSA → AASA)". Deleting it would
+>   destroy the narrative. **No action taken, and none should be.**
+> - **The line numbers throughout this document are stale**, including the "clean"
+>   section's claim that `.DS_Store` sits at `.gitignore` line 236 (it was 254, and
+>   that block has since been rewritten). Cross-check against the file, not against
+>   this document.
+> - **The remaining human-only actions table at the end is superseded** by the
+>   equivalent table in `16-P22`, which is current.
+>
+> Kept in full rather than trimmed to the parts that held up, because the useful
+> content of a consistency pass includes which of its own findings didn't survive
+> contact with the code.
 
 ---
 
 ## Findings that need a fix
 
 ### 1. Stale pricing-table count: "24 tools" (actual: **41**) — 4 places
+### — CLOSED 2026-07-30. All 4 fixed, plus 10 more this pass missed (see `16-P22`).
 
 The pricing table has grown to 41 priced tools (verified in
 `app/logic/pricing.py`), but several docs still say 24:
@@ -55,6 +85,7 @@ wrong summary statistic can manufacture a problem. Check which statistic the cla
 is actually making before calling it an over-claim.
 
 ### 3. One `ATSA` leftover after the AASA rename
+### — ~~CLOSED~~ **WITHDRAWN 2026-07-30: this finding was wrong.** The occurrence is at Build Guide 13 line 1144 and is a deliberate post-mortem about the rename itself. Leave it.
 
 `Capstone Plan/Build Guide/13-Build-Guide-Epic2-Retrieval-v1.md` still contains
 the old `ATSA` name. Low stakes, but it's in a document set we're submitting.
@@ -94,6 +125,13 @@ If that ever prints a diff, the `PM & Ethics/` copy is canonical.
 - [x] **Dataset figures are consistent** where they matter: 3,023 cases / 24
       industries / 88.7% alias coverage agree across the model card, the app's
       hero (computed live), the methodology block and the P.14 write-up.
+      > *Re-verified 2026-07-30 by recounting from `chroma.sqlite3` rather than by
+      > comparing documents: 3,023 cases and 88.7% (2,682/3,023) both hold, and the
+      > 24 dropdown industries match the corpus's 24 distinct values exactly in
+      > both directions. **But this check was scoped too narrowly** — it compared
+      > figures to each other and found agreement, while the workflow × industry
+      > coverage figure (205/47%) agreed with itself in nine places and was wrong
+      > in all nine. Agreement between documents is not verification.*
 - [x] **P.14 metrics agree between the script output and the write-up** —
       re-verified 2026-07-28 against the final real-user round (n=8): 12 sessions,
       83% export rate, 100% net value, CIs 59–93% / 72–99%, trust median 5, avg
@@ -114,6 +152,7 @@ If that ever prints a diff, the `PM & Ethics/` copy is canonical.
 ---
 
 ## Remaining human-only actions
+### — SUPERSEDED 2026-07-30 by the equivalent table in `16-P22-Final-Consistency-Pass-v1.md`. Items 1 and 8 below are now done (P.15 freeze declared and recorded; Week 4 checkpoint still outstanding). Use the P.22 table.
 
 | # | Action | Owner | Why I can't do it |
 |---|---|---|---|

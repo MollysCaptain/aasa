@@ -46,7 +46,7 @@ the deployment work and Build Guide 37 for this review.
 
 ## On the size of it — do NOT "optimise" this
 
-`chroma_store/chroma.sqlite3` is ~54 MB, which is over GitHub's 50 MB *advisory*
+`chroma_store/chroma.sqlite3` is ~52 MB, which is over GitHub's 50 MB *advisory*
 threshold (pushes succeed but print a Git LFS suggestion) and well under the
 100 MB hard limit. Two tempting optimisations, both of which make things worse.
 Decided 2026-07-28, recorded here so nobody re-litigates it from first principles:

@@ -12,8 +12,16 @@ The sweep reported FAIL: 5 of 432 real combinations returned nothing at 0.52.
 Cross-checking those 5 against the corpus showed all five have **zero cases** —
 there is no "Procurement in Education" deployment in the library at all. So the
 empty result was CORRECT, and the FAIL verdict was wrong: it assumed anything
-selectable in the dropdowns must have evidence behind it. It doesn't. 205 of the
-432 combinations (47%) have no cases whatsoever.
+selectable in the dropdowns must have evidence behind it. It doesn't. A large
+minority of the 432 combinations have no cases whatsoever.
+
+That count is a property of the corpus, not of this script, so it MOVES whenever
+the store is rebuilt — and it did. The 2026-07-27 sweep reported 205 of 432
+(47%). Recounted on 2026-07-30 against the store Gabi committed on the 28th for
+the Cloud deploy, it is **185 of 432 (43%)** — the rebuild populated 20 more
+pairs. Do not quote either number from memory; the run prints the live figure on
+the "Pairs WITH real cases" line, and that line is the only authority. See
+Capstone Plan/PM Work/16-P22-Final-Consistency-Pass-v1.md.
 
 So this script now separates the two situations that matter, because only one of
 them is a bug:
@@ -41,6 +49,7 @@ Exit code 0 = safe, 1 = a pair WITH evidence returns nothing.
 import argparse
 import collections
 import random
+import statistics
 import sys
 
 import chromadb
@@ -151,8 +160,12 @@ def main() -> int:
     print(f"  threshold                   : {args.threshold:.3f}")
     print(f"  MARGIN                      : {margin:+.3f}   (informational — see"
           " module docstring; overlap means a thin margin is expected)")
+    # statistics.median, not sorted(...)[len//2] — the latter returns the UPPER of
+    # the two middle values at even n. It agreed here (median is 15 either way) but
+    # it is the same bug telemetry_funnel.py was fixed for, and leaving one copy of
+    # it alive makes that fix note only half true.
     print(f"  chunks kept per real query  : min={min(kept_counts)} "
-          f"median={sorted(kept_counts)[len(kept_counts)//2]} max={max(kept_counts)}")
+          f"median={statistics.median(kept_counts):g} max={max(kept_counts)}")
 
     print(f"\n  EMPTY + evidence exists (BUG) : {len(wrongly_empty)}")
     for best, q, n_cases in wrongly_empty:

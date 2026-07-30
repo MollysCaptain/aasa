@@ -28,7 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from app.logic.filter import GOVERNABLE_FOR_REGULATED
 
 # Every regulated-posture profile actually run during P.9-P.11 (see
-# Capstone Plan/Build Guide/P9-Backend-Dry-Run-Results-v1.md). Profile 1 is
+# PM & Ethics/P9-Backend-Dry-Run-Results-v1.md). Profile 1 is
 # "standard" posture and is not a regulated test case, so it's excluded here.
 REGULATED_PROFILES = [
     {

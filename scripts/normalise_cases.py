@@ -1,5 +1,5 @@
 """
-Card 2.1 — Normalise raw tool-name strings into ~24 canonical tool ids.
+Card 2.1 — Normalise raw tool-name strings into 41 canonical tool ids.
 Run AFTER scripts/validate_use_cases.py and scripts/normalize_domains.py (Step 0)
 so this adds canonical_tools on top of an already-validated, domain-normalised file.
 

@@ -86,7 +86,7 @@ touch scripts/__init__.py
 
 ```python
 """
-Card 2.1 — Normalise raw tool-name strings into ~24 canonical tool ids.
+Card 2.1 — Normalise raw tool-name strings into 41 canonical tool ids.
 Run AFTER scripts/validate_use_cases.py and scripts/normalize_domains.py (Step 0)
 so this adds canonical_tools on top of an already-validated, domain-normalised file.
 
@@ -557,7 +557,7 @@ touch app/logic/pricing.py app/logic/__init__.py
 
 ```python
 """
-Card 2.3 — Hand-built pricing table for the 24 canonical tools.
+Card 2.3 — Hand-built pricing table for the 41 canonical tools.
 
 Every entry is tagged with a `model`:
   "token"   -> priced per million input/output tokens (in_ppm / out_ppm, in EUR)

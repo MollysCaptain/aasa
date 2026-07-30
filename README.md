@@ -58,9 +58,23 @@ price.
 
 ## Requirements
 
-- **Python 3.11** (see `.python-version`)
+- **Python 3.11 or newer** — a hard floor, not a preference (see `.python-version`).
+  `pandas`, `scikit-learn`, `scipy` and `matplotlib` are pinned at versions that
+  declare `Requires-Python >=3.11`, so an older interpreter fails at install.
 - A **Groq API key** (for the LLM summary step)
 - A few hundred MB of free disk for the embedding model + vector store
+
+`requirements.txt` is **pinned** (feature freeze, Card P.15) so the app anyone runs
+is the app that was tested. The versions are taken from `pip freeze` in the
+environment the 8-participant user-test round ran against — don't loosen them
+without a reason.
+
+Only six of the ten are imported by `app/`: `streamlit`, `chromadb`,
+`sentence-transformers`, `openai`, `python-dotenv` and `fpdf2`. The other four are
+used solely by `scripts/` (knowledge-base rebuild, QA plots) and are the only
+reason Python 3.11 is required — none of the six needs it. If a deployment target
+is stuck on an older Python, move those four to a `requirements-dev.txt` rather
+than unpinning anything.
 
 ## Setup
 
@@ -145,6 +159,21 @@ A healthy install shows the hero reading **3,023 / 41 / 24** and
 `distancecheck.py --full` printing `PASS`. If the hero shows zeros, the vector
 store isn't being found — check you're running from the repo root.
 
+> **Afterwards, `git status` will show `chroma_store/chroma.sqlite3` as modified.
+> Do not commit it.** Opening the store — running the app, the dry run, or the
+> sweep — makes Chroma touch SQLite's header. About **28 bytes of 54 MB** change
+> and the data is identical, but git stores whole blobs, so committing it adds
+> another ~52 MB to history *permanently* and every future clone pays for it (see
+> [`docs/data-attribution.md`](docs/data-attribution.md) on why that can't be
+> undone without rewriting history). Discard it instead:
+>
+> ```bash
+> git restore chroma_store/chroma.sqlite3
+> ```
+>
+> The one time you *should* commit it is after deliberately running
+> `rebuild_knowledge_base.py`, because then the contents really did change.
+
 ## Deployment
 
 Live at **[aasa-app.streamlit.app](https://aasa-app.streamlit.app)**, deployed
@@ -185,6 +214,9 @@ log for the real error.
 | `app/pipeline.py` | The single `run_pipeline()` that turns inputs into a blueprint |
 | `app/dashboard.py` | The three-block blueprint UI (tabbed) |
 | `app/logic/` | `filter.py` (privacy + ranking), `cost.py`, `pricing.py`, `prompt.py`, `scaffold.py` |
+| `app/data/options.py` | The five dropdowns' option lists — the only place they're defined |
+| `app/validators.py` | Input validation for the five constraints |
+| `app/survey_modal.py` | The post-blueprint micro-survey (Card P.14's data source) |
 | `app/export.py` | Text / markdown blueprint exports |
 | `app/saved_blueprints.py` | Session-scoped save + JSON import/export |
 | `app/analytics/tracker.py` | Local JSON-lines event log (no third-party analytics) |
@@ -202,9 +234,9 @@ log for the real error.
 python scripts/backend_dry_run.py          # run 3 test profiles end-to-end
 python tests/distancecheck.py --full       # relevance-threshold regression sweep (432 pairs)
 python scripts/compliance_check.py         # regulated-posture filter check
-python scripts/telemetry_funnel.py  --p14  # headline metrics + funnel  (Card P.14)
-python scripts/credible_interval.py --p14  # small-sample credible intervals
-python scripts/validation_metrics_table.py # regenerates the whole P.14 results table
+python scripts/telemetry_funnel.py         --p14  # headline metrics + funnel  (Card P.14)
+python scripts/credible_interval.py        --p14  # small-sample credible intervals
+python scripts/validation_metrics_table.py --p14  # regenerates the whole P.14 results table
 
 python scripts/rebuild_knowledge_base.py   # DESTRUCTIVE — deletes and rebuilds
                                            # chroma_store/. Needs the source CSV.
@@ -216,7 +248,7 @@ anywhere. The first three are the ones to run after a change to verify nothing
 regressed; `distancecheck.py --full` is the one that catches retrieval breaking
 silently.
 
-**`--p14` is not optional on the two metrics scripts.** `data/telemetry.log` is
+**`--p14` is not optional on the three metrics scripts.** `data/telemetry.log` is
 append-only, so every later run of the app adds events. Without the flag you get
 the whole log — including development traffic recorded after the user-test round
 closed — and the funnel disagrees with the published figures (56% export rate

@@ -24,9 +24,24 @@ from contextlib import redirect_stdout
 from datetime import date
 from pathlib import Path
 
-from app.logic.pricing import PRICING
+# Running `python scripts/backend_dry_run.py` puts scripts/ on sys.path[0], NOT
+# the repo root — so Python looks for an "app" package *inside* scripts/ and
+# raises ModuleNotFoundError. Every other script that imports app has this two
+# liner (compliance_check.py, credible_interval.py, validation_metrics_table.py,
+# eval_prompt.py); this one didn't, so the exact command in its own docstring —
+# and the FIRST of the three verification commands in the README — has never
+# worked from a clean shell. Added 2026-07-30 (P.22), found by running it.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-RESULTS_PATH = Path("Capstone Plan/Build Guide/P9-Backend-Dry-Run-Results-v1.md")
+from app.logic.pricing import PRICING  # noqa: E402
+
+# Where the recorded P.9 result actually lives. Corrected 2026-07-30 (P.22):
+# this pointed at "Capstone Plan/Build Guide/", which is where the file was
+# generated on 2026-07-21 and NOT where it has lived since the docs were
+# reorganised. The path was never updated, so the first run after the move
+# silently recreated a stale duplicate in the old folder — found by running the
+# script, not by reading it.
+RESULTS_PATH = Path("PM & Ethics/P9-Backend-Dry-Run-Results-v1.md")
 
 # The 3 profiles agreed for P.9 (guide 15). Values use the REAL option keys
 # from app/data/options.py — note the guide's "Data Analysis" is written here
@@ -180,10 +195,31 @@ def main():
            "- [ ] 5–8 real testers confirmed scheduled (Card P.2)",
            "- [ ] Decision recorded: **on track / not on track** for Week 3 — _(write it here)_"]
 
+    # Refuse to clobber the recorded result. Added 2026-07-30 (P.22), same
+    # refuse-first idiom as scripts/rebuild_knowledge_base.py.
+    #
+    # RESULTS_PATH is a COMMITTED document that ends in a defect list and a
+    # go/no-go decision meant to be filled in by hand. Now that the path is
+    # correct, a bare run would overwrite whatever a human wrote there with a
+    # blank template — losing exactly the part of the document that isn't
+    # reproducible. Everything above has already been printed to stdout, so
+    # declining to write costs nothing.
+    print("\n" + "=" * 78)
+    if RESULTS_PATH.exists() and "--overwrite" not in sys.argv:
+        print(f"NOT written — {RESULTS_PATH} already exists.\n")
+        print("That file is committed and its defect list / go-no-go section is")
+        print("filled in by hand, so overwriting it would replace human judgement")
+        print("with a blank template. The full run output is above.\n")
+        print("If you do want to regenerate it (e.g. after a pipeline change):")
+        print("    python scripts/backend_dry_run.py --overwrite")
+        print("...and check `git diff` before committing, so you can see exactly")
+        print("which numbers moved and confirm nothing hand-written was lost.")
+        return 0
+
     RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
     RESULTS_PATH.write_text("\n".join(md), encoding="utf-8")
-    print("\n" + "=" * 78)
     print(f"Results written to: {RESULTS_PATH}")
+    print("Review `git diff` before committing — the defect list is now blank.")
 
 
 if __name__ == "__main__":
