@@ -1,14 +1,18 @@
 # AASA dependencies — pinned 2026-07-30 for the feature freeze (Card P.15).
 #
 # WHY PINNED: unpinned requirements mean the Streamlit Cloud deploy resolves
-# whatever is newest at build time, so the app a marker opens is not guaranteed
-# to be the app we tested. Gabi's call, and it is right: "our versions are used,
-# which are working." See Capstone Plan/PM Work/15-P15-Feature-Freeze-v1.md.
+# whatever is newest at build time, so the app a marker opens is not guaranteed to
+# be the app we tested. Gabi's call, and it is right: "our versions are used, which
+# are working." See Capstone Plan/PM Work/15-P15-Feature-Freeze-v1.md.
 #
-# HOW TO CHANGE THIS FILE: don't, unless something is broken. Every pin below was
-# verified to exist and resolve for Python 3.11 (see .python-version) before being
-# committed. A pin that does not resolve fails the Cloud build and takes the live
-# app down — a much worse outcome than an unpinned dependency.
+# EVERY VERSION BELOW IS TAKEN FROM `pip freeze` IN THE ENVIRONMENT THAT WORKS,
+# not chosen or inferred. That is the only defensible source for a freeze.
+#
+# PYTHON >=3.11 IS NOW A HARD REQUIREMENT. pandas 3.0.2, scikit-learn 1.9.0 and
+# scipy 1.17.1 all declare Requires-Python >=3.11. That matches .python-version
+# (3.11.3), but it means the Streamlit Cloud app must also be on 3.11+ or the
+# build fails — worth confirming in the app's settings before/after the first
+# rebuild that includes this file.
 
 # --- required by the deployed app (app/) ---
 streamlit==1.59.0
@@ -24,20 +28,11 @@ fpdf2==2.8.7                    # Icebox B.8 PDF export — SHIPPED and in use
 
 # --- required only by scripts/, never imported by app/ ---
 # Kept so a fresh clone can run the knowledge-base rebuild and the QA plots.
-# None of these is needed to run or deploy the app itself.
-#
-# THREE ARE DELIBERATELY UNPINNED — 2026-07-30. Gabi proposed pandas==3.0.3,
-# scikit-learn==1.9.0 and scipy==1.17.1. None of those three versions exists on
-# PyPI for Python 3.11; the highest available are pandas 2.3.2,
-# scikit-learn 1.7.2 and scipy 1.16.3. Pinning them as given would have failed
-# the Cloud build. Rather than substitute a guess, they stay unpinned until Gabi
-# pastes the real values from the environment that works:
-#
-#     pip freeze | grep -iE '^(pandas|scikit-learn|scipy|matplotlib)='
-#
-# That output is the authoritative answer to "the versions which are working".
-# A version typed from memory is not — which is the whole reason this note exists.
-pandas
-scikit-learn
-scipy
-matplotlib==3.11.0              # verified for 3.11
+# None is needed to run the app itself — but the Cloud build still has to install
+# them successfully, so a version that won't resolve here breaks the deploy even
+# though the app never imports it. If that ever becomes a problem, the fix is to
+# split these into requirements-dev.txt rather than to loosen the pins.
+pandas==3.0.2
+scikit-learn==1.9.0
+scipy==1.17.1
+matplotlib==3.10.8

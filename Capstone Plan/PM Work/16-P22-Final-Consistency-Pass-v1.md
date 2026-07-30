@@ -194,6 +194,53 @@ partially-costed stack (3 of 5 tools `€None`, total €8.75, `within_budget: T
 and cases with no recognised tool (341 of 3,023) can still occupy an evidence
 slot. Neither is being fixed under the P.15 freeze.
 
+### A verification failure in the verification pass — 2026-07-30
+
+Recorded because it is the same shape as D1 in the P.9 retrospective and as the
+three findings above, and because it happened *while writing this document*.
+
+Gabi proposed pinning `requirements.txt` and gave the versions from her
+environment. Checking them from a sandbox running **Python 3.10**, `pandas 3.0.2`,
+`scikit-learn 1.9.0` and `scipy 1.17.1` all came back unavailable — and the
+conclusion drawn was "these versions do not exist on PyPI". It was written up that
+way, committed, and reported to Ash as a near-miss that would have broken the Cloud
+build.
+
+**It was wrong.** All four versions exist. Every one declares
+`Requires-Python >=3.11`, so a 3.10 interpreter filters them out of the index
+entirely. The attempt to correct for that — passing
+`--python-version 3.11 --abi cp311 --platform manylinux2014_x86_64` to
+`pip download` — **failed to match any wheel and reported "no wheel" rather than
+erroring**, which read identically to "does not exist". A shell loop mangling the
+version string (`3.${abi#31}` → `3.1`) made two of the runs meaningless as well,
+and they also just printed "no wheel".
+
+Only `pip install --dry-run` gave the real answer, because it prints *why* a
+version was skipped:
+
+```
+Ignored the following versions that require a different python version:
+  ... 3.0.2 Requires-Python >=3.11 ...
+```
+
+Three things worth keeping from it:
+
+1. **A tool that answers "not found" for both "absent" and "incompatible with your
+   environment" will produce a confident wrong conclusion.** The fix was to use a
+   command that reports its reasoning instead of a command that reports a result.
+2. **The check was run in an environment that did not match the target.** The repo
+   pins Python 3.11.3; the check ran on 3.10. That is the same error as measuring
+   the corpus coverage against a superseded store — right method, wrong subject.
+3. **Gabi's evidence was better than the verification.** She said "these are the
+   versions that work" and she was right; the pins are now taken verbatim from her
+   `pip freeze`, which is the only defensible source for a freeze. Where a
+   teammate's direct observation and a tool's inference disagree, the tool needs
+   re-examining first.
+
+The one substantive thing that survived: the pins make **Python >=3.11 a hard
+requirement**, so the Streamlit Cloud app must be on 3.11+ or the build fails on
+packages the app never even imports. That is a real check, and it is item 4b below.
+
 ### Left open on purpose
 
 - **`data/AICaseStudy/schema.md`:60 says the upstream dataset is "MIT and
@@ -255,6 +302,7 @@ Verified against source, not against another document:
 | 3 | ~~Run `backend_dry_run.py` and `compliance_check.py`~~ **Done 2026-07-30 — all 3 profiles PASS, compliance 2/2 (100%).** Both surfaced real defects in the scripts themselves, fixed: `backend_dry_run.py` couldn't import `app` at all, and wrote its results to a folder the file left weeks ago | — | Closed |
 | 3b | **Re-run all three on the merged `main`** once the merge is confirmed | Either | They passed on `Ash6`; `main` is what deploys |
 | 4 | **Load the deployed app and confirm the hero reads 3,023 / 41 / 24 and `~2 min`** | Either | The deploy tracks `main`, so this only becomes true once the merge is pushed |
+| 4b | **Confirm the Streamlit Cloud app's Python version is 3.11 or newer**, then watch the first rebuild after `requirements.txt` reaches `main`. `pandas 3.0.2`, `scikit-learn 1.9.0`, `scipy 1.17.1` and `matplotlib 3.10.8` all require >=3.11. Cloud does **not** read `.python-version` — the version is set in the app's own settings. If it is on 3.10, the build fails on packages `app/` never imports, and the fix is to split those four into `requirements-dev.txt` | Ash | No access to the Cloud console |
 | 5 | **Click every source link** in the demo path and in the deck | Human | P.19 has required this since it was written and it is still open |
 | 6 | **Colour-contrast and mobile checks** | Human | Needs eyes on a real screen and a real phone |
 | 7 | **Two timed rehearsals** (P.20, SP.5) — the test run came in at 14:19 against a 12:00 limit | Joint | Performance, not a document |

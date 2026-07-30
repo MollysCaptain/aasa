@@ -108,7 +108,7 @@ known limitation, not a patch.
 | 2026-07-30 | `--since/--until/--p14` added to `validation_metrics_table.py`, the third and last log-reading script — it was silently producing a different table from the published one | 1, 2 | `16-P22` |
 | 2026-07-30 | Ten surviving "24 tools" references corrected to 41; effort total, prototype licence label, column count, outlier values, session counts corrected | 1 | `16-P22` |
 | 2026-07-30 | P.9's blank defect list and go/no-go completed retrospectively; two previously-undisclosed defects added to `Known-Limitations-v1.md` | 1 | `16-P22`, P.9 doc |
-| 2026-07-30 | **`requirements.txt` pinned** (Gabi's call). 7 of 10 pinned and verified against PyPI for Python 3.11; `pandas`/`scikit-learn`/`scipy` left unpinned because the proposed versions do not exist and a wrong pin fails the Cloud build | 1, 2 | this doc, `requirements.txt` |
+| 2026-07-30 | **`requirements.txt` pinned** (Gabi's call). All 10 pinned from `pip freeze` in the working environment. Makes Python >=3.11 a hard requirement — Cloud must match | 1, 2 | this doc, `requirements.txt` |
 | 2026-07-30 | **This document corrected:** B.1 and B.8 were listed as cut. Both shipped — telemetry shows 8 `onepager_downloaded` and 8 `pdf_downloaded`. Found via Gabi's `fpdf2` question | 1 | this doc |
 
 No change in that table altered what the app does for a user. That is the test
