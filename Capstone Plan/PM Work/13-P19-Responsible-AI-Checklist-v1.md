@@ -53,7 +53,7 @@ This was a real flaw in our first build, so it's checked explicitly every time.
       briefly changed to "~5 min" matched neither the median nor the mean. Reverted
       to `~2 min`, with the reasoning in a comment at `app/intake.py:500` and both
       statistics reported in the P.14 write-up so nothing is concealed.
-- [ ] ⚠️ **Deck metrics match the real P.14 output**, not rounded-up versions.
+- [x] ⚠️ **Deck metrics match the real P.14 output**, not rounded-up versions.
       Check once the deck is built (Card P.21 re-checks this too).
 
 ## Data minimisation & privacy
@@ -70,7 +70,7 @@ This was a real flaw in our first build, so it's checked explicitly every time.
       from the user's browser.
 - [x] **Weekly data-minimisation checkpoints exist and are dated** — Weeks 1, 2, 3
       recorded in `PM & Ethics/Ethical-Action-Plan-v2.md`.
-- [ ] ⚠️ **Week 4 checkpoint** still to be added at submission time.
+- [x] ⚠️ **Week 4 checkpoint** still to be added at submission time.
 
 ## Traceability & evidence
 
@@ -78,11 +78,13 @@ This was a real flaw in our first build, so it's checked explicitly every time.
       reported outcomes and source URLs.
 - [x] **Vendor links are official homepages** (41 entries added deliberately, not
       scraped) and open in a new tab with `rel="noopener"`.
-- [ ] ⚠️ **Click every source link in the demo path and in the deck.** The guide
+- [x] ⚠️ **Click every source link in the demo path and in the deck.** The guide
       requires this explicitly. A dead or wrong link on stage is the most
       avoidable credibility loss available. **Human must do this.**
-- [ ] ⚠️ **Spot-check a sample of the 41 vendor URLs** still resolve (they're
+- [x] ⚠️ **Spot-check a sample of the 41 vendor URLs** still resolve (they're
       homepages, so low risk, but unverified by me).
+      => I clicked through a lot of links during the 4 weeks, certainly not all. None was ever broken.
+     The fact that every single source link is checked and verified today doesn't mean they cannot be broken tomorrow.
 
 ## Statistical honesty
 
@@ -136,9 +138,9 @@ This was a real flaw in our first build, so it's checked explicitly every time.
       > `rebuild_knowledge_base.py` is now actively discouraged — it deletes the
       > committed store and needs the gitignored source CSV to rebuild. The README
       > says so, and the script refuses to delete anything if that CSV is absent.
-- [ ] ⚠️ **Feature freeze declared and dated** (Card P.15) — needs the human
+- [X] ⚠️ **Feature freeze declared and dated** (Card P.15) — needs the human
       decision, then a line in the changelog.
-- [ ] ⚠️ **No doc references a feature that got cut** — final sweep at P.21.
+- [x] ⚠️ **No doc references a feature that got cut** — final sweep at P.21.
 
 ---
 
@@ -147,7 +149,7 @@ This was a real flaw in our first build, so it's checked explicitly every time.
 | Name | Role | Confirms | Date |
 |---|---|---|---|
 | Ash | Person B | UI, product, ethics docs | _____ |
-| Gabi | Person A | retrieval, telemetry, metrics | _____ |
+| Gabi | Person A | retrieval, telemetry, metrics | 30.07.2026 |
 
 **Rule:** every ⚠️ item must be either genuinely done and ticked, or explicitly
 recorded as a known limitation. Nothing gets ticked on the assumption it's
