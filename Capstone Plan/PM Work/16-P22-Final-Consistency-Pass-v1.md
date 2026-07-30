@@ -53,23 +53,37 @@ that the run's own "Pairs WITH real cases" line is the only authority. A hardcod
 number in a docstring is how this drifted in the first place; the fix is to stop
 hardcoding it, not to hardcode a fresher one.
 
-### Still needs a live run — Ash or Gabi
+### Confirmed by a live full sweep — 2026-07-30
 
-The coverage count needs no embeddings, so it was verifiable here. The rest of
-the sweep is not: **0 wrongly empty**, **5 correctly empty**, worst genuine
-best-distance **0.568**, nonsense leak at **0.476**, and the **PASS** verdict were
-all measured against the pre-rebuild store too. They are probably still true —
-the threshold didn't move and the corpus is the same 3,023 cases — but "probably"
-is not the standard this card exists for.
+The coverage count needed no embeddings, so it was verifiable statically. The rest
+of the sweep was not, so Ash ran `python tests/distancecheck.py --full` against
+the submitted store. **185 confirmed, and nothing else moved:**
 
-```bash
-python tests/distancecheck.py --full        # expect PASS; note the new empty count
-```
+| | 2026-07-27 (pre-rebuild) | 2026-07-30 (submitted store) |
+|---|---|---|
+| Pairs with real cases | 227 / 432 | **247 / 432** |
+| Pairs with zero cases | 205 (47%) | **185 (43%)** |
+| Empty **with** evidence — the only failure condition | 0 | 0 |
+| Empty with no evidence | 5 | 5 — *the same five pairs, same distances* |
+| Worst genuine best-distance | 0.568 | 0.568 |
+| Margin | −0.048 | −0.048 |
+| Nonsense controls rejected | 7 / 8 | 7 / 8 — same leak, 0.476 |
+| Verdict | PASS | **PASS** |
 
-If it prints `FAIL`, a pair that has evidence is returning nothing and the
-threshold needs revisiting before submission. If it prints `PASS` with a
-different "correctly empty" count than 5, that is expected — update Build Guide 35's
-note, not the pasted output.
+**The fact that only one line moved is itself the answer to "what did the rebuild
+change?"** Had it altered the embedded text, the distances would have shifted.
+They are identical to three decimals. So the rebuild changed **chunk metadata
+only** — the canonical domain column re-derived by `normalize_domains.py`, which
+is precisely the field pairs are counted by. Twenty pairs gained a domain label;
+no vector moved, no case was added or removed, and the retrieval behaviour of the
+shipped product is unchanged.
+
+That upgrades the correction from "a number we had to fix" to something worth
+carrying: **a store rebuild can invalidate corpus-coverage facts while leaving
+retrieval entirely intact.** The two look like one concern and are not. Coverage
+went stale for two days without a single retrieval symptom to notice it by — which
+is exactly why it survived a consistency pass that compared documents to each
+other.
 
 ---
 
@@ -200,8 +214,9 @@ Verified against source, not against another document:
 | # | Action | Owner | Why |
 |---|---|---|---|
 | 1 | **Push `Ash6`, and confirm the merge to `main` actually landed.** In the local clone `main` and `origin/main` are both still at `a62d0a9`, five commits behind `Ash6`; `origin/Ash6` is one commit behind local. If the merge was done on GitHub, `git fetch` will show it | Joint | No network access to the remote from here |
-| 2 | **Re-run `python tests/distancecheck.py --full`** and confirm `PASS` plus the new empty count | Either | Needs the embedding model; the download is blocked here |
-| 3 | **Run `python scripts/backend_dry_run.py` and `python scripts/compliance_check.py`** on the merged `main`, from the repo root | Either | Same |
+| 2 | ~~Re-run `distancecheck.py --full`~~ **Done 2026-07-30 — PASS, 247/185, all threshold figures unchanged.** See the table above | — | Closed |
+| 3 | ~~Run `backend_dry_run.py` and `compliance_check.py`~~ **Done 2026-07-30 — all 3 profiles PASS, compliance 2/2 (100%).** Both surfaced real defects in the scripts themselves, fixed: `backend_dry_run.py` couldn't import `app` at all, and wrote its results to a folder the file left weeks ago | — | Closed |
+| 3b | **Re-run all three on the merged `main`** once the merge is confirmed | Either | They passed on `Ash6`; `main` is what deploys |
 | 4 | **Load the deployed app and confirm the hero reads 3,023 / 41 / 24 and `~2 min`** | Either | The deploy tracks `main`, so this only becomes true once the merge is pushed |
 | 5 | **Click every source link** in the demo path and in the deck | Human | P.19 has required this since it was written and it is still open |
 | 6 | **Colour-contrast and mobile checks** | Human | Needs eyes on a real screen and a real phone |
