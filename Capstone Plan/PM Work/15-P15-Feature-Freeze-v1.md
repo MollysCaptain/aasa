@@ -90,7 +90,7 @@ the freeze is meant to enforce, and it holds.
 
 | Name | Confirms | Date |
 |---|---|---|
-| Ash | The frozen scope above is what we are submitting, and the Icebox list is complete | _____ |
+| Ash | The frozen scope above is what we are submitting, and the Icebox list is complete | A.CARLIN - 30.07.26 |
 | Gabi | Retrieval, corpus, pricing table and telemetry are final as committed | _____ |
 
 **Both names required.** A freeze one person declared is a preference, not a

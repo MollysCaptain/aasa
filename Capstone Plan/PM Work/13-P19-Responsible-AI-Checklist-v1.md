@@ -212,7 +212,7 @@ better evidence" is not "done", so it stays open rather than being quietly ticke
 
 | Name | Role | Confirms | Date |
 |---|---|---|---|
-| Ash | Person B | UI, product, ethics docs | _____ |
+| Ash | Person B | UI, product, ethics docs | A.CARLIN - 30.07.26|
 | Gabi | Person A | retrieval, telemetry, metrics | _____ |
 
 **Rule:** every ⚠️ item must be either genuinely done and ticked, or explicitly
