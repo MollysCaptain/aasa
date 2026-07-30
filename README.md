@@ -145,6 +145,21 @@ A healthy install shows the hero reading **3,023 / 41 / 24** and
 `distancecheck.py --full` printing `PASS`. If the hero shows zeros, the vector
 store isn't being found — check you're running from the repo root.
 
+> **Afterwards, `git status` will show `chroma_store/chroma.sqlite3` as modified.
+> Do not commit it.** Opening the store — running the app, the dry run, or the
+> sweep — makes Chroma touch SQLite's header. About **28 bytes of 54 MB** change
+> and the data is identical, but git stores whole blobs, so committing it adds
+> another ~52 MB to history *permanently* and every future clone pays for it (see
+> [`docs/data-attribution.md`](docs/data-attribution.md) on why that can't be
+> undone without rewriting history). Discard it instead:
+>
+> ```bash
+> git restore chroma_store/chroma.sqlite3
+> ```
+>
+> The one time you *should* commit it is after deliberately running
+> `rebuild_knowledge_base.py`, because then the contents really did change.
+
 ## Deployment
 
 Live at **[aasa-app.streamlit.app](https://aasa-app.streamlit.app)**, deployed
